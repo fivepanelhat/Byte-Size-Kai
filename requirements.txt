@@ -1,0 +1,31 @@
+# Blue Moon Portal - Python Dependencies
+# Production runtime requirements
+
+# LLM Runtime & Ollama Interface
+ollama==0.3.0
+
+# Message Queue (MQTT)
+paho-mqtt==1.6.1
+
+# Schema Validation & Enforcement
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Computer Vision
+opencv-python==4.8.1.78
+numpy>=1.21.2,<2
+
+# Audio Processing
+# pyaudio==0.2.13
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# JSON & Data Serialization
+orjson==3.9.10
+
+# Async Utilities
+aiofiles==23.2.1
+
+# Logging
+structlog==23.2.0

@@ -1,0 +1,35 @@
+[Unit]
+Description=Blue Moon Portal - Autonomous Crop Tracker
+Documentation=https://github.com/yourusername/blue-moon-portal
+After=network.target ollama.service mosquitto.service
+Requires=ollama.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/blue-moon-portal
+Environment="PATH=/home/pi/blue-moon-portal/venv/bin"
+Environment="PYTHONUNBUFFERED=1"
+
+# Main executable
+ExecStart=/home/pi/blue-moon-portal/venv/bin/python main.py
+
+# Auto-restart on failure
+Restart=on-failure
+RestartSec=10
+
+# Output handling (send to systemd journal)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=blue-moon
+
+# Resource limits (prevent runaway processes on RPi 5)
+MemoryMax=4G
+CPUQuota=80%
+MemoryAccounting=yes
+
+# Keep environment clean
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

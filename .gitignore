@@ -1,0 +1,73 @@
+# Blue Moon Portal - Git Exclusions
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Linting
+.mypy_cache/
+.pylint.d/
+
+# Environment Variables (DO NOT COMMIT)
+.env
+.env.local
+.env.*.local
+
+# Telemetry Data (Storage)
+telemetry_data/media/*
+telemetry_data/sensor_logs/*
+!telemetry_data/media/.gitkeep
+!telemetry_data/sensor_logs/.gitkeep
+
+# Temporary Files
+*.tmp
+*.log
+*.pid
+
+# OS-specific
+Thumbs.db
+.DS_Store
+*.swp
+.AppleDouble
+.LSOverride
+
+# Optional: Exclude large model files if versioning locally
+# ollama_models/
