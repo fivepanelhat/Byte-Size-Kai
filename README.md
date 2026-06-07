@@ -28,11 +28,11 @@
 
 ### Prerequisites
 
-- Raspberry Pi 5 (16GB RAM) with AI Top Hat accelerator
+- Raspberry Pi 5 (16GB RAM) with Raspberry Pi AI HAT+ (Hailo-8 NPU)
 - ESP32 microcontrollers for sensor integration
 - Python 3.10+
 - Ollama (local LLM runtime)
-- Gemma 4 E4B-it model (via `ollama pull gemma4:latest`)
+- Gemma 4 E4B-it model (via `ollama pull gemma4:e4b`)
 
 ### Installation (Bare Metal + Virtual Environment)
 
@@ -62,7 +62,7 @@ Before running the portal, ensure Ollama is running and the Gemma 4 model is dow
 ollama serve
 
 # Terminal 2: Pull the Gemma 4 model
-ollama pull gemma4:latest
+ollama pull gemma4:e4b
 
 # Verify installation
 ollama list
@@ -119,7 +119,7 @@ This is **not** a simple chatbot hooked up to a water pump—it's a fully agenti
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│           EDGE HARDWARE (RPi 5 + AI Top Hat)        │
+│           EDGE HARDWARE (RPi 5 + AI HAT+)           │
 ├─────────────────────────────────────────────────────┤
 │                                                      │
 │  ┌──────────────┐  ┌──────────────┐  ┌───────────┐ │
@@ -200,7 +200,7 @@ Blue_Moon_Portal/
 
 ### Hardware
 - **Compute:** Raspberry Pi 5 (16GB RAM)
-- **Acceleration:** AI Top Hat (PCIe NPU for neural processing)
+- **Acceleration:** Raspberry Pi AI HAT+ (Hailo-8 NPU, 26 TOPS)
 - **Sensors:** ESP32 microcontrollers streaming via MQTT
 - **Cameras:** CSI camera module (leaf health)
 - **Audio:** USB microphone (anomaly detection)
