@@ -6,13 +6,13 @@ from portal_core.ai_agent import AIAgent
 
 @pytest.fixture
 def ai_agent():
-    return AIAgent(ollama_host="http://localhost:11434", model="gemma4:latest")
+    return AIAgent(ollama_host="http://localhost:11434", model="gemma4:e4b")
 
 
 @pytest.mark.asyncio
 async def test_health_check_healthy(ai_agent):
     """Test health check when Ollama is online and model is loaded."""
-    mock_list_response = {"models": [{"name": "gemma4:latest"}]}
+    mock_list_response = {"models": [{"name": "gemma4:e4b"}]}
 
     with patch.object(ai_agent.client, "list", return_value=mock_list_response):
         is_healthy = await ai_agent.health_check()

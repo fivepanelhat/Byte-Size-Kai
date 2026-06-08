@@ -92,9 +92,9 @@ The Blue Moon Portal is a **closed-loop, autonomous edge AI system** for real-ti
 - `health_check()` — Verify Ollama and Gemma 4 E4B are loaded
 
 **Configuration:**
-- **Model:** Gemma 4 (via `gemma4:latest`)
+- **Model:** Gemma 4 (via `gemma4:e4b`)
 - **Ollama Host:** Environment variable `OLLAMA_HOST` (default: `http://localhost:11434`)
-- **Model Identifier:** `OLLAMA_MODEL=gemma4:latest` in `.env`
+- **Model Identifier:** `OLLAMA_MODEL=gemma4:e4b` in `.env`
 - **Streaming:** Async/await pattern for non-blocking LLM calls
 
 ---
@@ -279,18 +279,18 @@ Ollama handles model downloading, quantization, and serving:
 ollama serve
 
 # Terminal 2: Pull the Gemma 4 model
-ollama pull gemma4:latest
+ollama pull gemma4:e4b
 
 # Verify installation
 ollama list
-# Expected output: gemma4:latest  c6eb396dbd59  9.6 GB  <timestamp>
+# Expected output: gemma4:e4b  c6eb396dbd59  9.6 GB  <timestamp>
 
 # API endpoint (used by AIAgent):
 # POST http://localhost:11434/api/generate
 ```
 
 **Model Information:**
-- **Name:** `gemma4:latest`
+- **Name:** `gemma4:e4b`
 - **Size:** ~9.6 GB (GGUF quantized format)
 - **Effective Parameters:** 4B (4 billion)
 - **Quantization:** Optimized for RPi 5 with AI Top Hat NPU acceleration
@@ -399,7 +399,7 @@ Results: 6/7 tests passed
 Before deploying the portal to production:
 
 - [ ] Ollama server is running (`ollama serve`)
-- [ ] Gemma 4 model is downloaded (`ollama pull gemma4:latest`)
+- [ ] Gemma 4 model is downloaded (`ollama pull gemma4:e4b`)
 - [ ] `.env` file is configured with correct MQTT broker, Ollama host, media directories
 - [ ] `validate.py` returns 6-7/7 tests passing
 - [ ] MQTT broker is accessible (run `validate.py` again if initially failed)

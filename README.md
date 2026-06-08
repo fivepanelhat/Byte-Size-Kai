@@ -66,7 +66,7 @@ ollama pull gemma4:e4b
 
 # Verify installation
 ollama list
-# Expected output: gemma4:latest  c6eb396dbd59  9.6 GB  <timestamp>
+# Expected output: gemma4:e4b     c6eb396dbd59  9.6 GB  <timestamp>
 ```
 
 ### System Validation

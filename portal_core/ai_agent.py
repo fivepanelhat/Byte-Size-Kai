@@ -31,7 +31,7 @@ class AIAgent:
     def __init__(
         self,
         ollama_host: str = "http://localhost:11434",
-        model: str = "gemma4:latest",
+        model: str = "gemma4:e4b",
     ):
         """
         Initialize the AI Agent.
