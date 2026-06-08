@@ -186,14 +186,14 @@ Blue_Moon_Portal/
 │
 ├── README.md                  # This file
 ├── ARCHITECTURE.md            # Detailed technical breakdown
-├── HARDWARE_SETUP.md          # RPi5 + AI Top Hat assembly & driver installation
+├── HARDWARE_SETUP.md          # RPi5 + Hailo-10H NPU assembly & driver installation
 └── DEVELOPMENT.md             # Local dev setup, mocking, testing
 ```
 
 ## Documentation
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Data flow, module responsibilities, Gemma 4 config, Pydantic schema definitions
-- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)** — RPi 5 + AI Top Hat assembly, ESP32 wiring, Ollama installation, **critical NPU driver setup**
+- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)** — RPi 5 + Hailo-10H NPU assembly, ESP32 wiring, Ollama installation, **critical NPU driver setup**
 - **[DEVELOPMENT.md](DEVELOPMENT.md)** — Local dev environment, mock MQTT payloads, testing strategies
 
 ## Technology Stack

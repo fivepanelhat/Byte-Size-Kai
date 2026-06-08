@@ -56,7 +56,7 @@ nano .env
 **Example `.env` for local development:**
 ```
 OLLAMA_HOST=http://localhost:11434
-OLLAMA_MODEL=gemma4-e4b
+OLLAMA_MODEL=gemma4:e4b
 MQTT_BROKER=localhost
 MQTT_PORT=1883
 MEDIA_DIR=./telemetry_data/media
@@ -80,7 +80,7 @@ curl -fsSL https://ollama.ai/install.sh | sh
 ollama serve
 
 # In another terminal:
-ollama pull gemma4-e4b
+ollama pull gemma4:e4b
 ```
 
 ### Option B: Docker
@@ -88,7 +88,7 @@ ollama pull gemma4-e4b
 ```bash
 # Run Ollama in Docker (GPU support available)
 docker run -d -p 11434:11434 --name ollama ollama/ollama
-docker exec ollama ollama pull gemma4-e4b
+docker exec ollama ollama pull gemma4:e4b
 
 # For GPU acceleration (NVIDIA):
 docker run -d --gpus all -p 11434:11434 --name ollama ollama/ollama
@@ -251,7 +251,7 @@ from portal_schemas.ai_models import CropOptimizationPlan
 @pytest.fixture
 def ai_agent():
     """Fixture: Create AI agent instance"""
-    return AIAgent(ollama_host="http://localhost:11434", model="gemma4-e4b")
+    return AIAgent(ollama_host="http://localhost:11434", model="gemma4:e4b")
 
 @pytest.mark.asyncio
 async def test_health_check(ai_agent):

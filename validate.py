@@ -367,7 +367,7 @@ async def main():
             if errors.get("ollama"):
                 logger.warning(f"    Error detail: {errors['ollama']}")
             logger.warning("    - Verify Ollama is running (`ollama serve`).")
-            logger.warning("    - Verify model is pulled: `ollama pull gemma4:e4b` or tag it using `ollama cp gemma4:latest gemma4:e4b`.")
+            logger.warning("    - Verify model is pulled: `ollama pull gemma4:e4b`.")
             logger.warning("    - Check that the OLLAMA_HOST variable in `.env` is accessible.")
             logger.warning("  " + "-" * 50)
             

@@ -27,7 +27,7 @@ nano .env
 
 **Minimum required settings:**
 - `OLLAMA_HOST` - Point to your Ollama instance (e.g., http://localhost:11434)
-- `OLLAMA_MODEL` - Model name (e.g., gemma4-e4b)
+- `OLLAMA_MODEL` - Model name (e.g., gemma4:e4b)
 - `MQTT_BROKER` - Your MQTT broker address
 - `MQTT_PORT` - Usually 1883
 
@@ -40,13 +40,13 @@ brew install ollama
 ollama serve
 
 # In another terminal
-ollama pull gemma4-e4b
+ollama pull gemma4:e4b
 ```
 
 **Option B: Docker**
 ```bash
 docker run -d -p 11434:11434 --name ollama ollama/ollama
-docker exec ollama ollama pull gemma4-e4b
+docker exec ollama ollama pull gemma4:e4b
 ```
 
 ### 4. Start MQTT Broker
@@ -220,7 +220,7 @@ python main.py 2>&1 | tee debug.log
 # Test AI Agent
 from portal_core.ai_agent import AIAgent
 
-agent = AIAgent(ollama_host="http://localhost:11434", model="gemma4-e4b")
+agent = AIAgent(ollama_host="http://localhost:11434", model="gemma4:e4b")
 analysis = asyncio.run(agent.analyze_sensor_state({
     "soil_moisture": 65.5,
     "light": 450
