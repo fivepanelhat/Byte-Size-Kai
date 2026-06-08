@@ -20,7 +20,7 @@ class OllamaConfig(BaseModel):
     """Ollama LLM configuration."""
 
     host: str = Field(default="http://localhost:11434", description="Ollama API host")
-    model: str = Field(default="gemma4-e4b", description="Model name")
+    model: str = Field(default="gemma4:e4b", description="Model name")
 
     @validator("host")
     def validate_host(cls, v):
@@ -180,7 +180,7 @@ def load_config() -> PortalConfig:
         # Parse each configuration section
         ollama_config = OllamaConfig(
             host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
-            model=os.getenv("OLLAMA_MODEL", "gemma4-e4b"),
+            model=os.getenv("OLLAMA_MODEL", "gemma4:e4b"),
         )
 
         mqtt_config = MQTTConfig(
