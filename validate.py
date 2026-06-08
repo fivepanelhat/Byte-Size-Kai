@@ -291,7 +291,7 @@ async def main():
     logger.info("╚" + "=" * 58 + "╝")
 
     results = {}
-    errors = {}
+    errors: dict[str, str | None] = {}
 
     # Test 1: Configuration
     config, err = await test_configuration()
