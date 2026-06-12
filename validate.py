@@ -58,8 +58,10 @@ async def test_ollama(config):
 
         is_healthy = await ai_agent.health_check()
         if is_healthy:
-            logger.info(f"✓ Point-to-point connection to Ollama at {config.ollama.host} established.")
-            logger.info(f"✓ Ollama health check PASSED")
+            logger.info(
+                f"✓ Point-to-point connection to Ollama at {config.ollama.host} established."
+            )
+            logger.info("✓ Ollama health check PASSED")
             logger.info(f"  Host: {config.ollama.host}")
             logger.info(f"  Model: {config.ollama.model}")
             return True, None
@@ -91,13 +93,17 @@ async def test_mqtt(config):
 
         # Try to connect with timeout
         try:
-            connect_ok = await asyncio.wait_for(mqtt_client.connect(), timeout=5.0)
+            connect_ok = await asyncio.wait_for(
+                mqtt_client.connect(), timeout=5.0
+            )
             await asyncio.sleep(1)
 
             is_healthy = await mqtt_client.health_check()
             if is_healthy:
-                logger.info(f"✓ MQTT connection PASSED")
-                logger.info(f"  Broker: {config.mqtt.broker}:{config.mqtt.port}")
+                logger.info("✓ MQTT connection PASSED")
+                logger.info(
+                    f"  Broker: {config.mqtt.broker}:{config.mqtt.port}"
+                )
                 await mqtt_client.disconnect()
                 return True, None
             else:
@@ -144,7 +150,9 @@ async def test_av_capture(config):
         logger.info(f"  Audio stream: {'✓' if audio_ok else '✗'}")
 
         if video_ok or audio_ok:
-            logger.info("✓ AV capture test PASSED (at least one stream working)")
+            logger.info(
+                "✓ AV capture test PASSED (at least one stream working)"
+            )
             await av_capture.stop()
             note = None
             if not video_ok:
@@ -154,9 +162,7 @@ async def test_av_capture(config):
             return True, note
         else:
             msg = "Both video and audio streams failed to initialize"
-            logger.warning(
-                f"⚠ {msg} (may be ok in non-RPi environment)"
-            )
+            logger.warning(f"⚠ {msg} (may be ok in non-RPi environment)")
             return True, msg  # Don't fail if running on non-RPi dev machine
 
     except Exception as e:
@@ -185,7 +191,7 @@ async def test_hardware_control(config):
 
         is_healthy = await hw_control.health_check()
         if is_healthy:
-            logger.info(f"✓ Hardware control test PASSED")
+            logger.info("✓ Hardware control test PASSED")
             logger.info(f"  Simulation mode: {hw_control.simulation_mode}")
             status = hw_control.get_status()
             logger.info(f"  Status: {status}")
@@ -218,7 +224,7 @@ async def test_media_pruner(config):
         )
 
         stats = media_pruner.get_storage_stats()
-        logger.info(f"✓ Media pruner test PASSED")
+        logger.info("✓ Media pruner test PASSED")
         logger.info(f"  Storage stats: {stats}")
         return True, None
 
@@ -249,7 +255,9 @@ async def test_ai_agent_methods(config):
             "temperature": 22.1,
         }
         analysis = await ai_agent.analyze_sensor_state(sensor_data)
-        logger.info(f"  Sensor analysis result: {analysis.get('status', 'unknown')}")
+        logger.info(
+            f"  Sensor analysis result: {analysis.get('status', 'unknown')}"
+        )
 
         # Test visual feedback (with mock frame)
         logger.info("Testing visual feedback...")
@@ -263,12 +271,18 @@ async def test_ai_agent_methods(config):
         logger.info("Testing audio feedback...")
         mock_audio = b"mock_audio_data"
         audio = await ai_agent.process_audio_feedback(mock_audio)
-        logger.info(f"  Audio analysis result: {audio.get('anomaly_detected', False)}")
+        logger.info(
+            f"  Audio analysis result: {audio.get('anomaly_detected', False)}"
+        )
 
         # Test optimization plan
         logger.info("Testing optimization plan...")
-        plan = await ai_agent.generate_optimization_plan(analysis, visual, audio)
-        logger.info(f"  Optimization plan result: {plan.get('plan_id', 'unknown')}")
+        plan = await ai_agent.generate_optimization_plan(
+            analysis, visual, audio
+        )
+        logger.info(
+            f"  Optimization plan result: {plan.get('plan_id', 'unknown')}"
+        )
 
         logger.info("✓ AI Agent methods test PASSED")
         return True, None
@@ -285,7 +299,9 @@ async def main():
     logger.info("╔" + "=" * 58 + "╗")
     logger.info("║" + " " * 58 + "║")
     logger.info(
-        "║" + "  Blue Moon Portal - System Validation & Tests  ".center(58) + "║"
+        "║"
+        + "  Blue Moon Portal - System Validation & Tests  ".center(58)
+        + "║"
     )
     logger.info("║" + " " * 58 + "║")
     logger.info("╚" + "=" * 58 + "╝")
@@ -306,8 +322,12 @@ async def main():
         logger.warning("=" * 60)
         logger.warning("  [Configuration Diagnostic]")
         logger.warning(f"    Error: {err}")
-        logger.warning("    - Ensure that a valid `.env` file is present in the repository root.")
-        logger.warning("    - Check that all required variable names match those in `.env.example`.")
+        logger.warning(
+            "    - Ensure that a valid `.env` file is present in the repository root."
+        )
+        logger.warning(
+            "    - Check that all required variable names match those in `.env.example`."
+        )
         return False
 
     # Test 2: Ollama
@@ -320,13 +340,19 @@ async def main():
     results["av_capture"], errors["av_capture"] = await test_av_capture(config)
 
     # Test 5: Hardware Control
-    results["hardware_control"], errors["hardware_control"] = await test_hardware_control(config)
+    results["hardware_control"], errors["hardware_control"] = (
+        await test_hardware_control(config)
+    )
 
     # Test 6: Media Pruner
-    results["media_pruner"], errors["media_pruner"] = await test_media_pruner(config)
+    results["media_pruner"], errors["media_pruner"] = await test_media_pruner(
+        config
+    )
 
     # Test 7: AI Agent Methods
-    results["ai_agent_methods"], errors["ai_agent_methods"] = await test_ai_agent_methods(config)
+    results["ai_agent_methods"], errors["ai_agent_methods"] = (
+        await test_ai_agent_methods(config)
+    )
 
     # Summary
     logger.info("\n" + "=" * 60)
@@ -352,63 +378,95 @@ async def main():
         logger.info("✓ ALL TESTS PASSED - System is ready for deployment!")
         return True
     else:
-        logger.warning(f"⚠ {total - passed} test(s) failed. Actionable Diagnostics:")
-        
+        logger.warning(
+            f"⚠ {total - passed} test(s) failed. Actionable Diagnostics:"
+        )
+
         if not results.get("configuration"):
             logger.warning("  [Configuration Diagnostic]")
             if errors.get("configuration"):
                 logger.warning(f"    Error detail: {errors['configuration']}")
-            logger.warning("    - Ensure that a valid `.env` file is present in the repository root.")
-            logger.warning("    - Check that all required variable names match those in `.env.example`.")
+            logger.warning(
+                "    - Ensure that a valid `.env` file is present in the repository root."
+            )
+            logger.warning(
+                "    - Check that all required variable names match those in `.env.example`."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("ollama"):
             logger.warning("  [Ollama / LLM Diagnostic]")
             if errors.get("ollama"):
                 logger.warning(f"    Error detail: {errors['ollama']}")
             logger.warning("    - Verify Ollama is running (`ollama serve`).")
-            logger.warning("    - Verify model is pulled: `ollama pull gemma4:e4b`.")
-            logger.warning("    - Check that the OLLAMA_HOST variable in `.env` is accessible.")
+            logger.warning(
+                "    - Verify model is pulled: `ollama pull gemma4:e4b`."
+            )
+            logger.warning(
+                "    - Check that the OLLAMA_HOST variable in `.env` is accessible."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("mqtt"):
             logger.warning("  [MQTT Broker Diagnostic]")
             if errors.get("mqtt"):
                 logger.warning(f"    Error detail: {errors['mqtt']}")
-            logger.warning("    - Check if Mosquitto or another MQTT broker is active locally on port 1883.")
-            logger.warning("    - Verify connection settings (username, password, broker IP) in `.env`.")
-            logger.warning("    - (Note: Safe to ignore in pure development/simulation environments if not testing live hardware).")
+            logger.warning(
+                "    - Check if Mosquitto or another MQTT broker is active locally on port 1883."
+            )
+            logger.warning(
+                "    - Verify connection settings (username, password, broker IP) in `.env`."
+            )
+            logger.warning(
+                "    - (Note: Safe to ignore in pure development/simulation environments if not testing live hardware)."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("av_capture"):
             logger.warning("  [AV Capture Diagnostic]")
             if errors.get("av_capture"):
-                logger.warning(f"    Error/Warning detail: {errors['av_capture']}")
-            logger.warning("    - Ensure that a CSI camera module or USB camera is connected to the hardware.")
-            logger.warning("    - Check if PyAudio is installed (requires portaudio system library: e.g. `apt install portaudio19-dev`).")
+                logger.warning(
+                    f"    Error/Warning detail: {errors['av_capture']}"
+                )
+            logger.warning(
+                "    - Ensure that a CSI camera module or USB camera is connected to the hardware."
+            )
+            logger.warning(
+                "    - Check if PyAudio is installed (requires portaudio system library: e.g. `apt install portaudio19-dev`)."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("hardware_control"):
             logger.warning("  [Hardware Control Diagnostic]")
             if errors.get("hardware_control"):
-                logger.warning(f"    Error detail: {errors['hardware_control']}")
-            logger.warning("    - Check GPIO pins configuration and ensure the app has necessary system permissions (e.g. gpio group).")
+                logger.warning(
+                    f"    Error detail: {errors['hardware_control']}"
+                )
+            logger.warning(
+                "    - Check GPIO pins configuration and ensure the app has necessary system permissions (e.g. gpio group)."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("media_pruner"):
             logger.warning("  [Media Pruner Diagnostic]")
             if errors.get("media_pruner"):
                 logger.warning(f"    Error detail: {errors['media_pruner']}")
-            logger.warning("    - Check filesystem permissions for the configured `MEDIA_DIR` and `SENSOR_LOGS_DIR` paths.")
+            logger.warning(
+                "    - Check filesystem permissions for the configured `MEDIA_DIR` and `SENSOR_LOGS_DIR` paths."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         if not results.get("ai_agent_methods"):
             logger.warning("  [AI Agent / Inference Diagnostic]")
             if errors.get("ai_agent_methods"):
-                logger.warning(f"    Error detail: {errors['ai_agent_methods']}")
-            logger.warning("    - Ensure the local LLM is responsive and not timing out under system load.")
+                logger.warning(
+                    f"    Error detail: {errors['ai_agent_methods']}"
+                )
+            logger.warning(
+                "    - Ensure the local LLM is responsive and not timing out under system load."
+            )
             logger.warning("  " + "-" * 50)
-            
+
         return False
 
 

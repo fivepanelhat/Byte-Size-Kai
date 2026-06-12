@@ -32,7 +32,9 @@ async def test_mqtt_connect_success(mqtt_client):
         with patch.object(mqtt_client.client, "loop_start") as mock_loop_start:
             success = await mqtt_client.connect()
             assert success is True
-            mock_connect.assert_called_once_with("localhost", 1883, keepalive=60)
+            mock_connect.assert_called_once_with(
+                "localhost", 1883, keepalive=60
+            )
             mock_loop_start.assert_called_once()
 
 
@@ -40,7 +42,9 @@ async def test_mqtt_connect_success(mqtt_client):
 async def test_mqtt_connect_failure_retry(mqtt_client):
     """Test connection retry logic with backoff."""
     with patch.object(
-        mqtt_client.client, "connect", side_effect=Exception("Connection refused")
+        mqtt_client.client,
+        "connect",
+        side_effect=Exception("Connection refused"),
     ) as mock_connect:
         # Patch sleep to speed up test
         with patch("asyncio.sleep", return_value=None) as mock_sleep:
@@ -97,7 +101,9 @@ async def test_on_message_callback(mqtt_client):
 
     # Read from the queue (wait up to 1s)
     try:
-        queued_msg = await asyncio.wait_for(mqtt_client.read_message(), timeout=1.0)
+        queued_msg = await asyncio.wait_for(
+            mqtt_client.read_message(), timeout=1.0
+        )
         assert queued_msg["topic"] == "horowhenua/sensors/soil_moisture_1"
         assert queued_msg["payload"] == payload_dict
         assert "timestamp" in queued_msg

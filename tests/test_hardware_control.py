@@ -1,7 +1,10 @@
 import pytest
-import asyncio
-from unittest.mock import MagicMock, patch
-from portal_core.hardware_control import HardwareControl, PumpState, LightingState
+from unittest.mock import patch
+from portal_core.hardware_control import (
+    HardwareControl,
+    PumpState,
+    LightingState,
+)
 
 
 @pytest.fixture
@@ -108,7 +111,9 @@ async def test_enforce_plan_requires_review(hw_control):
         "requires_human_review": True,
     }
 
-    with patch.object(hw_control, "trigger_alert", return_value=None) as mock_alert:
+    with patch.object(
+        hw_control, "trigger_alert", return_value=None
+    ) as mock_alert:
         success = await hw_control.enforce_plan(plan)
         assert success is True
         mock_alert.assert_called_once_with(duration_ms=1000)

@@ -1,6 +1,5 @@
 import pytest
-import asyncio
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock
 from main import BlueMonPortal
 from portal_core.config import load_config
 
@@ -60,11 +59,15 @@ async def test_full_portal_integration_flow(test_config):
     portal.mqtt_client.connect = AsyncMock(return_value=True)
     portal.mqtt_client.disconnect = AsyncMock()
 
-    portal.ai_agent.analyze_sensor_state = AsyncMock(return_value=mock_sensor_analysis)
+    portal.ai_agent.analyze_sensor_state = AsyncMock(
+        return_value=mock_sensor_analysis
+    )
     portal.ai_agent.process_visual_feedback = AsyncMock(
         return_value=mock_visual_analysis
     )
-    portal.ai_agent.process_audio_feedback = AsyncMock(return_value=mock_audio_analysis)
+    portal.ai_agent.process_audio_feedback = AsyncMock(
+        return_value=mock_audio_analysis
+    )
     portal.ai_agent.generate_optimization_plan = AsyncMock(
         return_value=mock_optimization_plan
     )
@@ -72,8 +75,12 @@ async def test_full_portal_integration_flow(test_config):
 
     portal.av_capture.start_video_stream = AsyncMock(return_value=True)
     portal.av_capture.start_audio_stream = AsyncMock(return_value=True)
-    portal.av_capture.capture_frame = AsyncMock(return_value=b"mock_frame_data")
-    portal.av_capture.capture_audio_chunk = AsyncMock(return_value=b"mock_audio_data")
+    portal.av_capture.capture_frame = AsyncMock(
+        return_value=b"mock_frame_data"
+    )
+    portal.av_capture.capture_audio_chunk = AsyncMock(
+        return_value=b"mock_audio_data"
+    )
     portal.av_capture.stop = AsyncMock()
     portal.av_capture.health_check = AsyncMock(return_value=True)
 
@@ -112,4 +119,6 @@ async def test_full_portal_integration_flow(test_config):
         audio_analysis=mock_audio_analysis,
     )
 
-    portal.hardware_control.enforce_plan.assert_called_once_with(mock_optimization_plan)
+    portal.hardware_control.enforce_plan.assert_called_once_with(
+        mock_optimization_plan
+    )

@@ -1,11 +1,9 @@
 import pytest
 import asyncio
 import gzip
-import shutil
 import os
-from pathlib import Path
 from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from portal_core.media_pruner import MediaPruner
 
 
@@ -111,11 +109,15 @@ async def test_check_disk_usage_critical(media_pruner):
     )
 
     with patch("shutil.disk_usage", side_effect=mock_usage) as mock_disk:
-        with patch("portal_core.media_pruner.logger.critical") as mock_critical:
+        with patch(
+            "portal_core.media_pruner.logger.critical"
+        ) as mock_critical:
             usage_pct = await media_pruner.check_disk_usage()
             assert usage_pct == 90.0
             mock_critical.assert_called_once()
-            assert "Disk usage CRITICAL: 90.0%" in mock_critical.call_args[0][0]
+            assert (
+                "Disk usage CRITICAL: 90.0%" in mock_critical.call_args[0][0]
+            )
 
 
 @pytest.mark.asyncio
@@ -137,7 +139,9 @@ async def test_get_storage_stats(media_pruner, temp_dirs):
 async def test_media_pruner_daemon_lifecycle(media_pruner):
     """Test starting and stopping background daemon task."""
     # We patch the prune/compress/check methods so it doesn't do disk access during lifecycle test
-    with patch.object(media_pruner, "prune_old_media", return_value=0) as mock_prune:
+    with patch.object(
+        media_pruner, "prune_old_media", return_value=0
+    ) as mock_prune:
         with patch.object(
             media_pruner, "compress_old_logs", return_value=0
         ) as mock_compress:
@@ -156,7 +160,8 @@ async def test_media_pruner_daemon_lifecycle(media_pruner):
                     return await original_sleep(delay)
 
                 with patch(
-                    "portal_core.media_pruner.asyncio.sleep", side_effect=mock_sleep_fn
+                    "portal_core.media_pruner.asyncio.sleep",
+                    side_effect=mock_sleep_fn,
                 ) as mock_sleep:
                     # Start in background
                     task = asyncio.create_task(media_pruner.start())

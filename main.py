@@ -11,12 +11,9 @@ Asynchronous event loop that:
 
 import asyncio
 import logging
-import os
 import sys
 import signal
-from typing import Optional
 from datetime import datetime
-from dotenv import load_dotenv
 
 from portal_core.config import load_config, print_config
 from portal_core.ai_agent import AIAgent
@@ -166,13 +163,17 @@ class BlueMonPortal:
 
                 # Enforce hardware actions based on plan
                 if plan and "plan_id" in plan:
-                    enforcement_ok = await self.hardware_control.enforce_plan(plan)
+                    enforcement_ok = await self.hardware_control.enforce_plan(
+                        plan
+                    )
                     if enforcement_ok:
                         logger.info(
                             f"Plan enforced successfully: {plan.get('plan_id')}"
                         )
                     else:
-                        logger.error(f"Plan enforcement failed: {plan.get('plan_id')}")
+                        logger.error(
+                            f"Plan enforcement failed: {plan.get('plan_id')}"
+                        )
 
             except asyncio.TimeoutError:
                 # No message within timeout, continue
@@ -218,18 +219,21 @@ class BlueMonPortal:
 
             # Keep running and monitor background tasks for failures
             done, pending = await asyncio.wait(
-                [pruner_task, sensor_task],
-                return_when=asyncio.FIRST_COMPLETED
+                [pruner_task, sensor_task], return_when=asyncio.FIRST_COMPLETED
             )
-            
+
             # If any background task finishes/fails, log the details and terminate
             for task in done:
                 exc = task.exception()
                 if exc:
-                    logger.error(f"Critical background task failed: {exc}", exc_info=exc)
+                    logger.error(
+                        f"Critical background task failed: {exc}", exc_info=exc
+                    )
                 else:
-                    logger.warning(f"Background task finished unexpectedly: {task.get_name() if hasattr(task, 'get_name') else task}")
-            
+                    logger.warning(
+                        f"Background task finished unexpectedly: {task.get_name() if hasattr(task, 'get_name') else task}"
+                    )
+
             # Cancel the remaining running tasks
             for task in pending:
                 task.cancel()
@@ -266,9 +270,13 @@ async def main():
         loop = asyncio.get_running_loop()
         for sig in (signal.SIGINT, signal.SIGTERM):
             try:
-                loop.add_signal_handler(sig, lambda: asyncio.create_task(portal.stop()))
+                loop.add_signal_handler(
+                    sig, lambda: asyncio.create_task(portal.stop())
+                )
             except Exception as e:
-                logger.warning(f"Failed to register signal handler for {sig}: {e}")
+                logger.warning(
+                    f"Failed to register signal handler for {sig}: {e}"
+                )
 
     try:
         await portal.start()

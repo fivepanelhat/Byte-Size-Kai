@@ -5,11 +5,8 @@ Handles OpenCV/PyAudio streams from CSI camera and microphone.
 Feeds multi-modal input to LLM and buffers raw media for historical analysis.
 """
 
-import asyncio
-import io
 import logging
-from typing import Optional, Tuple, Any
-from datetime import datetime
+from typing import Optional, Any
 
 try:
     import cv2  # type: ignore
@@ -74,7 +71,9 @@ class AVCapture:
         try:
             self.video_capture = cv2.VideoCapture(self.camera_index)
             if not self.video_capture.isOpened():
-                logger.error(f"Failed to open camera device {self.camera_index}")
+                logger.error(
+                    f"Failed to open camera device {self.camera_index}"
+                )
                 return False
 
             self.video_capture.set(cv2.CAP_PROP_FPS, self.video_fps)

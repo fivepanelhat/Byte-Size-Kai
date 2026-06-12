@@ -8,73 +8,77 @@ Original file is located at
 """
 
 import os
+
 # Gracefully handle Google Colab and IPython imports when running locally
 import sys
-import os
 
 try:
     from google.colab import drive, userdata, files
 except ImportError:
+
     class MockDrive:
         def mount(self, *args, **kwargs):
             print("[INFO] Running locally: Google Drive mount bypassed.")
-    
+
     class MockUserdata:
         def get(self, key, default=None):
             return os.environ.get(key, default)
-            
+
     class MockFiles:
         def upload(self):
             print("[INFO] Running locally: File upload bypassed.")
             return {}
-            
-    sys.modules['google.colab'] = type(sys)('google_colab')
-    sys.modules['google.colab'].drive = MockDrive()
-    sys.modules['google.colab'].userdata = MockUserdata()
-    sys.modules['google.colab'].files = MockFiles()
-    from google.colab import drive, userdata, files
+
+    sys.modules["google.colab"] = type(sys)("google_colab")
+    sys.modules["google.colab"].drive = MockDrive()
+    sys.modules["google.colab"].userdata = MockUserdata()
+    sys.modules["google.colab"].files = MockFiles()
+    from google.colab import drive, files
 
 try:
     from IPython.display import display, Image
 except ImportError:
+
     def display(*args, **kwargs):
         for arg in args:
             print(arg)
+
     class Image:
         def __init__(self, filename=None, *args, **kwargs):
             self.filename = filename
+
         def __repr__(self):
             return f"Image({self.filename})"
 
 
 # Verification script path
-verify_script = 'tools/verify_setup.py'
+verify_script = "tools/verify_setup.py"
 
 if os.path.exists(verify_script):
-    print(f'Running verification script: {verify_script}')
+    print(f"Running verification script: {verify_script}")
     # !python {verify_script} # commented shell command
 else:
-    print(f'Verification script not found at {verify_script}. Performing manual environment check...')
+    print(
+        f"Verification script not found at {verify_script}. Performing manual environment check..."
+    )
 
     paths_to_check = [
         os.getcwd(),
-        '/content/drive/MyDrive/Sting_Operation_AI/data/images/train',
-        '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml',
-        '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/weights/best.pt'
+        "/content/drive/MyDrive/Sting_Operation_AI/data/images/train",
+        "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml",
+        "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/weights/best.pt",
     ]
 
     for p in paths_to_check:
-        status = '✅ Found' if os.path.exists(p) else '❌ Missing'
-        print(f'{status}: {p}')
+        status = "✅ Found" if os.path.exists(p) else "❌ Missing"
+        print(f"{status}: {p}")
 
 """## Resources"""
 
 
-
-
-
 from google.colab import drive
-drive.mount('/content/drive', force_remount=True)
+
+drive.mount("/content/drive", force_remount=True)
 
 # Cell 2: Architect the Directory Tree
 import os
@@ -84,14 +88,14 @@ project_path = os.getcwd()
 
 # Define the sub-folder architecture
 folders = [
-    'data/images/train',      # Photos of wasps and bees for training
-    'data/images/val',        # Photos to validate the AI's accuracy mid-training
-    'data/labels/train',      # The text files with our target bounding boxes
-    'data/labels/val',
-    'models/base_weights',    # Where we download the raw YOLO nano models
-    'models/exported_onnx',   # Where the final Hailo-8 ready files will sit
-    'config',                 # For our dataset YAML files
-    'test_inference'          # A place to dump a video and test the trained model
+    "data/images/train",  # Photos of wasps and bees for training
+    "data/images/val",  # Photos to validate the AI's accuracy mid-training
+    "data/labels/train",  # The text files with our target bounding boxes
+    "data/labels/val",
+    "models/base_weights",  # Where we download the raw YOLO nano models
+    "models/exported_onnx",  # Where the final Hailo-8 ready files will sit
+    "config",  # For our dataset YAML files
+    "test_inference",  # A place to dump a video and test the trained model
 ]
 
 # Build the structure
@@ -110,21 +114,20 @@ print(f"Brilliant. Workspace hierarchy successfully built at: {project_path}")
 import yaml
 
 dataset_map = {
-    'path': '/content/drive/MyDrive/Sting_Operation_AI/data', # Base path
-    'train': 'images/train',                                 # Relative to base path
-    'val': 'images/val',                                     # Relative to base path
-
+    "path": "/content/drive/MyDrive/Sting_Operation_AI/data",  # Base path
+    "train": "images/train",  # Relative to base path
+    "val": "images/val",  # Relative to base path
     # Define our targeted insect classes
-    'names': {
-        0: 'Apis_mellifera',     # Honeybee (Do NOT shoot)
-        1: 'Vespula_germanica',   # German Wasp (Target)
-        2: 'Vespa_velutina'       # Yellow-legged Hornet (High Priority Target)
-    }
+    "names": {
+        0: "Apis_mellifera",  # Honeybee (Do NOT shoot)
+        1: "Vespula_germanica",  # German Wasp (Target)
+        2: "Vespa_velutina",  # Yellow-legged Hornet (High Priority Target)
+    },
 }
 
 # Write this down into the config directory we built
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
-with open(config_path, 'w') as file:
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
+with open(config_path, "w") as file:
     yaml.dump(dataset_map, file, default_flow_style=False)
 
 print(f"Dataset configuration map successfully written to: {config_path}")
@@ -146,18 +149,24 @@ project = rf.workspace("pablostki").project("bees-vs-wasp")
 version = project.version(1)
 
 # 3. Download directly into our structured Drive folder
-print("Initiating download. This might take a minute depending on the dataset size...")
+print(
+    "Initiating download. This might take a minute depending on the dataset size..."
+)
 dataset = version.download("yolov8")
 
 # 4. Move the downloaded data into our persistent structure
 downloaded_path = dataset.location
-target_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 # The Roboflow package downloads into a weird temporary folder,
 # so we copy the train and val folders directly into our architecture.
 try:
-    shutil.copytree(f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True)
-    shutil.copytree(f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True)
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
     print(f"Success! Images and labels have been slotted into: {target_path}")
 except Exception as e:
     print(f"Hold up, encountered a snag moving the files: {e}")
@@ -169,18 +178,15 @@ from inference_sdk import InferenceHTTPClient
 
 # 2. Connect to your workflow
 client = InferenceHTTPClient(
-    api_url="https://detect.roboflow.com",
-    api_key="NQNQbsiMxbU33fU0UvbC"
+    api_url="https://detect.roboflow.com", api_key="NQNQbsiMxbU33fU0UvbC"
 )
 
 # 3. Run your workflow on an image
 result = client.run_workflow(
     workspace_name="w-r",
     workflow_id="find-new-zealand-bees",
-    images={
-        "image": "YOUR_IMAGE.jpg" # Path to your image file
-    },
-    use_cache=True # Speeds up repeated requests
+    images={"image": "YOUR_IMAGE.jpg"},  # Path to your image file
+    use_cache=True,  # Speeds up repeated requests
 )
 
 # 4. Get your results
@@ -189,10 +195,11 @@ print(result)
 # Commented out IPython magic to ensure Python compatibility.
 # %pip install -q roboflow
 
-from google.colab import userdata
 from roboflow import Roboflow
 
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Using the provided API key directly
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Using the provided API key directly
+)
 
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -202,9 +209,7 @@ version = project.version(2)
 target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 dataset = version.download(
-    model_format="yolov8",
-    location=target_path,
-    overwrite=True
+    model_format="yolov8", location=target_path, overwrite=True
 )
 
 print("Dataset downloaded to:", dataset.location)
@@ -231,14 +236,20 @@ dataset = version.download("yolov8")
 
 # 3. Move the downloaded data directly into your persistent Google Drive structure
 downloaded_path = dataset.location
-target_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print("Moving files into persistent Google Drive structure...")
 try:
     # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
-    shutil.copytree(f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True)
-    shutil.copytree(f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True)
-    print(f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}")
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -265,14 +276,20 @@ dataset = version.download("yolov8")
 
 # 3. Move the downloaded data directly into your persistent Google Drive structure
 downloaded_path = dataset.location
-target_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print("Moving files into persistent Google Drive structure...")
 try:
     # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
-    shutil.copytree(f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True)
-    shutil.copytree(f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True)
-    print(f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}")
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -299,14 +316,20 @@ dataset = version.download("yolov8")
 
 # 3. Move the downloaded data directly into your persistent Google Drive structure
 downloaded_path = dataset.location
-target_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print("Moving files into persistent Google Drive structure...")
 try:
     # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
-    shutil.copytree(f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True)
-    shutil.copytree(f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True)
-    print(f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}")
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -333,14 +356,20 @@ dataset = version.download("yolov8")
 
 # 3. Move the downloaded data directly into your persistent Google Drive structure
 downloaded_path = dataset.location
-target_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print("Moving files into persistent Google Drive structure...")
 try:
     # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
-    shutil.copytree(f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True)
-    shutil.copytree(f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True)
-    print(f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}")
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -355,27 +384,51 @@ rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 print("Attempting to get current Roboflow workspace information:")
 try:
     # Check if a current workspace is set or accessible directly
-    if hasattr(rf, 'current_workspace') and rf.current_workspace:
-        print(f"Current Workspace Name: {rf.current_workspace.name}, ID: {rf.current_workspace.id}")
+    if hasattr(rf, "current_workspace") and rf.current_workspace:
+        print(
+            f"Current Workspace Name: {rf.current_workspace.name}, ID: {rf.current_workspace.id}"
+        )
     else:
-        print("No current workspace automatically identified by Roboflow object.")
-        print("It seems the Roboflow library is not exposing a direct list of all workspaces easily.")
-        print("To find your workspace ID, please visit your Roboflow dashboard manually:")
+        print(
+            "No current workspace automatically identified by Roboflow object."
+        )
+        print(
+            "It seems the Roboflow library is not exposing a direct list of all workspaces easily."
+        )
+        print(
+            "To find your workspace ID, please visit your Roboflow dashboard manually:"
+        )
         print("1. Go to https://app.roboflow.com/login and log in.")
-        print("2. Navigate to your project (e.g., 'bee-and-wasp-detection-yolo').")
-        print("3. Your workspace ID is typically found in the URL (e.g., `app.roboflow.com/<YOUR_WORKSPACE_ID>/<YOUR_PROJECT_ID>`).")
-        print("   Alternatively, it might be displayed on your project's settings or overview page.")
+        print(
+            "2. Navigate to your project (e.g., 'bee-and-wasp-detection-yolo')."
+        )
+        print(
+            "3. Your workspace ID is typically found in the URL (e.g., `app.roboflow.com/<YOUR_WORKSPACE_ID>/<YOUR_PROJECT_ID>`)."
+        )
+        print(
+            "   Alternatively, it might be displayed on your project's settings or overview page."
+        )
 
 except Exception as e:
     print(f"An error occurred while trying to access current_workspace: {e}")
-    print("It seems the Roboflow library is not exposing workspace information in a straightforward manner.")
-    print("To find your workspace ID, please visit your Roboflow dashboard manually:")
+    print(
+        "It seems the Roboflow library is not exposing workspace information in a straightforward manner."
+    )
+    print(
+        "To find your workspace ID, please visit your Roboflow dashboard manually:"
+    )
     print("1. Go to https://app.roboflow.com/login and log in.")
     print("2. Navigate to your project (e.g., 'bee-and-wasp-detection-yolo').")
-    print("3. Your workspace ID is typically found in the URL (e.g., `app.roboflow.com/<YOUR_WORKSPACE_ID>/<YOUR_PROJECT_ID>`).")
-    print("   Alternatively, it might be displayed on your project's settings or overview page.")
+    print(
+        "3. Your workspace ID is typically found in the URL (e.g., `app.roboflow.com/<YOUR_WORKSPACE_ID>/<YOUR_PROJECT_ID>`)."
+    )
+    print(
+        "   Alternatively, it might be displayed on your project's settings or overview page."
+    )
 
-print("\nPlease identify the correct workspace ID for your 'bee-and-wasp-detection-yolo' project from the information above or the Roboflow website.")
+print(
+    "\nPlease identify the correct workspace ID for your 'bee-and-wasp-detection-yolo' project from the information above or the Roboflow website."
+)
 
 # Commented out IPython magic to ensure Python compatibility.
 # Install the core Roboflow library (if not already installed)
@@ -391,16 +444,22 @@ ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Reverting to the previously successful workspace and project for dataset download
-print(f"Attempting to pull dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}")
+print(
+    f"Attempting to pull dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}"
+)
 project = rf.workspace("pablostki").project("bees-vs-wasp")
-version = project.version(1) # Assuming version 1 based on previous successful attempt
+version = project.version(
+    1
+)  # Assuming version 1 based on previous successful attempt
 
 print("Downloading the dataset into your environment...")
 dataset = version.download("yolov8")
 
 # Move the downloaded data directly into your persistent Google Drive structure
-downloaded_path = dataset.location # This will be something like /content/Bees-vs-Wasp-1
-target_data_base_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/Bees-vs-Wasp-1
+target_data_base_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print("Moving files into persistent Google Drive structure...")
 try:
@@ -411,25 +470,39 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
     # Copy images and labels to their correct locations
-    shutil.copytree(train_images_source, train_images_target, dirs_exist_ok=True)
-    shutil.copytree(train_labels_source, train_labels_target, dirs_exist_ok=True)
-    shutil.copytree(valid_images_source, valid_images_target, dirs_exist_ok=True)
-    shutil.copytree(valid_labels_source, valid_labels_target, dirs_exist_ok=True)
+    shutil.copytree(
+        train_images_source, train_images_target, dirs_exist_ok=True
+    )
+    shutil.copytree(
+        train_labels_source, train_labels_target, dirs_exist_ok=True
+    )
+    shutil.copytree(
+        valid_images_source, valid_images_target, dirs_exist_ok=True
+    )
+    shutil.copytree(
+        valid_labels_source, valid_labels_target, dirs_exist_ok=True
+    )
 
-    print(f"Awesome! The images and labels are fully loaded into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
 import os
 
 # Define the base data path
-data_base_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+data_base_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 print(f"Contents of the data directory '{data_base_path}':")
 # List contents of the base data directory
@@ -437,60 +510,82 @@ for item in os.listdir(data_base_path):
     print(f"- {item}")
 
 # Count images in the training set
-train_images_path = os.path.join(data_base_path, 'images', 'train') # Corrected path to images
+train_images_path = os.path.join(
+    data_base_path, "images", "train"
+)  # Corrected path to images
 
 if os.path.exists(train_images_path) and os.path.isdir(train_images_path):
     # Filter for common image extensions if necessary, or just count all files
-    num_train_images = len([f for f in os.listdir(train_images_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff'))])
-    print(f"\nNumber of images in the training set ('{train_images_path}'): {num_train_images}")
+    num_train_images = len(
+        [
+            f
+            for f in os.listdir(train_images_path)
+            if f.lower().endswith(
+                (".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff")
+            )
+        ]
+    )
+    print(
+        f"\nNumber of images in the training set ('{train_images_path}'): {num_train_images}"
+    )
 else:
     print(f"\nTraining images directory not found at: {train_images_path}")
 
 import os
 
-data_base_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+data_base_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
-train_images_dir = os.path.join(data_base_path, 'images', 'train')
-train_labels_dir = os.path.join(data_base_path, 'labels', 'train')
+train_images_dir = os.path.join(data_base_path, "images", "train")
+train_labels_dir = os.path.join(data_base_path, "labels", "train")
 
 # Get list of image files (without extensions)
 image_files = set()
 if os.path.exists(train_images_dir):
     for filename in os.listdir(train_images_dir):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
+        if filename.lower().endswith(
+            (".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff")
+        ):
             image_files.add(os.path.splitext(filename)[0])
 
 # Get list of label files (without extensions)
 label_files = set()
 if os.path.exists(train_labels_dir):
     for filename in os.listdir(train_labels_dir):
-        if filename.lower().endswith(('.txt')):
+        if filename.lower().endswith((".txt")):
             label_files.add(os.path.splitext(filename)[0])
 
-print(f"Found {len(image_files)} image files and {len(label_files)} label files in the training set.")
+print(
+    f"Found {len(image_files)} image files and {len(label_files)} label files in the training set."
+)
 
 # Check for missing labels
 missing_labels = image_files - label_files
 if missing_labels:
-    print("\nWarning: The following image files are missing corresponding label files:")
+    print(
+        "\nWarning: The following image files are missing corresponding label files:"
+    )
     for missing_file in missing_labels:
         print(f"- {missing_file}.txt")
 else:
-    print("\nAll image files in the training set have corresponding label files.")
+    print(
+        "\nAll image files in the training set have corresponding label files."
+    )
 
 # Optionally, check for orphaned label files (labels without images)
 orphaned_labels = label_files - image_files
 if orphaned_labels:
-    print("\nWarning: The following label files do not have corresponding image files:")
+    print(
+        "\nWarning: The following label files do not have corresponding image files:"
+    )
     for orphaned_file in orphaned_labels:
         print(f"- {orphaned_file}.txt")
 
 import yaml
 
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 print(f"Reading and displaying content of '{config_path}':\n")
-with open(config_path, 'r') as file:
+with open(config_path, "r") as file:
     data_yaml_content = yaml.safe_load(file)
     print(yaml.dump(data_yaml_content, default_flow_style=False))
 
@@ -500,13 +595,13 @@ from ultralytics import YOLO
 
 # Load a pre-trained YOLOv8n model
 # 'n' stands for nano, a smaller, faster model suitable for initial training and deployment on edge devices.
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 """Next, we will verify the model's configuration with our `data.yaml` file. This step checks if the dataset paths and class names are correctly recognized by the YOLO model."""
 
 # Define the path to your data.yaml file
 # This path was already confirmed in previous steps.
-data_yaml_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+data_yaml_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 # Verify the model configuration with the data.yaml file
 # This command helps to ensure that your dataset is correctly linked to the model for training.
@@ -517,22 +612,22 @@ print("Model initialization complete. Ready for training.")
 # Train the model
 # Set the number of training epochs, image size, and specify the device (0 for GPU if available, or 'cpu')
 # The 'data' argument should explicitly point to your data.yaml file.
-from ultralytics import YOLO # Re-import to ensure it's available
+from ultralytics import YOLO  # Re-import to ensure it's available
 
 # Re-initialize the model to ensure its internal 'overrides' dictionary is correctly populated
 # This addresses the persistent KeyError: 'model' by guaranteeing a fresh model state.
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Re-assign the data path for completeness, though it should be set from prior execution
 model.data = data_yaml_path
 
 results = model.train(
-    data=data_yaml_path, # Explicitly pass the path to your data.yaml file
+    data=data_yaml_path,  # Explicitly pass the path to your data.yaml file
     epochs=25,
     imgsz=640,
     device=0,
-    project='runs/detect', # Using 'runs/detect' to match ultralytics' default output structure
-    name='trained_yolov8n_bees_wasps'
+    project="runs/detect",  # Using 'runs/detect' to match ultralytics' default output structure
+    name="trained_yolov8n_bees_wasps",
 )
 
 # After training, copy the results to Google Drive for persistence
@@ -542,10 +637,16 @@ import shutil
 ultralytics_save_dir = results.save_dir
 
 # Define the persistent directory in Google Drive
-persistent_models_dir_base = os.path.join(project_path, 'models', 'trained_models')
-persistent_model_path = os.path.join(persistent_models_dir_base, os.path.basename(ultralytics_save_dir))
+persistent_models_dir_base = os.path.join(
+    project_path, "models", "trained_models"
+)
+persistent_model_path = os.path.join(
+    persistent_models_dir_base, os.path.basename(ultralytics_save_dir)
+)
 
-print(f"\nCopying trained model results from ephemeral '{ultralytics_save_dir}' to persistent '{persistent_model_path}'")
+print(
+    f"\nCopying trained model results from ephemeral '{ultralytics_save_dir}' to persistent '{persistent_model_path}'"
+)
 
 # Ensure the parent directory exists in Google Drive
 os.makedirs(persistent_models_dir_base, exist_ok=True)
@@ -553,12 +654,16 @@ os.makedirs(persistent_models_dir_base, exist_ok=True)
 # Copy the entire directory
 if os.path.exists(ultralytics_save_dir):
     if os.path.exists(persistent_model_path):
-        print(f"Warning: Deleting existing persistent model directory: {persistent_model_path}")
-        shutil.rmtree(persistent_model_path) # Clear old version if it exists
+        print(
+            f"Warning: Deleting existing persistent model directory: {persistent_model_path}"
+        )
+        shutil.rmtree(persistent_model_path)  # Clear old version if it exists
     shutil.copytree(ultralytics_save_dir, persistent_model_path)
     print(f"Successfully copied trained model to {persistent_model_path}")
 else:
-    print(f"Error: Trained model directory not found at {ultralytics_save_dir} after training. Cannot save to Drive.")
+    print(
+        f"Error: Trained model directory not found at {ultralytics_save_dir} after training. Cannot save to Drive."
+    )
 
 """## Evaluate Training Performance
 
@@ -576,8 +681,8 @@ import os
 
 # Define the path to the training results directory
 # This path is based on the 'project' and 'name' arguments used in model.train()
-results_dir = '/content/runs/detect/models/trained_yolov8n_bees_wasps-2'
-results_csv_path = os.path.join(results_dir, 'results.csv')
+results_dir = "/content/runs/detect/models/trained_yolov8n_bees_wasps-2"
+results_csv_path = os.path.join(results_dir, "results.csv")
 
 print(f"Loading training results from: {results_csv_path}")
 
@@ -587,7 +692,9 @@ print(f"Loading training results from: {results_csv_path}")
 results_df = pd.read_csv(results_csv_path)
 
 # Clean column names by removing '# ' prefix and stripping whitespace
-results_df.columns = [col.replace('# ', '').strip() for col in results_df.columns]
+results_df.columns = [
+    col.replace("# ", "").strip() for col in results_df.columns
+]
 
 # Display the first few rows and basic info of the DataFrame
 print("\nTraining Results DataFrame Head:")
@@ -608,55 +715,96 @@ To better understand the training progress and model performance, we can plot so
 These plots will help identify overfitting, underfitting, or other training anomalies.
 """
 
-import matplotlib.pyplot as plt
 
 # Set the style for the plots
-plt.style.use('seaborn-v0_8-darkgrid')
+plt.style.use("seaborn-v0_8-darkgrid")
 
 # Create a figure with subplots for different metrics
 fig, axes = plt.subplots(3, 2, figsize=(15, 15))
-fig.suptitle('YOLOv8 Training Performance Metrics Over Epochs', fontsize=16)
+fig.suptitle("YOLOv8 Training Performance Metrics Over Epochs", fontsize=16)
 
 # Plot Loss Metrics
-axes[0, 0].plot(results_df['epoch'], results_df['train/box_loss'], label='Train Box Loss', color='skyblue')
-axes[0, 0].plot(results_df['epoch'], results_df['val/box_loss'], label='Val Box Loss', color='salmon')
-axes[0, 0].set_title('Box Loss')
-axes[0, 0].set_xlabel('Epoch')
-axes[0, 0].set_ylabel('Loss')
+axes[0, 0].plot(
+    results_df["epoch"],
+    results_df["train/box_loss"],
+    label="Train Box Loss",
+    color="skyblue",
+)
+axes[0, 0].plot(
+    results_df["epoch"],
+    results_df["val/box_loss"],
+    label="Val Box Loss",
+    color="salmon",
+)
+axes[0, 0].set_title("Box Loss")
+axes[0, 0].set_xlabel("Epoch")
+axes[0, 0].set_ylabel("Loss")
 axes[0, 0].legend()
 
 # Corrected: Using 'dfl_loss' instead of 'obj_loss' for objectness-like metric
-axes[0, 1].plot(results_df['epoch'], results_df['train/dfl_loss'], label='Train DFL Loss', color='skyblue')
-axes[0, 1].plot(results_df['epoch'], results_df['val/dfl_loss'], label='Val DFL Loss', color='salmon')
-axes[0, 1].set_title('DFL Loss (Objectness)')
-axes[0, 1].set_xlabel('Epoch')
-axes[0, 1].set_ylabel('Loss')
+axes[0, 1].plot(
+    results_df["epoch"],
+    results_df["train/dfl_loss"],
+    label="Train DFL Loss",
+    color="skyblue",
+)
+axes[0, 1].plot(
+    results_df["epoch"],
+    results_df["val/dfl_loss"],
+    label="Val DFL Loss",
+    color="salmon",
+)
+axes[0, 1].set_title("DFL Loss (Objectness)")
+axes[0, 1].set_xlabel("Epoch")
+axes[0, 1].set_ylabel("Loss")
 axes[0, 1].legend()
 
-axes[1, 0].plot(results_df['epoch'], results_df['train/cls_loss'], label='Train Classification Loss', color='skyblue')
-axes[1, 0].plot(results_df['epoch'], results_df['val/cls_loss'], label='Val Classification Loss', color='salmon')
-axes[1, 0].set_title('Classification Loss')
-axes[1, 0].set_xlabel('Epoch')
-axes[1, 0].set_ylabel('Loss')
+axes[1, 0].plot(
+    results_df["epoch"],
+    results_df["train/cls_loss"],
+    label="Train Classification Loss",
+    color="skyblue",
+)
+axes[1, 0].plot(
+    results_df["epoch"],
+    results_df["val/cls_loss"],
+    label="Val Classification Loss",
+    color="salmon",
+)
+axes[1, 0].set_title("Classification Loss")
+axes[1, 0].set_xlabel("Epoch")
+axes[1, 0].set_ylabel("Loss")
 axes[1, 0].legend()
 
 # Plot mAP Metrics
-axes[1, 1].plot(results_df['epoch'], results_df['metrics/mAP50(B)'], label='mAP50', color='lightgreen')
-axes[1, 1].set_title('mAP50')
-axes[1, 1].set_xlabel('Epoch')
-axes[1, 1].set_ylabel('mAP')
+axes[1, 1].plot(
+    results_df["epoch"],
+    results_df["metrics/mAP50(B)"],
+    label="mAP50",
+    color="lightgreen",
+)
+axes[1, 1].set_title("mAP50")
+axes[1, 1].set_xlabel("Epoch")
+axes[1, 1].set_ylabel("mAP")
 axes[1, 1].legend()
 
-axes[2, 0].plot(results_df['epoch'], results_df['metrics/mAP50-95(B)'], label='mAP50-95', color='lightcoral')
-axes[2, 0].set_title('mAP50-95')
-axes[2, 0].set_xlabel('Epoch')
-axes[2, 0].set_ylabel('mAP')
+axes[2, 0].plot(
+    results_df["epoch"],
+    results_df["metrics/mAP50-95(B)"],
+    label="mAP50-95",
+    color="lightcoral",
+)
+axes[2, 0].set_title("mAP50-95")
+axes[2, 0].set_xlabel("Epoch")
+axes[2, 0].set_ylabel("mAP")
 axes[2, 0].legend()
 
 # Hide the unused subplot
 fig.delaxes(axes[2, 1])
 
-plt.tight_layout(rect=[0, 0.03, 1, 0.96]) # Adjust layout to prevent title overlap
+plt.tight_layout(
+    rect=[0, 0.03, 1, 0.96]
+)  # Adjust layout to prevent title overlap
 plt.show()
 
 """## Run Inference with the Trained Model
@@ -674,32 +822,54 @@ import shutil
 project_path = os.getcwd()
 
 # Define the persistent directory where the trained models are saved in Google Drive
-persistent_models_base_dir = os.path.join(project_path, 'models', 'trained_models')
+persistent_models_base_dir = os.path.join(
+    project_path, "models", "trained_models"
+)
 
 # Dynamically find the latest training run directory from the persistent location
 # The directory name will be like 'trained_yolov8n_bees_wasps-X'
-run_dirs = sorted(glob.glob(os.path.join(persistent_models_base_dir, 'trained_yolov8n_bees_wasps*')))
+run_dirs = sorted(
+    glob.glob(
+        os.path.join(persistent_models_base_dir, "trained_yolov8n_bees_wasps*")
+    )
+)
 
 results_dir = None
 if run_dirs:
-    results_dir = run_dirs[-1] # Get the latest (alphabetically last) run directory
-    print(f"Dynamically identified latest persistent training results directory: {results_dir}")
+    results_dir = run_dirs[
+        -1
+    ]  # Get the latest (alphabetically last) run directory
+    print(
+        f"Dynamically identified latest persistent training results directory: {results_dir}"
+    )
 else:
     # Fallback to a hardcoded path if dynamic identification fails
     # This path should ideally be consistent or dynamically determined by the training script
     # For robustness, we'll try to find any existing 'trained_yolov8n_bees_wasps' folder
-    potential_dirs = glob.glob(os.path.join(persistent_models_base_dir, 'trained_yolov8n_bees_wasps*'))
+    potential_dirs = glob.glob(
+        os.path.join(persistent_models_base_dir, "trained_yolov8n_bees_wasps*")
+    )
     if potential_dirs:
-        results_dir = sorted(potential_dirs)[-1] # Take the latest one found
-        print(f"Warning: Dynamic identification of persistent training results directory failed. Falling back to latest found: {results_dir}")
+        results_dir = sorted(potential_dirs)[-1]  # Take the latest one found
+        print(
+            f"Warning: Dynamic identification of persistent training results directory failed. Falling back to latest found: {results_dir}"
+        )
     else:
-        print(f"Error: No 'trained_yolov8n_bees_wasps' directory found in '{persistent_models_base_dir}'. Please ensure training completed successfully and copied the model.")
-        raise FileNotFoundError(f"No trained model directory found in {persistent_models_base_dir}")
+        print(
+            f"Error: No 'trained_yolov8n_bees_wasps' directory found in '{persistent_models_base_dir}'. Please ensure training completed successfully and copied the model."
+        )
+        raise FileNotFoundError(
+            f"No trained model directory found in {persistent_models_base_dir}"
+        )
 
 
 if results_dir is None or not os.path.exists(results_dir):
-    print(f"Error: The persistent training results directory '{results_dir}' does not exist. Please ensure training completed successfully and copied the model.")
-    raise FileNotFoundError(f"Persistent training results directory {results_dir} not found.")
+    print(
+        f"Error: The persistent training results directory '{results_dir}' does not exist. Please ensure training completed successfully and copied the model."
+    )
+    raise FileNotFoundError(
+        f"Persistent training results directory {results_dir} not found."
+    )
 
 print(f"\nContents of the identified results directory '{results_dir}':")
 try:
@@ -712,7 +882,7 @@ best_weights_path = None
 last_weights_path = None
 
 # First, check the conventional 'weights' subdirectory within the results_dir
-weights_dir = os.path.join(results_dir, 'weights')
+weights_dir = os.path.join(results_dir, "weights")
 if os.path.exists(weights_dir):
     print(f"\nFound conventional weights directory: {weights_dir}")
     print(f"Contents of '{weights_dir}':")
@@ -722,13 +892,15 @@ if os.path.exists(weights_dir):
     except Exception as e:
         print(f"  Error listing contents of '{weights_dir}': {e}")
 
-    best_weights_path = os.path.join(weights_dir, 'best.pt')
-    last_weights_path = os.path.join(weights_dir, 'last.pt')
+    best_weights_path = os.path.join(weights_dir, "best.pt")
+    last_weights_path = os.path.join(weights_dir, "last.pt")
 else:
-    print(f"\nConventional weights directory '{weights_dir}' does not exist. Searching for .pt files directly in results directory.")
+    print(
+        f"\nConventional weights directory '{weights_dir}' does not exist. Searching for .pt files directly in results directory."
+    )
     # Fallback: search for .pt files directly in results_dir
-    best_pt_candidate = os.path.join(results_dir, 'best.pt')
-    last_pt_candidate = os.path.join(results_dir, 'last.pt')
+    best_pt_candidate = os.path.join(results_dir, "best.pt")
+    last_pt_candidate = os.path.join(results_dir, "last.pt")
 
     if os.path.exists(best_pt_candidate):
         best_weights_path = best_pt_candidate
@@ -736,8 +908,12 @@ else:
         last_weights_path = last_pt_candidate
 
     if best_weights_path is None and last_weights_path is None:
-        print(f"Error: No .pt weight files found in '{results_dir}' or its 'weights' subdirectory.")
-        raise FileNotFoundError(f"No trained model weights found in {results_dir}")
+        print(
+            f"Error: No .pt weight files found in '{results_dir}' or its 'weights' subdirectory."
+        )
+        raise FileNotFoundError(
+            f"No trained model weights found in {results_dir}"
+        )
 
 # Load the custom trained YOLOv8 model, trying best.pt first, then last.pt
 custom_model = None
@@ -749,8 +925,14 @@ if best_weights_path and os.path.exists(best_weights_path):
         print(f"Failed to load '{best_weights_path}': {e}")
         custom_model = None
 
-if custom_model is None and last_weights_path and os.path.exists(last_weights_path):
-    print(f"Warning: '{best_weights_path}' could not be loaded. Attempting to load '{last_weights_path}' instead.")
+if (
+    custom_model is None
+    and last_weights_path
+    and os.path.exists(last_weights_path)
+):
+    print(
+        f"Warning: '{best_weights_path}' could not be loaded. Attempting to load '{last_weights_path}' instead."
+    )
     try:
         custom_model = YOLO(last_weights_path)
         print(f"Custom trained model loaded from: {last_weights_path}")
@@ -759,45 +941,69 @@ if custom_model is None and last_weights_path and os.path.exists(last_weights_pa
         custom_model = None
 
 if custom_model is None:
-    print(f"Error: Neither '{best_weights_path}' nor '{last_weights_path}' could be found or loaded.")
-    raise FileNotFoundError(f"Neither '{best_weights_path}' nor '{last_weights_path}' could be found or loaded.")
+    print(
+        f"Error: Neither '{best_weights_path}' nor '{last_weights_path}' could be found or loaded."
+    )
+    raise FileNotFoundError(
+        f"Neither '{best_weights_path}' nor '{last_weights_path}' could be found or loaded."
+    )
 
 # Select sample images for inference from the validation set
-val_images_path = os.path.join(project_path, 'data', 'images', 'val')
+val_images_path = os.path.join(project_path, "data", "images", "val")
 
 # Get a list of all image files in the validation directory
-image_files = glob.glob(os.path.join(val_images_path, '*.jpg')) + \
-              glob.glob(os.path.join(val_images_path, '*.jpeg')) + \
-              glob.glob(os.path.join(val_images_path, '*.png'))
+image_files = (
+    glob.glob(os.path.join(val_images_path, "*.jpg"))
+    + glob.glob(os.path.join(val_images_path, "*.jpeg"))
+    + glob.glob(os.path.join(val_images_path, "*.png"))
+)
 
 if image_files:
-    print(f"Found {len(image_files)} image(s) in the validation directory. Running inference on them.\n")
+    print(
+        f"Found {len(image_files)} image(s) in the validation directory. Running inference on them.\n"
+    )
 
     # Clear previous prediction results to ensure clean output in the ephemeral /content/runs/detect
-    predict_base_dir = '/content/runs/detect'
+    predict_base_dir = "/content/runs/detect"
     if os.path.exists(predict_base_dir):
         shutil.rmtree(predict_base_dir)
-        print(f"Cleaned up previous prediction directory: {predict_base_dir}\n")
+        print(
+            f"Cleaned up previous prediction directory: {predict_base_dir}\n"
+        )
 
     for i, sample_image_path in enumerate(image_files):
-        print(f"Running inference on image {i+1}/{len(image_files)}: {sample_image_path}")
+        print(
+            f"Running inference on image {i+1}/{len(image_files)}: {sample_image_path}"
+        )
 
         # Run inference on the sample image with a lower confidence threshold
-        inference_results = custom_model.predict(source=sample_image_path, save=True, conf=0.1, project=predict_base_dir, name='batch_predict') # Specify project and name to avoid multiple subfolders
+        inference_results = custom_model.predict(
+            source=sample_image_path,
+            save=True,
+            conf=0.1,
+            project=predict_base_dir,
+            name="batch_predict",
+        )  # Specify project and name to avoid multiple subfolders
 
         # Display the image with detections
         # The predict output will be saved under a dynamically named folder within project/name
-        if inference_results and hasattr(inference_results[0], 'save_dir'):
+        if inference_results and hasattr(inference_results[0], "save_dir"):
             # The save_dir attribute of the first result object gives the actual directory where results were saved
             actual_predict_output_dir = inference_results[0].save_dir
-            output_image_path = os.path.join(actual_predict_output_dir, os.path.basename(sample_image_path))
+            output_image_path = os.path.join(
+                actual_predict_output_dir, os.path.basename(sample_image_path)
+            )
             if os.path.exists(output_image_path):
                 print(f"Inference results saved to: {output_image_path}")
                 display(Image(filename=output_image_path, width=600))
             else:
-                print(f"Error: Predicted image not found at {output_image_path}")
+                print(
+                    f"Error: Predicted image not found at {output_image_path}"
+                )
         else:
-            print("Error: Could not find inference results directory for this image.")
+            print(
+                "Error: Could not find inference results directory for this image."
+            )
 
         # Print detected objects (optional)
         print("Detected objects:")
@@ -807,10 +1013,12 @@ if image_files:
                     print(f"- {custom_model.names[int(c)]}")
             else:
                 print("- No objects detected.")
-        print("\n" + "="*50 + "\n") # Separator for clarity
+        print("\n" + "=" * 50 + "\n")  # Separator for clarity
 
 else:
-    print(f"No image files found in the validation directory: {val_images_path}")
+    print(
+        f"No image files found in the validation directory: {val_images_path}"
+    )
 
 """The training process has started. Once it's complete, the `results` object will contain various metrics and the trained model will be saved in the specified `models` directory.
 
@@ -863,18 +1071,24 @@ rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # Target the previously successful dataset (since I cannot browse Roboflow for new ones)
 # This demonstrates the process of acquiring and integrating data.
-print(f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}")
+print(
+    f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}"
+)
 project = rf.workspace("pablostki").project("bees-vs-wasp")
-version = project.version(1) # Using version 1 as it was successfully downloaded previously
+version = project.version(
+    1
+)  # Using version 1 as it was successfully downloaded previously
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/Bees-vs-Wasp-1
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/Bees-vs-Wasp-1
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -885,8 +1099,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -901,21 +1119,31 @@ try:
     # With dirs_exist_ok=True, it merges.
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -943,18 +1171,24 @@ rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # Target the previously successful dataset (since I cannot browse Roboflow for new ones)
 # This demonstrates the process of acquiring and integrating data.
-print(f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}")
+print(
+    f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}"
+)
 project = rf.workspace("pablostki").project("bees-vs-wasp")
-version = project.version(1) # Using version 1 as it was successfully downloaded previously
+version = project.version(
+    1
+)  # Using version 1 as it was successfully downloaded previously
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/Bees-vs-Wasp-1
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/Bees-vs-Wasp-1
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -965,8 +1199,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -981,21 +1219,31 @@ try:
     # With dirs_exist_ok=True, it merges.
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -1023,18 +1271,24 @@ rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # Target the previously successful dataset (since I cannot browse Roboflow for new ones)
 # This demonstrates the process of acquiring and integrating data.
-print(f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}")
+print(
+    f"Attempting to download dataset from workspace: {'pablostki'} and project: {'bees-vs-wasp'}"
+)
 project = rf.workspace("pablostki").project("bees-vs-wasp")
-version = project.version(1) # Using version 1 as it was successfully downloaded previously
+version = project.version(
+    1
+)  # Using version 1 as it was successfully downloaded previously
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/Bees-vs-Wasp-1
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/Bees-vs-Wasp-1
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -1045,8 +1299,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -1061,21 +1319,31 @@ try:
     # With dirs_exist_ok=True, it merges.
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -1170,46 +1438,58 @@ Verify the counts of images and labels in the train and validation directories a
 
 import os
 
-data_base_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+data_base_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
+
 
 def verify_data_integrity(image_dir, label_dir, dataset_type):
     image_files = set()
     if os.path.exists(image_dir):
         for filename in os.listdir(image_dir):
-            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
+            if filename.lower().endswith(
+                (".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff")
+            ):
                 image_files.add(os.path.splitext(filename)[0])
 
     label_files = set()
     if os.path.exists(label_dir):
         for filename in os.listdir(label_dir):
-            if filename.lower().endswith(('.txt')):
+            if filename.lower().endswith((".txt")):
                 label_files.add(os.path.splitext(filename)[0])
 
-    print(f"\nFound {len(image_files)} image files and {len(label_files)} label files in the {dataset_type} set.")
+    print(
+        f"\nFound {len(image_files)} image files and {len(label_files)} label files in the {dataset_type} set."
+    )
 
     missing_labels = image_files - label_files
     if missing_labels:
-        print(f"\nWarning: The following {dataset_type} image files are missing corresponding label files:")
+        print(
+            f"\nWarning: The following {dataset_type} image files are missing corresponding label files:"
+        )
         for missing_file in missing_labels:
             print(f"- {missing_file}.txt")
     else:
-        print(f"\nAll image files in the {dataset_type} set have corresponding label files.")
+        print(
+            f"\nAll image files in the {dataset_type} set have corresponding label files."
+        )
 
     orphaned_labels = label_files - image_files
     if orphaned_labels:
-        print(f"\nWarning: The following {dataset_type} label files do not have corresponding image files:")
+        print(
+            f"\nWarning: The following {dataset_type} label files do not have corresponding image files:"
+        )
         for orphaned_file in orphaned_labels:
             print(f"- {orphaned_file}.txt")
 
+
 # Verify training data
-train_images_dir = os.path.join(data_base_path, 'images', 'train')
-train_labels_dir = os.path.join(data_base_path, 'labels', 'train')
-verify_data_integrity(train_images_dir, train_labels_dir, 'training')
+train_images_dir = os.path.join(data_base_path, "images", "train")
+train_labels_dir = os.path.join(data_base_path, "labels", "train")
+verify_data_integrity(train_images_dir, train_labels_dir, "training")
 
 # Verify validation data
-val_images_dir = os.path.join(data_base_path, 'images', 'val')
-val_labels_dir = os.path.join(data_base_path, 'labels', 'val')
-verify_data_integrity(val_images_dir, val_labels_dir, 'validation')
+val_images_dir = os.path.join(data_base_path, "images", "val")
+val_labels_dir = os.path.join(data_base_path, "labels", "val")
+verify_data_integrity(val_images_dir, val_labels_dir, "validation")
 
 """## Update data.yaml and Retrain Model
 
@@ -1223,10 +1503,10 @@ The first instruction is to display the current content of the `data.yaml` file.
 import yaml
 import os
 
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 print(f"Reading and displaying content of '{config_path}':\n")
-with open(config_path, 'r') as file:
+with open(config_path, "r") as file:
     data_yaml_content = yaml.safe_load(file)
     print(yaml.dump(data_yaml_content, default_flow_style=False))
 
@@ -1241,7 +1521,7 @@ import os
 import shutil
 
 # Define the path to your data.yaml file
-data_yaml_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+data_yaml_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 # Define the project path
 project_path = os.getcwd()
@@ -1249,7 +1529,7 @@ project_path = os.getcwd()
 # Load a pre-trained YOLOv8n model
 # Re-initialize the model to ensure its internal 'overrides' dictionary is correctly populated
 # This addresses potential issues from previous runs by guaranteeing a fresh model state.
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Re-assign the data path for completeness, though it should be set from prior execution
 model.data = data_yaml_path
@@ -1258,12 +1538,12 @@ model.data = data_yaml_path
 # Set the number of training epochs, image size, and specify the device (0 for GPU if available, or 'cpu')
 # The 'data' argument should explicitly point to your data.yaml file.
 results = model.train(
-    data=data_yaml_path, # Explicitly pass the path to your data.yaml file
-    epochs=25, # Reduced epochs for demonstration/faster execution
+    data=data_yaml_path,  # Explicitly pass the path to your data.yaml file
+    epochs=25,  # Reduced epochs for demonstration/faster execution
     imgsz=640,
-    device=0, # Use GPU if available
-    project='runs/detect', # Using 'runs/detect' to match ultralytics' default output structure
-    name='trained_yolov8n_bees_wasps_augmented' # New name to indicate augmented dataset training
+    device=0,  # Use GPU if available
+    project="runs/detect",  # Using 'runs/detect' to match ultralytics' default output structure
+    name="trained_yolov8n_bees_wasps_augmented",  # New name to indicate augmented dataset training
 )
 
 # After training, copy the results to Google Drive for persistence
@@ -1271,10 +1551,16 @@ results = model.train(
 ultralytics_save_dir = results.save_dir
 
 # Define the persistent directory in Google Drive
-persistent_models_dir_base = os.path.join(project_path, 'models', 'trained_models')
-persistent_model_path = os.path.join(persistent_models_dir_base, os.path.basename(ultralytics_save_dir))
+persistent_models_dir_base = os.path.join(
+    project_path, "models", "trained_models"
+)
+persistent_model_path = os.path.join(
+    persistent_models_dir_base, os.path.basename(ultralytics_save_dir)
+)
 
-print(f"\nCopying trained model results from ephemeral '{ultralytics_save_dir}' to persistent '{persistent_model_path}'")
+print(
+    f"\nCopying trained model results from ephemeral '{ultralytics_save_dir}' to persistent '{persistent_model_path}'"
+)
 
 # Ensure the parent directory exists in Google Drive
 os.makedirs(persistent_models_dir_base, exist_ok=True)
@@ -1283,12 +1569,16 @@ os.makedirs(persistent_models_dir_base, exist_ok=True)
 if os.path.exists(ultralytics_save_dir):
     # Check if a directory with the same name already exists in the persistent location
     if os.path.exists(persistent_model_path):
-        print(f"Warning: Deleting existing persistent model directory: {persistent_model_path}")
-        shutil.rmtree(persistent_model_path) # Clear old version if it exists
+        print(
+            f"Warning: Deleting existing persistent model directory: {persistent_model_path}"
+        )
+        shutil.rmtree(persistent_model_path)  # Clear old version if it exists
     shutil.copytree(ultralytics_save_dir, persistent_model_path)
     print(f"Successfully copied trained model to {persistent_model_path}")
 else:
-    print(f"Error: Trained model directory not found at {ultralytics_save_dir} after training. Cannot save to Drive.")
+    print(
+        f"Error: Trained model directory not found at {ultralytics_save_dir} after training. Cannot save to Drive."
+    )
 
 """**Reasoning**:
 Load the `results.csv` file from the newly trained model's directory (`trained_yolov8n_bees_wasps_augmented`) into a pandas DataFrame. Clean the column names and display the head and info to get an initial understanding of the training metrics after augmentation.
@@ -1305,17 +1595,27 @@ import os
 # The name should reflect the 'trained_yolov8n_bees_wasps_augmented' folder created during the last training.
 # Dynamically find the latest run directory for 'trained_yolov8n_bees_wasps_augmented'
 project_path = os.getcwd()
-persistent_models_dir_base = os.path.join(project_path, 'models', 'trained_models')
+persistent_models_dir_base = os.path.join(
+    project_path, "models", "trained_models"
+)
 
 # Look for a directory starting with 'trained_yolov8n_bees_wasps_augmented'
-augmented_run_dirs = sorted(glob.glob(os.path.join(persistent_models_dir_base, 'trained_yolov8n_bees_wasps_augmented*')))
+augmented_run_dirs = sorted(
+    glob.glob(
+        os.path.join(
+            persistent_models_dir_base, "trained_yolov8n_bees_wasps_augmented*"
+        )
+    )
+)
 
 if augmented_run_dirs:
     # Get the latest (alphabetically last) run directory for the augmented model
     augmented_results_dir = augmented_run_dirs[-1]
-    results_csv_path = os.path.join(augmented_results_dir, 'results.csv')
+    results_csv_path = os.path.join(augmented_results_dir, "results.csv")
 else:
-    print(f"Error: No augmented training results directory found in '{persistent_models_dir_base}'.")
+    print(
+        f"Error: No augmented training results directory found in '{persistent_models_dir_base}'."
+    )
     raise FileNotFoundError("Augmented model training results not found.")
 
 
@@ -1327,7 +1627,9 @@ print(f"Loading training results from: {results_csv_path}")
 augmented_results_df = pd.read_csv(results_csv_path)
 
 # Clean column names by removing '# ' prefix and stripping whitespace
-augmented_results_df.columns = [col.replace('# ', '').strip() for col in augmented_results_df.columns]
+augmented_results_df.columns = [
+    col.replace("# ", "").strip() for col in augmented_results_df.columns
+]
 
 # Display the first few rows and basic info of the DataFrame
 print("\nTraining Results DataFrame Head (Augmented Model):")
@@ -1344,52 +1646,97 @@ Visualize the training performance metrics (box loss, DFL loss, classification l
 import matplotlib.pyplot as plt
 
 # Set the style for the plots
-plt.style.use('seaborn-v0_8-darkgrid')
+plt.style.use("seaborn-v0_8-darkgrid")
 
 # Create a figure with subplots for different metrics
 fig, axes = plt.subplots(3, 2, figsize=(15, 15))
-fig.suptitle('YOLOv8 Training Performance Metrics Over Epochs (Augmented Model)', fontsize=16)
+fig.suptitle(
+    "YOLOv8 Training Performance Metrics Over Epochs (Augmented Model)",
+    fontsize=16,
+)
 
 # Plot Loss Metrics
-axes[0, 0].plot(augmented_results_df['epoch'], augmented_results_df['train/box_loss'], label='Train Box Loss', color='skyblue')
-axes[0, 0].plot(augmented_results_df['epoch'], augmented_results_df['val/box_loss'], label='Val Box Loss', color='salmon')
-axes[0, 0].set_title('Box Loss')
-axes[0, 0].set_xlabel('Epoch')
-axes[0, 0].set_ylabel('Loss')
+axes[0, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/box_loss"],
+    label="Train Box Loss",
+    color="skyblue",
+)
+axes[0, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/box_loss"],
+    label="Val Box Loss",
+    color="salmon",
+)
+axes[0, 0].set_title("Box Loss")
+axes[0, 0].set_xlabel("Epoch")
+axes[0, 0].set_ylabel("Loss")
 axes[0, 0].legend()
 
 # DFL Loss (Objectness)
-axes[0, 1].plot(augmented_results_df['epoch'], augmented_results_df['train/dfl_loss'], label='Train DFL Loss', color='skyblue')
-axes[0, 1].plot(augmented_results_df['epoch'], augmented_results_df['val/dfl_loss'], label='Val DFL Loss', color='salmon')
-axes[0, 1].set_title('DFL Loss (Objectness)')
-axes[0, 1].set_xlabel('Epoch')
-axes[0, 1].set_ylabel('Loss')
+axes[0, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/dfl_loss"],
+    label="Train DFL Loss",
+    color="skyblue",
+)
+axes[0, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/dfl_loss"],
+    label="Val DFL Loss",
+    color="salmon",
+)
+axes[0, 1].set_title("DFL Loss (Objectness)")
+axes[0, 1].set_xlabel("Epoch")
+axes[0, 1].set_ylabel("Loss")
 axes[0, 1].legend()
 
-axes[1, 0].plot(augmented_results_df['epoch'], augmented_results_df['train/cls_loss'], label='Train Classification Loss', color='skyblue')
-axes[1, 0].plot(augmented_results_df['epoch'], augmented_results_df['val/cls_loss'], label='Val Classification Loss', color='salmon')
-axes[1, 0].set_title('Classification Loss')
-axes[1, 0].set_xlabel('Epoch')
-axes[1, 0].set_ylabel('Loss')
+axes[1, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/cls_loss"],
+    label="Train Classification Loss",
+    color="skyblue",
+)
+axes[1, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/cls_loss"],
+    label="Val Classification Loss",
+    color="salmon",
+)
+axes[1, 0].set_title("Classification Loss")
+axes[1, 0].set_xlabel("Epoch")
+axes[1, 0].set_ylabel("Loss")
 axes[1, 0].legend()
 
 # Plot mAP Metrics
-axes[1, 1].plot(augmented_results_df['epoch'], augmented_results_df['metrics/mAP50(B)'], label='mAP50', color='lightgreen')
-axes[1, 1].set_title('mAP50')
-axes[1, 1].set_xlabel('Epoch')
-axes[1, 1].set_ylabel('mAP')
+axes[1, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["metrics/mAP50(B)"],
+    label="mAP50",
+    color="lightgreen",
+)
+axes[1, 1].set_title("mAP50")
+axes[1, 1].set_xlabel("Epoch")
+axes[1, 1].set_ylabel("mAP")
 axes[1, 1].legend()
 
-axes[2, 0].plot(augmented_results_df['epoch'], augmented_results_df['metrics/mAP50-95(B)'], label='mAP50-95', color='lightcoral')
-axes[2, 0].set_title('mAP50-95')
-axes[2, 0].set_xlabel('Epoch')
-axes[2, 0].set_ylabel('mAP')
+axes[2, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["metrics/mAP50-95(B)"],
+    label="mAP50-95",
+    color="lightcoral",
+)
+axes[2, 0].set_title("mAP50-95")
+axes[2, 0].set_xlabel("Epoch")
+axes[2, 0].set_ylabel("mAP")
 axes[2, 0].legend()
 
 # Hide the unused subplot
 fig.delaxes(axes[2, 1])
 
-plt.tight_layout(rect=[0, 0.03, 1, 0.96]) # Adjust layout to prevent title overlap
+plt.tight_layout(
+    rect=[0, 0.03, 1, 0.96]
+)  # Adjust layout to prevent title overlap
 plt.show()
 
 """## Final Task
@@ -1410,23 +1757,31 @@ Extract and display the relevant mAP metrics from both the initial and augmented
 """
 
 print("\n--- Initial Model Performance ---")
-print(f"Initial mAP50 for all classes: {results_df['metrics/mAP50(B)'].iloc[-1]:.4f}")
-print(f"Initial mAP50-95 for all classes: {results_df['metrics/mAP50-95(B)'].iloc[-1]:.4f}")
+print(
+    f"Initial mAP50 for all classes: {results_df['metrics/mAP50(B)'].iloc[-1]:.4f}"
+)
+print(
+    f"Initial mAP50-95 for all classes: {results_df['metrics/mAP50-95(B)'].iloc[-1]:.4f}"
+)
 
 # As Vespula_germanica is class 1, we need to manually extract its specific metrics if available in the detailed results.
 # From the training output of the initial model:
 # Vespula_germanica          5          5          1          0     0.0681     0.0343
-print(f"Initial mAP50 for Vespula_germanica: 0.0681")
-print(f"Initial mAP50-95 for Vespula_germanica: 0.0343")
+print("Initial mAP50 for Vespula_germanica: 0.0681")
+print("Initial mAP50-95 for Vespula_germanica: 0.0343")
 
 print("\n--- Augmented Model Performance ---")
-print(f"Augmented mAP50 for all classes: {augmented_results_df['metrics/mAP50(B)'].iloc[-1]:.4f}")
-print(f"Augmented mAP50-95 for all classes: {augmented_results_df['metrics/mAP50-95(B)'].iloc[-1]:.4f}")
+print(
+    f"Augmented mAP50 for all classes: {augmented_results_df['metrics/mAP50(B)'].iloc[-1]:.4f}"
+)
+print(
+    f"Augmented mAP50-95 for all classes: {augmented_results_df['metrics/mAP50-95(B)'].iloc[-1]:.4f}"
+)
 
 # From the training output of the augmented model:
 # Vespula_germanica          5          5          1          0     0.0681     0.0343
-print(f"Augmented mAP50 for Vespula_germanica: 0.0681")
-print(f"Augmented mAP50-95 for Vespula_germanica: 0.0343")
+print("Augmented mAP50 for Vespula_germanica: 0.0681")
+print("Augmented mAP50-95 for Vespula_germanica: 0.0343")
 
 """**Reasoning**:
 Generate comparative plots for initial and augmented model training metrics to visually assess the impact of data augmentation on model performance over epochs.
@@ -1437,62 +1792,162 @@ Generate comparative plots for initial and augmented model training metrics to v
 import matplotlib.pyplot as plt
 
 # Set the style for the plots
-plt.style.use('seaborn-v0_8-darkgrid')
+plt.style.use("seaborn-v0_8-darkgrid")
 
 # Create a figure with subplots for different metrics
 fig, axes = plt.subplots(3, 2, figsize=(18, 18))
-fig.suptitle('Comparative YOLOv8 Training Performance Metrics Over Epochs', fontsize=18)
+fig.suptitle(
+    "Comparative YOLOv8 Training Performance Metrics Over Epochs", fontsize=18
+)
 
 # Plot Box Loss
-axes[0, 0].plot(results_df['epoch'], results_df['train/box_loss'], label='Initial Train Box Loss', color='skyblue', linestyle='-')
-axes[0, 0].plot(results_df['epoch'], results_df['val/box_loss'], label='Initial Val Box Loss', color='salmon', linestyle='-')
-axes[0, 0].plot(augmented_results_df['epoch'], augmented_results_df['train/box_loss'], label='Augmented Train Box Loss', color='darkblue', linestyle='--')
-axes[0, 0].plot(augmented_results_df['epoch'], augmented_results_df['val/box_loss'], label='Augmented Val Box Loss', color='darkred', linestyle='--')
-axes[0, 0].set_title('Box Loss Comparison')
-axes[0, 0].set_xlabel('Epoch')
-axes[0, 0].set_ylabel('Loss')
+axes[0, 0].plot(
+    results_df["epoch"],
+    results_df["train/box_loss"],
+    label="Initial Train Box Loss",
+    color="skyblue",
+    linestyle="-",
+)
+axes[0, 0].plot(
+    results_df["epoch"],
+    results_df["val/box_loss"],
+    label="Initial Val Box Loss",
+    color="salmon",
+    linestyle="-",
+)
+axes[0, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/box_loss"],
+    label="Augmented Train Box Loss",
+    color="darkblue",
+    linestyle="--",
+)
+axes[0, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/box_loss"],
+    label="Augmented Val Box Loss",
+    color="darkred",
+    linestyle="--",
+)
+axes[0, 0].set_title("Box Loss Comparison")
+axes[0, 0].set_xlabel("Epoch")
+axes[0, 0].set_ylabel("Loss")
 axes[0, 0].legend()
 
 # Plot DFL Loss (Objectness)
-axes[0, 1].plot(results_df['epoch'], results_df['train/dfl_loss'], label='Initial Train DFL Loss', color='skyblue', linestyle='-')
-axes[0, 1].plot(results_df['epoch'], results_df['val/dfl_loss'], label='Initial Val DFL Loss', color='salmon', linestyle='-')
-axes[0, 1].plot(augmented_results_df['epoch'], augmented_results_df['train/dfl_loss'], label='Augmented Train DFL Loss', color='darkblue', linestyle='--')
-axes[0, 1].plot(augmented_results_df['epoch'], augmented_results_df['val/dfl_loss'], label='Augmented Val DFL Loss', color='darkred', linestyle='--')
-axes[0, 1].set_title('DFL Loss Comparison (Objectness)')
-axes[0, 1].set_xlabel('Epoch')
-axes[0, 1].set_ylabel('Loss')
+axes[0, 1].plot(
+    results_df["epoch"],
+    results_df["train/dfl_loss"],
+    label="Initial Train DFL Loss",
+    color="skyblue",
+    linestyle="-",
+)
+axes[0, 1].plot(
+    results_df["epoch"],
+    results_df["val/dfl_loss"],
+    label="Initial Val DFL Loss",
+    color="salmon",
+    linestyle="-",
+)
+axes[0, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/dfl_loss"],
+    label="Augmented Train DFL Loss",
+    color="darkblue",
+    linestyle="--",
+)
+axes[0, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/dfl_loss"],
+    label="Augmented Val DFL Loss",
+    color="darkred",
+    linestyle="--",
+)
+axes[0, 1].set_title("DFL Loss Comparison (Objectness)")
+axes[0, 1].set_xlabel("Epoch")
+axes[0, 1].set_ylabel("Loss")
 axes[0, 1].legend()
 
 # Plot Classification Loss
-axes[1, 0].plot(results_df['epoch'], results_df['train/cls_loss'], label='Initial Train Classification Loss', color='skyblue', linestyle='-')
-axes[1, 0].plot(results_df['epoch'], results_df['val/cls_loss'], label='Initial Val Classification Loss', color='salmon', linestyle='-')
-axes[1, 0].plot(augmented_results_df['epoch'], augmented_results_df['train/cls_loss'], label='Augmented Train Classification Loss', color='darkblue', linestyle='--')
-axes[1, 0].plot(augmented_results_df['epoch'], augmented_results_df['val/cls_loss'], label='Augmented Val Classification Loss', color='darkred', linestyle='--')
-axes[1, 0].set_title('Classification Loss Comparison')
-axes[1, 0].set_xlabel('Epoch')
-axes[1, 0].set_ylabel('Loss')
+axes[1, 0].plot(
+    results_df["epoch"],
+    results_df["train/cls_loss"],
+    label="Initial Train Classification Loss",
+    color="skyblue",
+    linestyle="-",
+)
+axes[1, 0].plot(
+    results_df["epoch"],
+    results_df["val/cls_loss"],
+    label="Initial Val Classification Loss",
+    color="salmon",
+    linestyle="-",
+)
+axes[1, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["train/cls_loss"],
+    label="Augmented Train Classification Loss",
+    color="darkblue",
+    linestyle="--",
+)
+axes[1, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["val/cls_loss"],
+    label="Augmented Val Classification Loss",
+    color="darkred",
+    linestyle="--",
+)
+axes[1, 0].set_title("Classification Loss Comparison")
+axes[1, 0].set_xlabel("Epoch")
+axes[1, 0].set_ylabel("Loss")
 axes[1, 0].legend()
 
 # Plot mAP50
-axes[1, 1].plot(results_df['epoch'], results_df['metrics/mAP50(B)'], label='Initial mAP50', color='lightgreen', linestyle='-')
-axes[1, 1].plot(augmented_results_df['epoch'], augmented_results_df['metrics/mAP50(B)'], label='Augmented mAP50', color='darkgreen', linestyle='--')
-axes[1, 1].set_title('mAP50 Comparison')
-axes[1, 1].set_xlabel('Epoch')
-axes[1, 1].set_ylabel('mAP')
+axes[1, 1].plot(
+    results_df["epoch"],
+    results_df["metrics/mAP50(B)"],
+    label="Initial mAP50",
+    color="lightgreen",
+    linestyle="-",
+)
+axes[1, 1].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["metrics/mAP50(B)"],
+    label="Augmented mAP50",
+    color="darkgreen",
+    linestyle="--",
+)
+axes[1, 1].set_title("mAP50 Comparison")
+axes[1, 1].set_xlabel("Epoch")
+axes[1, 1].set_ylabel("mAP")
 axes[1, 1].legend()
 
 # Plot mAP50-95
-axes[2, 0].plot(results_df['epoch'], results_df['metrics/mAP50-95(B)'], label='Initial mAP50-95', color='lightcoral', linestyle='-')
-axes[2, 0].plot(augmented_results_df['epoch'], augmented_results_df['metrics/mAP50-95(B)'], label='Augmented mAP50-95', color='darkred', linestyle='--')
-axes[2, 0].set_title('mAP50-95 Comparison')
-axes[2, 0].set_xlabel('Epoch')
-axes[2, 0].set_ylabel('mAP')
+axes[2, 0].plot(
+    results_df["epoch"],
+    results_df["metrics/mAP50-95(B)"],
+    label="Initial mAP50-95",
+    color="lightcoral",
+    linestyle="-",
+)
+axes[2, 0].plot(
+    augmented_results_df["epoch"],
+    augmented_results_df["metrics/mAP50-95(B)"],
+    label="Augmented mAP50-95",
+    color="darkred",
+    linestyle="--",
+)
+axes[2, 0].set_title("mAP50-95 Comparison")
+axes[2, 0].set_xlabel("Epoch")
+axes[2, 0].set_ylabel("mAP")
 axes[2, 0].legend()
 
 # Hide the unused subplot
 fig.delaxes(axes[2, 1])
 
-plt.tight_layout(rect=[0, 0.03, 1, 0.96]) # Adjust layout to prevent title overlap
+plt.tight_layout(
+    rect=[0, 0.03, 1, 0.96]
+)  # Adjust layout to prevent title overlap
 plt.show()
 
 """## Prepare Project for GitHub
@@ -1512,12 +1967,12 @@ project_path = os.getcwd()
 print(f"Reviewing project directory structure at: {project_path}\n")
 
 for root, dirs, files in os.walk(project_path):
-    level = root.replace(project_path, '').count(os.sep)
-    indent = ' ' * 4 * (level)
-    print(f'{indent}{os.path.basename(root)}/')
-    subindent = ' ' * 4 * (level + 1)
+    level = root.replace(project_path, "").count(os.sep)
+    indent = " " * 4 * (level)
+    print(f"{indent}{os.path.basename(root)}/")
+    subindent = " " * 4 * (level + 1)
     for f in files:
-        print(f'{subindent}{f}')
+        print(f"{subindent}{f}")
 
 # --- Step 2: Create a .gitignore file ---
 gitignore_content = """
@@ -1557,16 +2012,16 @@ runs/
 *.pt  # Specific YOLO weight files if directly in root or not in trained_models
 """
 
-gitignore_path = os.path.join(project_path, '.gitignore')
+gitignore_path = os.path.join(project_path, ".gitignore")
 
-with open(gitignore_path, 'w') as f:
+with open(gitignore_path, "w") as f:
     f.write(gitignore_content)
 
 print(f"\nCreated .gitignore file at: {gitignore_path}")
 
 # Display the content of the created .gitignore file
 print("\nContent of .gitignore:")
-with open(gitignore_path, 'r') as f:
+with open(gitignore_path, "r") as f:
     print(f.read())
 
 """**Reasoning**:
@@ -1653,16 +2108,16 @@ Train the YOLOv8 model using the provided training script in the Colab notebook.
 Load the trained `best.pt` or `last.pt` weights from the `models/trained_models/` directory and use the `model.predict()` method on new images or videos. Examples are provided in the Colab notebook.
 """
 
-readme_path = os.path.join(project_path, 'README.md')
+readme_path = os.path.join(project_path, "README.md")
 
-with open(readme_path, 'w') as f:
+with open(readme_path, "w") as f:
     f.write(readme_content)
 
 print(f"\nCreated README.md file at: {readme_path}")
 
 # Display the content of the created README.md file
 print("\nContent of README.md:")
-with open(readme_path, 'r') as f:
+with open(readme_path, "r") as f:
     print(f.read())
 
 """### **Final Step: Production Scripts**
@@ -1690,7 +2145,7 @@ if __name__ == '__main__':
     main()
 """
 
-with open(os.path.join(project_path, 'train.py'), 'w') as f:
+with open(os.path.join(project_path, "train.py"), "w") as f:
     f.write(train_script)
 
 # Create predict.py
@@ -1711,10 +2166,12 @@ if __name__ == '__main__':
         print('Usage: python predict.py <path_to_image>')
 """
 
-with open(os.path.join(project_path, 'predict.py'), 'w') as f:
+with open(os.path.join(project_path, "predict.py"), "w") as f:
     f.write(predict_script)
 
-print(f"Scripts 'train.py' and 'predict.py' successfully created in {project_path}")
+print(
+    f"Scripts 'train.py' and 'predict.py' successfully created in {project_path}"
+)
 
 # Commented out IPython magic to ensure Python compatibility.
 import os
@@ -1772,10 +2229,10 @@ Our latest iteration (**sting_operation_v3**) recorded a validation **mAP50 of 0
 """
 
 # Define the target path
-readme_path = os.path.join(os.getcwd(), 'README.md')
+readme_path = os.path.join(os.getcwd(), "README.md")
 
 # Write the file
-with open(readme_path, 'w') as f:
+with open(readme_path, "w") as f:
     f.write(readme_content)
 
 print(f"README.md successfully updated at: {readme_path}")
@@ -1804,71 +2261,85 @@ project_path = os.getcwd()
 
 # 4. Instructions for the User
 print("\n--- NEXT STEPS ---")
-print("1. Go to GitHub and create a NEW empty repository named 'Sting_Operation_AI'.")
-print("2. Copy the remote URL (e.g., https://github.com/yourusername/Sting_Operation_AI.git).")
-print("3. Run the following command in a new cell, replacing the URL and providing your GitHub token when prompted:")
-print('!git remote add origin <YOUR_GITHUB_REPO_URL>')
-print('!git branch -M main')
-print('!git push -u origin main')
+print(
+    "1. Go to GitHub and create a NEW empty repository named 'Sting_Operation_AI'."
+)
+print(
+    "2. Copy the remote URL (e.g., https://github.com/yourusername/Sting_Operation_AI.git)."
+)
+print(
+    "3. Run the following command in a new cell, replacing the URL and providing your GitHub token when prompted:"
+)
+print("!git remote add origin <YOUR_GITHUB_REPO_URL>")
+print("!git branch -M main")
+print("!git push -u origin main")
 
 # !pip install -q ultralytics # commented shell command
 from ultralytics import YOLO
 import os
 
 # Initialize the model
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Configuration for the final baseline run (Version 4)
 results = model.train(
-    data='/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml',
+    data="/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml",
     epochs=50,
     imgsz=640,
-    device='cpu', # Staying on CPU as per recent execution environment
-    project='/content/drive/MyDrive/Sting_Operation_AI/models/trained_models',
-    name='v4_final_baseline',
-    exist_ok=True
+    device="cpu",  # Staying on CPU as per recent execution environment
+    project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
+    name="v4_final_baseline",
+    exist_ok=True,
 )
 
-print(f'\nTraining complete. Results and weights saved to: {results.save_dir}')
+print(f"\nTraining complete. Results and weights saved to: {results.save_dir}")
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
 # Path to the newly created results
-results_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/v4_final_baseline/results.csv'
+results_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/v4_final_baseline/results.csv"
 
 if os.path.exists(results_path):
     df = pd.read_csv(results_path)
     df.columns = [c.strip() for c in df.columns]
 
     plt.figure(figsize=(10, 5))
-    plt.plot(df['epoch'], df['metrics/mAP50(B)'], label='mAP50 (v4 Final Baseline)', color='blue')
-    plt.title('Baseline Performance: mAP50 over 50 Epochs')
-    plt.xlabel('Epoch')
-    plt.ylabel('mAP50')
+    plt.plot(
+        df["epoch"],
+        df["metrics/mAP50(B)"],
+        label="mAP50 (v4 Final Baseline)",
+        color="blue",
+    )
+    plt.title("Baseline Performance: mAP50 over 50 Epochs")
+    plt.xlabel("Epoch")
+    plt.ylabel("mAP50")
     plt.legend()
     plt.grid(True)
     plt.show()
 
     print(f"Final baseline mAP50: {df['metrics/mAP50(B)'].iloc[-1]:.4f}")
 else:
-    print('Results file not found. Ensure training finished successfully.')
+    print("Results file not found. Ensure training finished successfully.")
 
 import os
 import yaml
 
 # Analyze class distribution in current training labels
-train_labels_path = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
+train_labels_path = (
+    "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
+)
 class_counts = {0: 0, 1: 0, 2: 0}
 
 if os.path.exists(train_labels_path):
     for label_file in os.listdir(train_labels_path):
-        if label_file.endswith('.txt'):
-            with open(os.path.join(train_labels_path, label_file), 'r') as f:
+        if label_file.endswith(".txt"):
+            with open(os.path.join(train_labels_path, label_file), "r") as f:
                 for line in f:
                     cls = int(line.split()[0])
-                    if cls in class_counts: class_counts[cls] += 1
+                    if cls in class_counts:
+                        class_counts[cls] += 1
 
 print("Current Training Class Distribution:")
 print(f"- Honeybees (0): {class_counts[0]}")
@@ -1876,13 +2347,17 @@ print(f"- German Wasps (1): {class_counts[1]}")
 print(f"- Yellow-legged Hornets (2): {class_counts[2]}")
 
 if class_counts[2] == 0:
-    print('\nCRITICAL: Zero training instances for Vespa_velutina found. v5 must prioritize this class.')
+    print(
+        "\nCRITICAL: Zero training instances for Vespa_velutina found. v5 must prioritize this class."
+    )
 
 import os
 
 # Define the path to your test footage here
 # Example: os.path.join(PROJECT_PATH, 'test_inference', 'my_video.mp4')
-test_footage_path = os.path.join(PROJECT_PATH, 'data/images/val') # Defaulting to val folder for demo
+test_footage_path = os.path.join(
+    PROJECT_PATH, "data/images/val"
+)  # Defaulting to val folder for demo
 
 # Run the prediction script
 # Note: predict.py expects a path to a single image or a directory
@@ -1912,9 +2387,11 @@ PROJECT_PATH = os.getcwd()
 
 # 3. Execution
 if GITHUB_PAT == "PASTE_YOUR_TOKEN_HERE":
-    print("❌ Error: Please replace 'PASTE_YOUR_TOKEN_HERE' with your actual GitHub token.")
+    print(
+        "❌ Error: Please replace 'PASTE_YOUR_TOKEN_HERE' with your actual GitHub token."
+    )
 else:
-#     %cd {PROJECT_PATH}
+    #     %cd {PROJECT_PATH}
     # Update remote URL with the actual token for non-interactive auth
     auth_url = f"https://{GITHUB_PAT}@github.com/{USERNAME}/{REPO_NAME}.git"
     # !git remote set-url origin {auth_url} # commented shell command
@@ -1956,27 +2433,33 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # !!! IMPORTANT: UPDATE THESE VALUES with the details of the NEW Roboflow dataset you identified !!!
 # If you have not identified a new dataset, running this will re-download the original one.
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # Replace with YOUR_WORKSPACE_NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # Replace with YOUR_PROJECT_NAME
-NEW_ROBOFLOW_VERSION = 1             # Replace with YOUR_VERSION_NUMBER
+NEW_ROBOFLOW_WORKSPACE = "pablostki"  # Replace with YOUR_WORKSPACE_NAME
+NEW_ROBOFLOW_PROJECT = "bees-vs-wasp"  # Replace with YOUR_PROJECT_NAME
+NEW_ROBOFLOW_VERSION = 1  # Replace with YOUR_VERSION_NUMBER
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -1987,8 +2470,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -2002,21 +2489,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -2039,12 +2536,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # =============================================================================
 # !!! IMPORTANT: TO INTEGRATE *NEW* DATASETS, YOU MUST UPDATE THESE VALUES !!!
@@ -2052,18 +2551,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # with the actual details of the *NEW* Roboflow dataset you identified.
 # If you do not update these, this will re-download the original 'bees-vs-wasp' dataset.
 # =============================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # Replace with YOUR_WORKSPACE_NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # Replace with YOUR_PROJECT_NAME
-NEW_ROBOFLOW_VERSION = 1             # Replace with YOUR_VERSION_NUMBER
+NEW_ROBOFLOW_WORKSPACE = "pablostki"  # Replace with YOUR_WORKSPACE_NAME
+NEW_ROBOFLOW_PROJECT = "bees-vs-wasp"  # Replace with YOUR_PROJECT_NAME
+NEW_ROBOFLOW_VERSION = 1  # Replace with YOUR_VERSION_NUMBER
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -2074,8 +2577,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -2089,21 +2596,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -2126,12 +2643,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # =============================================================================
 # !!! IMPORTANT: TO INTEGRATE *NEW* DATASETS, YOU MUST UPDATE THESE VALUES !!!
@@ -2139,18 +2658,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # with the actual details of the *NEW* Roboflow dataset you identified.
 # If you do not update these, this will re-download the original 'bees-vs-wasp' dataset.
 # =============================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # Replace with YOUR_WORKSPACE_NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # Replace with YOUR_PROJECT_NAME
-NEW_ROBOFLOW_VERSION = 1             # Replace with YOUR_VERSION_NUMBER
+NEW_ROBOFLOW_WORKSPACE = "pablostki"  # Replace with YOUR_WORKSPACE_NAME
+NEW_ROBOFLOW_PROJECT = "bees-vs-wasp"  # Replace with YOUR_PROJECT_NAME
+NEW_ROBOFLOW_VERSION = 1  # Replace with YOUR_VERSION_NUMBER
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -2161,8 +2684,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -2176,21 +2703,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -2213,12 +2750,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # =============================================================================
 # !!! IMPORTANT: TO INTEGRATE *NEW* DATASETS, YOU MUST UPDATE THESE VALUES !!!
@@ -2226,18 +2765,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # with the actual details of the *NEW* Roboflow dataset you identified.
 # If you do not update these, this will re-download the original 'bees-vs-wasp' dataset.
 # =============================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # Replace with YOUR_WORKSPACE_NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # Replace with YOUR_PROJECT_NAME
-NEW_ROBOFLOW_VERSION = 1             # Replace with YOUR_VERSION_NUMBER
+NEW_ROBOFLOW_WORKSPACE = "pablostki"  # Replace with YOUR_WORKSPACE_NAME
+NEW_ROBOFLOW_PROJECT = "bees-vs-wasp"  # Replace with YOUR_PROJECT_NAME
+NEW_ROBOFLOW_VERSION = 1  # Replace with YOUR_VERSION_NUMBER
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -2248,8 +2791,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -2263,21 +2810,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -3010,12 +3567,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! CRITICAL: USER INPUT REQUIRED TO INTEGRATE *NEW* DATASETS !!!
@@ -3024,21 +3583,29 @@ target_data_base_path = os.path.join(project_path, 'data')
 # If you do not update these variables, running this cell will AGAIN re-download
 # the original 'bees-vs-wasp' dataset, and we will not be able to augment the data.
 # ====================================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
-NEW_ROBOFLOW_VERSION = 1             # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
+NEW_ROBOFLOW_WORKSPACE = (
+    "pablostki"  # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
+)
+NEW_ROBOFLOW_PROJECT = (
+    "bees-vs-wasp"  # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
+)
+NEW_ROBOFLOW_VERSION = 1  # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
 
 # If you were unable to find a suitable NEW Roboflow dataset, please indicate this in
 # a markdown cell and propose an alternative strategy (e.g., custom collection) to proceed.
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -3049,8 +3616,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -3064,21 +3635,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -3135,12 +3716,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! CRITICAL: USER INPUT REQUIRED TO INTEGRATE *NEW* DATASETS !!!
@@ -3149,21 +3732,29 @@ target_data_base_path = os.path.join(project_path, 'data')
 # If you do not update these variables, running this cell will AGAIN re-download
 # the original 'bees-vs-wasp' dataset, and we will not be able to augment the data.
 # ====================================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
-NEW_ROBOFLOW_VERSION = 1             # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
+NEW_ROBOFLOW_WORKSPACE = (
+    "pablostki"  # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
+)
+NEW_ROBOFLOW_PROJECT = (
+    "bees-vs-wasp"  # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
+)
+NEW_ROBOFLOW_VERSION = 1  # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
 
 # If you were unable to find a suitable NEW Roboflow dataset, please indicate this in
 # a markdown cell and propose an alternative strategy (e.g., custom collection) to proceed.
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -3174,8 +3765,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -3189,21 +3784,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -3226,12 +3831,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! CRITICAL: USER INPUT REQUIRED TO INTEGRATE *NEW* DATASETS !!!
@@ -3240,21 +3847,29 @@ target_data_base_path = os.path.join(project_path, 'data')
 # If you do not update these variables, running this cell will AGAIN re-download
 # the original 'bees-vs-wasp' dataset, and we will not be able to augment the data.
 # ====================================================================================
-NEW_ROBOFLOW_WORKSPACE = "pablostki" # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
-NEW_ROBOFLOW_PROJECT = "bees-vs-wasp" # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
-NEW_ROBOFLOW_VERSION = 1             # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
+NEW_ROBOFLOW_WORKSPACE = (
+    "pablostki"  # <--- REPLACE THIS WITH YOUR NEW WORKSPACE NAME
+)
+NEW_ROBOFLOW_PROJECT = (
+    "bees-vs-wasp"  # <--- REPLACE THIS WITH YOUR NEW PROJECT NAME
+)
+NEW_ROBOFLOW_VERSION = 1  # <--- REPLACE THIS WITH YOUR NEW VERSION NUMBER
 
 # If you were unable to find a suitable NEW Roboflow dataset, please indicate this in
 # a markdown cell and propose an alternative strategy (e.g., custom collection) to proceed.
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -3265,8 +3880,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -3280,21 +3899,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -3920,12 +4549,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! IMPORTANT: These values are now provided by the user in the prompt. !!!
@@ -3933,16 +4564,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # ====================================================================================
 NEW_ROBOFLOW_WORKSPACE = "ws-workspace-yhner"
 NEW_ROBOFLOW_PROJECT = "find-vespula-germanica"
-NEW_ROBOFLOW_VERSION = 1             # Assuming version 1 as no specific version was provided.
+NEW_ROBOFLOW_VERSION = (
+    1  # Assuming version 1 as no specific version was provided.
+)
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -3953,8 +4590,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -3968,21 +4609,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -4010,12 +4661,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! IMPORTANT: These values are now provided by the user in the prompt. !!!
@@ -4023,16 +4676,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # ====================================================================================
 NEW_ROBOFLOW_WORKSPACE = "ws-workspace-yhner"
 NEW_ROBOFLOW_PROJECT = "find-vespula-germanica"
-NEW_ROBOFLOW_VERSION = 1             # Assuming version 1 as no specific version was provided.
+NEW_ROBOFLOW_VERSION = (
+    1  # Assuming version 1 as no specific version was provided.
+)
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -4043,8 +4702,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -4058,21 +4721,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -4100,12 +4773,14 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC" # Keep using the previously successful API key
+ROBOFLOW_API_KEY = (
+    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+)
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
 project_path = os.getcwd()
-target_data_base_path = os.path.join(project_path, 'data')
+target_data_base_path = os.path.join(project_path, "data")
 
 # ====================================================================================
 # !!! IMPORTANT: These values are now provided by the user in the prompt. !!!
@@ -4113,16 +4788,22 @@ target_data_base_path = os.path.join(project_path, 'data')
 # ====================================================================================
 NEW_ROBOFLOW_WORKSPACE = "ws-workspace-yhner"
 NEW_ROBOFLOW_PROJECT = "find-vespula-germanica"
-NEW_ROBOFLOW_VERSION = "latest"             # Changed from 1 to "latest" to resolve RuntimeError
+NEW_ROBOFLOW_VERSION = (
+    "latest"  # Changed from 1 to "latest" to resolve RuntimeError
+)
 
-print(f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})")
+print(
+    f"Attempting to download dataset from workspace: {NEW_ROBOFLOW_WORKSPACE} and project: {NEW_ROBOFLOW_PROJECT} (Version: {NEW_ROBOFLOW_VERSION})"
+)
 project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 version = project.version(NEW_ROBOFLOW_VERSION)
 
 print("Downloading the dataset into a temporary environment...")
 dataset = version.download("yolov8")
 
-downloaded_path = dataset.location # This will be something like /content/PROJECT_NAME-VERSION
+downloaded_path = (
+    dataset.location
+)  # This will be something like /content/PROJECT_NAME-VERSION
 
 print("Moving downloaded files into persistent Google Drive structure...")
 try:
@@ -4133,8 +4814,12 @@ try:
     valid_labels_source = os.path.join(downloaded_path, "valid", "labels")
 
     # Define specific target paths within our desired Google Drive structure
-    train_images_target = os.path.join(target_data_base_path, "images", "train")
-    train_labels_target = os.path.join(target_data_base_path, "labels", "train")
+    train_images_target = os.path.join(
+        target_data_base_path, "images", "train"
+    )
+    train_labels_target = os.path.join(
+        target_data_base_path, "labels", "train"
+    )
     valid_images_target = os.path.join(target_data_base_path, "images", "val")
     valid_labels_target = os.path.join(target_data_base_path, "labels", "val")
 
@@ -4148,21 +4833,31 @@ try:
     # Use shutil.copy2 to preserve metadata and overwrite if files have the same name
     for f in os.listdir(train_images_source):
         shutil.copy2(os.path.join(train_images_source, f), train_images_target)
-    print(f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}")
+    print(
+        f"Copied {len(os.listdir(train_images_source))} train images to {train_images_target}"
+    )
 
     for f in os.listdir(train_labels_source):
         shutil.copy2(os.path.join(train_labels_source, f), train_labels_target)
-    print(f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}")
+    print(
+        f"Copied {len(os.listdir(train_labels_source))} train labels to {train_labels_target}"
+    )
 
     for f in os.listdir(valid_images_source):
         shutil.copy2(os.path.join(valid_images_source, f), valid_images_target)
-    print(f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}")
+    print(
+        f"Copied {len(os.listdir(valid_images_source))} val images to {valid_images_target}"
+    )
 
     for f in os.listdir(valid_labels_source):
         shutil.copy2(os.path.join(valid_labels_source, f), valid_labels_target)
-    print(f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}")
+    print(
+        f"Copied {len(os.listdir(valid_labels_source))} val labels to {valid_labels_target}"
+    )
 
-    print(f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}")
+    print(
+        f"Awesome! The downloaded images and labels are now integrated into your Drive at: {target_data_base_path}"
+    )
 except Exception as e:
     print(f"Encountered an issue moving the files: {e}")
 
@@ -4527,35 +5222,39 @@ NEW_PROJECT = "find-vespula-germanica"
 NEW_VERSION = 1
 
 ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
-DRIVE_BASE_PATH = '/content/drive/MyDrive/Sting_Operation_AI/data'
+DRIVE_BASE_PATH = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 # --- 2. DOWNLOAD ---
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 project = rf.workspace(NEW_WORKSPACE).project(NEW_PROJECT)
 dataset = project.version(NEW_VERSION).download("yolov8")
 
+
 def merge_data(src_root, drive_root):
     """Merges downloaded splits into the persistent Drive structure."""
     # Mapping Roboflow splits to our project splits
     split_map = {
-        'train': 'train',
-        'valid': 'val',
-        'test': 'val'  # Fold test data into validation for a more robust eval
+        "train": "train",
+        "valid": "val",
+        "test": "val",  # Fold test data into validation for a more robust eval
     }
 
     for rf_split, drive_split in split_map.items():
-        for folder_type in ['images', 'labels']:
+        for folder_type in ["images", "labels"]:
             src = os.path.join(src_root, rf_split, folder_type)
             dst = os.path.join(drive_root, folder_type, drive_split)
 
             if os.path.exists(src):
                 os.makedirs(dst, exist_ok=True)
                 files_to_move = os.listdir(src)
-                print(f"Moving {len(files_to_move)} {folder_type} from {rf_split} to {drive_split}...")
+                print(
+                    f"Moving {len(files_to_move)} {folder_type} from {rf_split} to {drive_split}..."
+                )
 
                 for f in files_to_move:
                     # Using copy2 to avoid errors if files exist, then we'll clean up
                     shutil.copy2(os.path.join(src, f), os.path.join(dst, f))
+
 
 # --- 3. EXECUTION ---
 try:
@@ -4614,7 +5313,7 @@ NEW_ROBOFLOW_PROJECT = "find-vespula-germanica"
 
 # 2. Setup paths
 project_path = os.getcwd()
-target_path = os.path.join(project_path, 'data')
+target_path = os.path.join(project_path, "data")
 
 # 3. Connect and List Versions
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
@@ -4623,7 +5322,9 @@ project = rf.workspace(NEW_ROBOFLOW_WORKSPACE).project(NEW_ROBOFLOW_PROJECT)
 print(f"Available versions for {NEW_ROBOFLOW_PROJECT}:")
 versions = project.versions()
 for v in versions:
-    print(f"- Version: {v.version_number} ({v.model_format if hasattr(v, 'model_format') else 'N/A'})")
+    print(
+        f"- Version: {v.version_number} ({v.model_format if hasattr(v, 'model_format') else 'N/A'})"
+    )
 
 # 4. Download (Using the latest available version if version 1 is missing)
 if versions:
@@ -4635,13 +5336,13 @@ if versions:
     # 5. Integration
     source_path = dataset.location
     try:
-        for split in ['train', 'valid']:
-            src_img = os.path.join(source_path, split, 'images')
-            src_lbl = os.path.join(source_path, split, 'labels')
+        for split in ["train", "valid"]:
+            src_img = os.path.join(source_path, split, "images")
+            src_lbl = os.path.join(source_path, split, "labels")
 
-            dest_split = 'val' if split == 'valid' else 'train'
-            dest_img = os.path.join(target_path, 'images', dest_split)
-            dest_lbl = os.path.join(target_path, 'labels', dest_split)
+            dest_split = "val" if split == "valid" else "train"
+            dest_img = os.path.join(target_path, "images", dest_split)
+            dest_lbl = os.path.join(target_path, "labels", dest_split)
 
             if os.path.exists(src_img):
                 shutil.copytree(src_img, dest_img, dirs_exist_ok=True)
@@ -4667,13 +5368,13 @@ try:
     # The SDK returned a list of dictionaries in the last run
     projects_data = workspace.list_projects()
 
-    print(f"=== Workspace Projects ===")
+    print("=== Workspace Projects ===")
 
     if isinstance(projects_data, list) and len(projects_data) > 0:
         for project in projects_data:
-            p_name = project.get('name', 'Unknown Name')
-            p_id = project.get('id', 'Unknown ID')
-            p_versions = project.get('versions', 0)
+            p_name = project.get("name", "Unknown Name")
+            p_id = project.get("id", "Unknown ID")
+            p_versions = project.get("versions", 0)
 
             print(f"  > Project: {p_name}")
             print(f"    ID: {p_id}")
@@ -4699,17 +5400,26 @@ If you have your own photos, follow this structure:
 """
 
 from google.colab import drive
-drive.mount('/content/drive')
+
+drive.mount("/content/drive")
 
 # Helper script to check current image counts in your Drive
 import os
 
+
 def count_files(directory):
     if not os.path.exists(directory):
         return 0
-    return len([f for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
+    return len(
+        [
+            f
+            for f in os.listdir(directory)
+            if f.lower().endswith((".jpg", ".jpeg", ".png"))
+        ]
+    )
 
-base = '/content/drive/MyDrive/Sting_Operation_AI/data/images'
+
+base = "/content/drive/MyDrive/Sting_Operation_AI/data/images"
 print(f"Current Training Images: {count_files(base + '/train')}")
 print(f"Current Validation Images: {count_files(base + '/val')}")
 
@@ -4720,41 +5430,57 @@ project_path = os.getcwd()
 
 # Define the sub-folder architecture for images and labels
 folders = [
-    'data/images/train',
-    'data/images/val',
-    'data/labels/train',
-    'data/labels/val'
+    "data/images/train",
+    "data/images/val",
+    "data/labels/train",
+    "data/labels/val",
 ]
 
 # Force create folders if they are missing for some reason
 for folder in folders:
     os.makedirs(os.path.join(project_path, folder), exist_ok=True)
 
+
 def check_dataset_readiness(img_dir, lbl_dir):
     if not os.path.exists(img_dir):
         print(f"Directory still not accessible: {img_dir}")
         return
 
-    images = [f for f in os.listdir(img_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    labels = [f for f in os.listdir(lbl_dir) if f.endswith('.txt')] if os.path.exists(lbl_dir) else []
+    images = [
+        f
+        for f in os.listdir(img_dir)
+        if f.lower().endswith((".jpg", ".jpeg", ".png"))
+    ]
+    labels = (
+        [f for f in os.listdir(lbl_dir) if f.endswith(".txt")]
+        if os.path.exists(lbl_dir)
+        else []
+    )
 
     print(f"--- Folder: {os.path.basename(img_dir)} ---")
     print(f"Images found: {len(images)}")
     print(f"Labels (.txt) found: {len(labels)}")
 
     if len(images) > 0 and len(labels) == 0:
-        print("Status: Images uploaded but NO labels found. We need to annotate these images.")
+        print(
+            "Status: Images uploaded but NO labels found. We need to annotate these images."
+        )
     elif len(images) > 0 and len(labels) < len(images):
-        print(f"Status: Partial labels. Missing {len(images) - len(labels)} label files.")
+        print(
+            f"Status: Partial labels. Missing {len(images) - len(labels)} label files."
+        )
     elif len(images) > 0 and len(labels) == len(images):
         print("Status: Ready for training!")
     else:
-        print("Status: Folder is empty. Please upload your files to this Drive directory.")
+        print(
+            "Status: Folder is empty. Please upload your files to this Drive directory."
+        )
 
-train_img = os.path.join(project_path, 'data/images/train')
-train_lbl = os.path.join(project_path, 'data/labels/train')
-val_img = os.path.join(project_path, 'data/images/val')
-val_lbl = os.path.join(project_path, 'data/labels/val')
+
+train_img = os.path.join(project_path, "data/images/train")
+train_lbl = os.path.join(project_path, "data/labels/train")
+val_img = os.path.join(project_path, "data/images/val")
+val_lbl = os.path.join(project_path, "data/labels/val")
 
 check_dataset_readiness(train_img, train_lbl)
 check_dataset_readiness(val_img, val_lbl)
@@ -4764,18 +5490,26 @@ import shutil
 
 # Source: If you uploaded them to Colab directly, they might be in /content/
 # Target: Your Drive training folder
-target_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
+target_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
 
 # Let's count how many PNGs are currently in the base /content folder to help you move them
-local_images = [f for f in os.listdir('/content') if f.lower().endswith('.png')]
+local_images = [
+    f for f in os.listdir("/content") if f.lower().endswith(".png")
+]
 
 if local_images:
-    print(f"Found {len(local_images)} PNG images in /content. Moving them to Drive...")
+    print(
+        f"Found {len(local_images)} PNG images in /content. Moving them to Drive..."
+    )
     for img in local_images:
-        shutil.move(os.path.join('/content', img), os.path.join(target_dir, img))
+        shutil.move(
+            os.path.join("/content", img), os.path.join(target_dir, img)
+        )
     print("Move complete.")
 else:
-    print("No PNG images found in /content. Please upload them to the Drive folder directly or via the Colab file browser.")
+    print(
+        "No PNG images found in /content. Please upload them to the Drive folder directly or via the Colab file browser."
+    )
 
 # Re-running the diagnostic to see updated counts
 check_dataset_readiness(train_img, train_lbl)
@@ -4785,15 +5519,15 @@ import os
 import shutil
 
 # Configuration
-source_dir = '/content'
-target_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
-prefix = 'wasp_manual_'
+source_dir = "/content"
+target_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+prefix = "wasp_manual_"
 
 # Ensure target exists
 os.makedirs(target_dir, exist_ok=True)
 
 # List all local PNGs
-images = [f for f in os.listdir(source_dir) if f.lower().endswith('.png')]
+images = [f for f in os.listdir(source_dir) if f.lower().endswith(".png")]
 
 if not images:
     print("No PNG images found in /content to move.")
@@ -4812,63 +5546,90 @@ else:
 
     print("\nAll images have been successfully migrated to Drive.")
 
+
 # Re-run diagnostic
 # Defining check_dataset_readiness again to ensure it runs in this cell scope if needed
 def check_dataset_readiness(img_dir, lbl_dir):
     if not os.path.exists(img_dir):
         print(f"Directory not found: {img_dir}")
         return
-    images = [f for f in os.listdir(img_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    labels = [f for f in os.listdir(lbl_dir) if f.endswith('.txt')] if os.path.exists(lbl_dir) else []
+    images = [
+        f
+        for f in os.listdir(img_dir)
+        if f.lower().endswith((".jpg", ".jpeg", ".png"))
+    ]
+    labels = (
+        [f for f in os.listdir(lbl_dir) if f.endswith(".txt")]
+        if os.path.exists(lbl_dir)
+        else []
+    )
     print(f"--- {os.path.basename(img_dir)} Summary ---")
     print(f"Images: {len(images)} | Labels: {len(labels)}")
 
-train_img = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
-train_lbl = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
+
+train_img = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+train_lbl = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
 check_dataset_readiness(train_img, train_lbl)
 
 import os
 import shutil
 
 # Target directory for YOLO labels
-lbl_target = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
+lbl_target = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
 os.makedirs(lbl_target, exist_ok=True)
 
 # Check /content for any .txt files
-local_files = os.listdir('/content')
-labels_to_move = [f for f in local_files if f.lower().endswith('.txt')]
+local_files = os.listdir("/content")
+labels_to_move = [f for f in local_files if f.lower().endswith(".txt")]
 
 if labels_to_move:
-    print(f'Found {len(labels_to_move)} label files. Moving them to {lbl_target}...')
+    print(
+        f"Found {len(labels_to_move)} label files. Moving them to {lbl_target}..."
+    )
     for lbl in labels_to_move:
-        shutil.move(os.path.join('/content', lbl), os.path.join(lbl_target, lbl))
-    print('Labels moved successfully.')
+        shutil.move(
+            os.path.join("/content", lbl), os.path.join(lbl_target, lbl)
+        )
+    print("Labels moved successfully.")
 else:
-    print('No .txt files found in /content. If you uploaded them elsewhere, please specify the path.')
+    print(
+        "No .txt files found in /content. If you uploaded them elsewhere, please specify the path."
+    )
 
 # Final diagnostic check
-print('\n--- Updated Diagnostic ---')
-def check_dataset_readiness(img_dir, lbl_dir):
-    images = [f for f in os.listdir(img_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-    labels = [f for f in os.listdir(lbl_dir) if f.endswith('.txt')] if os.path.exists(lbl_dir) else []
-    print(f'Folder: {os.path.basename(img_dir)}')
-    print(f'Images: {len(images)} | Labels: {len(labels)}')
+print("\n--- Updated Diagnostic ---")
 
-train_img = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
+
+def check_dataset_readiness(img_dir, lbl_dir):
+    images = [
+        f
+        for f in os.listdir(img_dir)
+        if f.lower().endswith((".jpg", ".jpeg", ".png"))
+    ]
+    labels = (
+        [f for f in os.listdir(lbl_dir) if f.endswith(".txt")]
+        if os.path.exists(lbl_dir)
+        else []
+    )
+    print(f"Folder: {os.path.basename(img_dir)}")
+    print(f"Images: {len(images)} | Labels: {len(labels)}")
+
+
+train_img = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
 check_dataset_readiness(train_img, lbl_target)
 
 import os
 import shutil
 
 # 1. Move the stray 'Wasp 5.png' to the training folder
-source_wasp5 = '/content/drive/MyDrive/Wasp 5.png'
-target_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
+source_wasp5 = "/content/drive/MyDrive/Wasp 5.png"
+target_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
 
 if os.path.exists(source_wasp5):
-    shutil.move(source_wasp5, os.path.join(target_dir, 'wasp_manual_3.png'))
-    print('Moved Wasp 5.png to training folder.')
+    shutil.move(source_wasp5, os.path.join(target_dir, "wasp_manual_3.png"))
+    print("Moved Wasp 5.png to training folder.")
 else:
-    print('Wasp 5.png not found in the root drive.')
+    print("Wasp 5.png not found in the root drive.")
 
 from roboflow import Roboflow
 import os
@@ -4888,18 +5649,23 @@ import os
 import shutil
 
 # 1. Correctly move Wasp 5.png (fixing the path from previous attempt)
-source_wasp5 = '/content/drive/Wasp 5.png'
-target_train_img = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
+source_wasp5 = "/content/drive/Wasp 5.png"
+target_train_img = (
+    "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+)
 
 if os.path.exists(source_wasp5):
-    shutil.move(source_wasp5, os.path.join(target_train_img, 'wasp_manual_3.png'))
-    print('Successfully moved Wasp 5.png to training images.')
+    shutil.move(
+        source_wasp5, os.path.join(target_train_img, "wasp_manual_3.png")
+    )
+    print("Successfully moved Wasp 5.png to training images.")
 else:
-    print('Wasp 5.png not found at /content/drive/Wasp 5.png')
+    print("Wasp 5.png not found at /content/drive/Wasp 5.png")
 
 # 2. Merge the Roboflow download into the project structure
-rf_download_path = '/content/Find-vespula-germanica-1'
-project_data_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+rf_download_path = "/content/Find-vespula-germanica-1"
+project_data_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
+
 
 def merge_folders(src, dst):
     if os.path.exists(src):
@@ -4909,43 +5675,51 @@ def merge_folders(src, dst):
             d = os.path.join(dst, item)
             shutil.copy2(s, d)
 
+
 # Map Roboflow splits to our directory structure
 splits = {
-    'train': 'train',
-    'valid': 'val',
-    'test': 'val'  # Merging test into validation for a larger eval set
+    "train": "train",
+    "valid": "val",
+    "test": "val",  # Merging test into validation for a larger eval set
 }
 
 for rf_split, local_split in splits.items():
     # Images
     merge_folders(
-        os.path.join(rf_download_path, rf_split, 'images'),
-        os.path.join(project_data_path, 'images', local_split)
+        os.path.join(rf_download_path, rf_split, "images"),
+        os.path.join(project_data_path, "images", local_split),
     )
     # Labels
     merge_folders(
-        os.path.join(rf_download_path, rf_split, 'labels'),
-        os.path.join(project_data_path, 'labels', local_split)
+        os.path.join(rf_download_path, rf_split, "labels"),
+        os.path.join(project_data_path, "labels", local_split),
     )
 
-print('\nDataset merging complete. Your Google Drive structure is now updated.')
+print(
+    "\nDataset merging complete. Your Google Drive structure is now updated."
+)
 
 import os
 import shutil
 
 # 1. Correctly move Wasp 5.png (fixing the path from previous attempt)
-source_wasp5 = '/content/drive/Wasp 5.png'
-target_train_img = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
+source_wasp5 = "/content/drive/Wasp 5.png"
+target_train_img = (
+    "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+)
 
 if os.path.exists(source_wasp5):
-    shutil.move(source_wasp5, os.path.join(target_train_img, 'wasp_manual_3.png'))
-    print('Successfully moved Wasp 5.png to training images.')
+    shutil.move(
+        source_wasp5, os.path.join(target_train_img, "wasp_manual_3.png")
+    )
+    print("Successfully moved Wasp 5.png to training images.")
 else:
-    print('Wasp 5.png not found at /content/drive/Wasp 5.png')
+    print("Wasp 5.png not found at /content/drive/Wasp 5.png")
 
 # 2. Merge the Roboflow download into the project structure
-rf_download_path = '/content/Find-vespula-germanica-1'
-project_data_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+rf_download_path = "/content/Find-vespula-germanica-1"
+project_data_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
+
 
 def merge_folders(src, dst):
     if os.path.exists(src):
@@ -4955,26 +5729,29 @@ def merge_folders(src, dst):
             d = os.path.join(dst, item)
             shutil.copy2(s, d)
 
+
 # Map Roboflow splits to our directory structure
 splits = {
-    'train': 'train',
-    'valid': 'val',
-    'test': 'val'  # Merging test into validation for a larger eval set
+    "train": "train",
+    "valid": "val",
+    "test": "val",  # Merging test into validation for a larger eval set
 }
 
 for rf_split, local_split in splits.items():
     # Images
     merge_folders(
-        os.path.join(rf_download_path, rf_split, 'images'),
-        os.path.join(project_data_path, 'images', local_split)
+        os.path.join(rf_download_path, rf_split, "images"),
+        os.path.join(project_data_path, "images", local_split),
     )
     # Labels
     merge_folders(
-        os.path.join(rf_download_path, rf_split, 'labels'),
-        os.path.join(project_data_path, 'labels', local_split)
+        os.path.join(rf_download_path, rf_split, "labels"),
+        os.path.join(project_data_path, "labels", local_split),
     )
 
-print('\nDataset merging complete. Your Google Drive structure is now updated.')
+print(
+    "\nDataset merging complete. Your Google Drive structure is now updated."
+)
 
 """### **Final Dataset Verification**
 We will now run a definitive count of the images and labels in our persistent Drive folders to ensure the splits are balanced and every image has a corresponding label.
@@ -4982,23 +5759,37 @@ We will now run a definitive count of the images and labels in our persistent Dr
 
 import os
 
-def verify_final_counts(base_path):
-    splits = ['train', 'val']
-    for split in splits:
-        img_path = os.path.join(base_path, 'images', split)
-        lbl_path = os.path.join(base_path, 'labels', split)
 
-        images = [f for f in os.listdir(img_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))] if os.path.exists(img_path) else []
-        labels = [f for f in os.listdir(lbl_path) if f.endswith('.txt')] if os.path.exists(lbl_path) else []
+def verify_final_counts(base_path):
+    splits = ["train", "val"]
+    for split in splits:
+        img_path = os.path.join(base_path, "images", split)
+        lbl_path = os.path.join(base_path, "labels", split)
+
+        images = (
+            [
+                f
+                for f in os.listdir(img_path)
+                if f.lower().endswith((".png", ".jpg", ".jpeg"))
+            ]
+            if os.path.exists(img_path)
+            else []
+        )
+        labels = (
+            [f for f in os.listdir(lbl_path) if f.endswith(".txt")]
+            if os.path.exists(lbl_path)
+            else []
+        )
 
         print(f"[{split.upper()} SPLIT]")
         print(f"  Images: {len(images)}")
         print(f"  Labels: {len(labels)}")
         if len(images) != len(labels):
             print(f"  ⚠️ WARNING: Mismatch detected in {split} set!")
-        print('-' * 20)
+        print("-" * 20)
 
-project_data_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+
+project_data_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 verify_final_counts(project_data_path)
 
 """### **Update Training Configuration**
@@ -5009,20 +5800,20 @@ import yaml
 
 # Define the finalized dataset map
 dataset_config = {
-    'path': '/content/drive/MyDrive/Sting_Operation_AI/data',
-    'train': 'images/train',
-    'val': 'images/val',
-    'names': {
-        0: 'Apis_mellifera',      # Honeybee
-        1: 'Vespula_germanica',   # German Wasp
-        2: 'Vespa_velutina'       # Yellow-legged Hornet
-    }
+    "path": "/content/drive/MyDrive/Sting_Operation_AI/data",
+    "train": "images/train",
+    "val": "images/val",
+    "names": {
+        0: "Apis_mellifera",  # Honeybee
+        1: "Vespula_germanica",  # German Wasp
+        2: "Vespa_velutina",  # Yellow-legged Hornet
+    },
 }
 
-config_file_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+config_file_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 os.makedirs(os.path.dirname(config_file_path), exist_ok=True)
 
-with open(config_file_path, 'w') as f:
+with open(config_file_path, "w") as f:
     yaml.dump(dataset_config, f, default_flow_style=False)
 
 print(f"Config successfully updated at: {config_file_path}")
@@ -5036,15 +5827,25 @@ import os
 train_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
 train_lbl_path = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
 
-images = {os.path.splitext(f)[0] for f in os.listdir(train_img_path) if f.lower().endswith((".png", ".jpg", ".jpeg"))}
-labels = {os.path.splitext(f)[0] for f in os.listdir(train_lbl_path) if f.endswith(".txt")}
+images = {
+    os.path.splitext(f)[0]
+    for f in os.listdir(train_img_path)
+    if f.lower().endswith((".png", ".jpg", ".jpeg"))
+}
+labels = {
+    os.path.splitext(f)[0]
+    for f in os.listdir(train_lbl_path)
+    if f.endswith(".txt")
+}
 
 missing = images - labels
 print(f"Images missing labels ({len(missing)}):")
 for m in sorted(missing):
     print(f" - {m}")
 
-print("\nTip: You can create empty .txt files for these if they contain no targets, or upload the missing annotations.")
+print(
+    "\nTip: You can create empty .txt files for these if they contain no targets, or upload the missing annotations."
+)
 
 """### **Launch YOLOv8 Training**
 Once the labels are resolved, run this cell to start the training process. Results will be saved directly to your Drive.
@@ -5063,10 +5864,12 @@ results = model.train(
     epochs=25,
     imgsz=640,
     project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
-    name="sting_operation_v1"
+    name="sting_operation_v1",
 )
 
-print("Training process initiated. Check the 'models/trained_models' folder in your Drive for progress and weights.")
+print(
+    "Training process initiated. Check the 'models/trained_models' folder in your Drive for progress and weights."
+)
 
 """### **Identify Missing Labels**
 Before we train, we must find the 4 images that lack annotation files.
@@ -5074,18 +5877,28 @@ Before we train, we must find the 4 images that lack annotation files.
 
 import os
 
-train_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
-train_lbl_path = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
+train_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+train_lbl_path = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
 
-images = {os.path.splitext(f)[0] for f in os.listdir(train_img_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
-labels = {os.path.splitext(f)[0] for f in os.listdir(train_lbl_path) if f.endswith('.txt')}
+images = {
+    os.path.splitext(f)[0]
+    for f in os.listdir(train_img_path)
+    if f.lower().endswith((".png", ".jpg", ".jpeg"))
+}
+labels = {
+    os.path.splitext(f)[0]
+    for f in os.listdir(train_lbl_path)
+    if f.endswith(".txt")
+}
 
 missing = images - labels
 print(f"Images missing labels ({len(missing)}):")
 for m in sorted(missing):
     print(f" - {m}")
 
-print("\nTip: You can create empty .txt files for these if they contain no targets, or upload the missing annotations.")
+print(
+    "\nTip: You can create empty .txt files for these if they contain no targets, or upload the missing annotations."
+)
 
 """### **Launch YOLOv8 Training**
 Once the labels are resolved, run this cell to start the training process. Results will be saved directly to your Drive.
@@ -5096,18 +5909,20 @@ from ultralytics import YOLO
 import os
 
 # Load pre-trained weights
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Start training
 results = model.train(
-    data='/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml',
+    data="/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml",
     epochs=25,
     imgsz=640,
-    project='/content/drive/MyDrive/Sting_Operation_AI/models/trained_models',
-    name='sting_operation_v1'
+    project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
+    name="sting_operation_v1",
 )
 
-print("Training process initiated. Check the 'models/trained_models' folder in your Drive for progress and weights.")
+print(
+    "Training process initiated. Check the 'models/trained_models' folder in your Drive for progress and weights."
+)
 
 """### **Step 7: Model Inference**
 Let's test our newly trained model on the validation images to visualize the detections.
@@ -5118,16 +5933,16 @@ import os
 from IPython.display import Image, display
 
 # Load the best weights from the Drive directory
-model_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt'
+model_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt"
 model = YOLO(model_path)
 
 # Run prediction on the validation folder
-val_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
+val_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
 results = model.predict(source=val_img_path, conf=0.25, save=True)
 
 # Display visual results
 for r in results:
-    if hasattr(r, 'save_dir'):
+    if hasattr(r, "save_dir"):
         save_path = os.path.join(r.save_dir, os.path.basename(r.path))
         if os.path.exists(save_path):
             display(Image(filename=save_path))
@@ -5143,16 +5958,16 @@ import os
 from IPython.display import Image, display
 
 # Load the best weights from the Drive directory
-model_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt'
+model_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt"
 model = YOLO(model_path)
 
 # Run prediction on the validation folder
-val_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
+val_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
 results = model.predict(source=val_img_path, conf=0.25, save=True)
 
 # Display visual results
 for r in results:
-    if hasattr(r, 'save_dir'):
+    if hasattr(r, "save_dir"):
         save_path = os.path.join(r.save_dir, os.path.basename(r.path))
         if os.path.exists(save_path):
             display(Image(filename=save_path))
@@ -5165,17 +5980,22 @@ We will create empty label files for the images missing them. This allows the YO
 
 import os
 
-train_lbl_path = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
-missing_images = ['wasp_manual_0', 'wasp_manual_1', 'wasp_manual_2', 'wasp_manual_3']
+train_lbl_path = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
+missing_images = [
+    "wasp_manual_0",
+    "wasp_manual_1",
+    "wasp_manual_2",
+    "wasp_manual_3",
+]
 
 for name in missing_images:
-    file_path = os.path.join(train_lbl_path, f'{name}.txt')
+    file_path = os.path.join(train_lbl_path, f"{name}.txt")
     if not os.path.exists(file_path):
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             pass  # Create empty file
-        print(f'Created empty label: {name}.txt')
+        print(f"Created empty label: {name}.txt")
 
-print('\nAll training images now have corresponding label files.')
+print("\nAll training images now have corresponding label files.")
 
 """### **Step 7: Run Inference**
 Now that the model is trained, let's use the best weights to detect insects in our validation set.
@@ -5186,21 +6006,23 @@ import os
 from IPython.display import Image, display
 
 # Load the best weights from our training run
-model_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt'
+model_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v1/weights/best.pt"
 model = YOLO(model_path)
 
 # Run prediction on the validation images
-val_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
+val_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
 results = model.predict(source=val_img_path, conf=0.25, save=True)
 
 # Display the first result
 for r in results[:3]:
-    if hasattr(r, 'save_dir'):
+    if hasattr(r, "save_dir"):
         save_path = os.path.join(r.save_dir, os.path.basename(r.path))
         if os.path.exists(save_path):
             display(Image(filename=save_path))
 
-print("Inference complete. Predicted images are saved in the 'runs/detect' folder.")
+print(
+    "Inference complete. Predicted images are saved in the 'runs/detect' folder."
+)
 
 """### **Retraining (Version 2)**
 We are starting a new training run to include the full dataset (8 images). The 4 manual images without annotations will act as negative samples (background) to improve the model's robustness.
@@ -5210,18 +6032,20 @@ from ultralytics import YOLO
 import os
 
 # Re-initialize the model to ensure a clean state
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Initiate retraining
 results_v2 = model.train(
-    data='/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml',
+    data="/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml",
     epochs=50,  # Increased epochs slightly for better convergence on the small set
     imgsz=640,
-    project='/content/drive/MyDrive/Sting_Operation_AI/models/trained_models',
-    name='sting_operation_v2'
+    project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
+    name="sting_operation_v2",
 )
 
-print("Retraining complete. Results saved to 'models/trained_models/sting_operation_v2'.")
+print(
+    "Retraining complete. Results saved to 'models/trained_models/sting_operation_v2'."
+)
 
 """### **Manual Annotation Helper**
 Use the code below to zip and download your manual images for external annotation.
@@ -5231,51 +6055,67 @@ from google.colab import files
 import os
 
 # Path to manual images
-manual_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
-manual_files = [os.path.join(manual_img_path, f) for f in os.listdir(manual_img_path) if 'wasp_manual' in f]
+manual_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+manual_files = [
+    os.path.join(manual_img_path, f)
+    for f in os.listdir(manual_img_path)
+    if "wasp_manual" in f
+]
 
 if manual_files:
     # !zip -j manual_wasps.zip {' '.join(manual_files)} # commented shell command
-    files.download('manual_wasps.zip')
+    files.download("manual_wasps.zip")
     print("Zipped and starting download of manual images...")
 else:
     print("No manual wasp images found to download.")
 
 import os
 
-def final_verification(base_path):
-    for split in ['train', 'val']:
-        img_dir = os.path.join(base_path, 'images', split)
-        lbl_dir = os.path.join(base_path, 'labels', split)
 
-        images = {os.path.splitext(f)[0] for f in os.listdir(img_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
-        labels = {os.path.splitext(f)[0] for f in os.listdir(lbl_dir) if f.endswith('.txt')}
+def final_verification(base_path):
+    for split in ["train", "val"]:
+        img_dir = os.path.join(base_path, "images", split)
+        lbl_dir = os.path.join(base_path, "labels", split)
+
+        images = {
+            os.path.splitext(f)[0]
+            for f in os.listdir(img_dir)
+            if f.lower().endswith((".png", ".jpg", ".jpeg"))
+        }
+        labels = {
+            os.path.splitext(f)[0]
+            for f in os.listdir(lbl_dir)
+            if f.endswith(".txt")
+        }
 
         missing = images - labels
         orphaned = labels - images
 
-        print(f'=== {split.upper()} set ===')
-        print(f'Images: {len(images)}')
-        print(f'Labels: {len(labels)}')
+        print(f"=== {split.upper()} set ===")
+        print(f"Images: {len(images)}")
+        print(f"Labels: {len(labels)}")
 
         if not missing and not orphaned:
-            print('✅ All images have matching labels.')
+            print("✅ All images have matching labels.")
         else:
-            if missing: print(f'❌ Missing labels for: {sorted(list(missing))}')
-            if orphaned: print(f'⚠️ Labels without images: {sorted(list(orphaned))}')
-        print('-' * 20)
+            if missing:
+                print(f"❌ Missing labels for: {sorted(list(missing))}")
+            if orphaned:
+                print(f"⚠️ Labels without images: {sorted(list(orphaned))}")
+        print("-" * 20)
 
-project_data_path = '/content/drive/MyDrive/Sting_Operation_AI/data'
+
+project_data_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
 final_verification(project_data_path)
 
 from ultralytics import YOLO
 import os
 
 # Initialize the model with pre-trained weights
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Define the path to the updated config
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 # Start training Version 3
 # We'll use 50 epochs to give the model enough time to learn the new wasp features
@@ -5283,21 +6123,23 @@ results_v3 = model.train(
     data=config_path,
     epochs=50,
     imgsz=640,
-    project='/content/drive/MyDrive/Sting_Operation_AI/models/trained_models',
-    name='sting_operation_v3'
+    project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
+    name="sting_operation_v3",
 )
 
-print("\nTraining for sting_operation_v3 is complete. Results and weights are saved in your Google Drive.")
+print(
+    "\nTraining for sting_operation_v3 is complete. Results and weights are saved in your Google Drive."
+)
 
 from ultralytics import YOLO
 import os
 
 # Initialize a fresh model
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Define paths
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
-project_dir = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models'
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
+project_dir = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models"
 
 # Execute training for Version 4
 results_v4 = model.train(
@@ -5305,11 +6147,13 @@ results_v4 = model.train(
     epochs=50,
     imgsz=640,
     project=project_dir,
-    name='sting_operation_v4',
-    patience=10  # Early stopping if no improvement is seen
+    name="sting_operation_v4",
+    patience=10,  # Early stopping if no improvement is seen
 )
 
-print(f"Training complete. Best weights saved to: {results_v4.save_dir}/weights/best.pt")
+print(
+    f"Training complete. Best weights saved to: {results_v4.save_dir}/weights/best.pt"
+)
 
 """### **Visualize Version 4 Training Performance**
 We will extract the metrics from the `results.csv` file generated during the v4 training run.
@@ -5320,7 +6164,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Define the path to the v4 results
-v4_results_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v4/results.csv'
+v4_results_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v4/results.csv"
 
 if os.path.exists(v4_results_path):
     df_v4 = pd.read_csv(v4_results_path)
@@ -5329,18 +6173,20 @@ if os.path.exists(v4_results_path):
     fig, ax = plt.subplots(1, 2, figsize=(16, 6))
 
     # Plot Losses
-    ax[0].plot(df_v4['epoch'], df_v4['train/box_loss'], label='Train Box Loss')
-    ax[0].plot(df_v4['epoch'], df_v4['val/box_loss'], label='Val Box Loss')
-    ax[0].set_title('v4: Box Loss Over Epochs')
-    ax[0].set_xlabel('Epoch')
-    ax[0].set_ylabel('Loss')
+    ax[0].plot(df_v4["epoch"], df_v4["train/box_loss"], label="Train Box Loss")
+    ax[0].plot(df_v4["epoch"], df_v4["val/box_loss"], label="Val Box Loss")
+    ax[0].set_title("v4: Box Loss Over Epochs")
+    ax[0].set_xlabel("Epoch")
+    ax[0].set_ylabel("Loss")
     ax[0].legend()
 
     # Plot mAP
-    ax[1].plot(df_v4['epoch'], df_v4['metrics/mAP50(B)'], label='mAP50', color='green')
-    ax[1].set_title('v4: mAP50 Performance')
-    ax[1].set_xlabel('Epoch')
-    ax[1].set_ylabel('mAP50')
+    ax[1].plot(
+        df_v4["epoch"], df_v4["metrics/mAP50(B)"], label="mAP50", color="green"
+    )
+    ax[1].set_title("v4: mAP50 Performance")
+    ax[1].set_xlabel("Epoch")
+    ax[1].set_ylabel("mAP50")
     ax[1].legend()
 
     plt.tight_layout()
@@ -5351,28 +6197,30 @@ if os.path.exists(v4_results_path):
     print(f"Final mAP50: {final_metrics['metrics/mAP50(B)']:.4f}")
     print(f"Final mAP50-95: {final_metrics['metrics/mAP50-95(B)']:.4f}")
 else:
-    print('v4 results.csv not found. Please ensure training has completed.')
+    print("v4 results.csv not found. Please ensure training has completed.")
 
 from ultralytics import YOLO
 import os
 
 # Path to v4 best weights
-model_v4_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v4/weights/best.pt'
+model_v4_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v4/weights/best.pt"
 model_v4 = YOLO(model_v4_path)
 
 # Run validation on the dataset defined in data.yaml
-metrics = model_v4.val(data='/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml')
+metrics = model_v4.val(
+    data="/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
+)
 
-print(f"\n--- Final V4 Performance Metrics ---")
+print("\n--- Final V4 Performance Metrics ---")
 print(f"mAP50: {metrics.results_dict['metrics/mAP50(B)']:.4f}")
 print(f"mAP50-95: {metrics.results_dict['metrics/mAP50-95(B)']:.4f}")
 
 import os
 
 # Update README.md with the latest performance data
-readme_path = '/content/drive/MyDrive/Sting_Operation_AI/README.md'
+readme_path = "/content/drive/MyDrive/Sting_Operation_AI/README.md"
 
-with open(readme_path, 'r') as f:
+with open(readme_path, "r") as f:
     lines = f.readlines()
 
 # Simple replacement or append for the performance summary
@@ -5383,7 +6231,7 @@ new_summary = f"""
 - **Status**: Deployment Ready for Hailo-8 testing.
 """
 
-with open(readme_path, 'a') as f:
+with open(readme_path, "a") as f:
     f.write(new_summary)
 
 print(f"README.md successfully updated at: {readme_path}")
@@ -5393,19 +6241,19 @@ import os
 from IPython.display import Image, display
 
 # Load the best weights from the Version 3 training run
-model_path_v3 = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v3/weights/best.pt'
+model_path_v3 = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v3/weights/best.pt"
 model_v3 = YOLO(model_path_v3)
 
 # Path to validation images
-val_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
+val_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
 
 # Run prediction
 # Using a slightly lower confidence threshold to see all potential detections
 results = model_v3.predict(source=val_img_path, conf=0.2, save=True)
 
-print(f"\n--- Inference Results for Version 3 ---")
+print("\n--- Inference Results for Version 3 ---")
 for r in results:
-    if hasattr(r, 'save_dir'):
+    if hasattr(r, "save_dir"):
         save_path = os.path.join(r.save_dir, os.path.basename(r.path))
         if os.path.exists(save_path):
             display(Image(filename=save_path))
@@ -5415,7 +6263,9 @@ for r in results:
     if detected_classes:
         print(f"Image {os.path.basename(r.path)}: Found {detected_classes}")
     else:
-        print(f"Image {os.path.basename(r.path)}: No detections at this confidence level.")
+        print(
+            f"Image {os.path.basename(r.path)}: No detections at this confidence level."
+        )
 
 import matplotlib.pyplot as plt
 import cv2
@@ -5423,12 +6273,16 @@ from ultralytics import YOLO
 import os
 
 # Path to v3 best weights
-model_v3_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v3/weights/best.pt'
+model_v3_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v3/weights/best.pt"
 model_v3 = YOLO(model_v3_path)
 
 # Validation image directory
-val_images_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
-val_image_files = [os.path.join(val_images_dir, f) for f in os.listdir(val_images_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+val_images_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
+val_image_files = [
+    os.path.join(val_images_dir, f)
+    for f in os.listdir(val_images_dir)
+    if f.lower().endswith((".png", ".jpg", ".jpeg"))
+]
 
 # Run prediction on first few images
 results = model_v3.predict(source=val_image_files[:4], conf=0.1, imgsz=640)
@@ -5444,7 +6298,7 @@ for i, r in enumerate(results):
 
     axes[i].imshow(im_rgb)
     axes[i].set_title(f"Image: {os.path.basename(r.path)}")
-    axes[i].axis('off')
+    axes[i].axis("off")
 
 plt.tight_layout()
 plt.show()
@@ -5457,35 +6311,44 @@ import albumentations as A
 import cv2
 import os
 import glob
-import numpy as np
 
 # Setup paths
-train_img_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/images/train'
-train_lbl_dir = '/content/drive/MyDrive/Sting_Operation_AI/data/labels/train'
+train_img_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/images/train"
+train_lbl_dir = "/content/drive/MyDrive/Sting_Operation_AI/data/labels/train"
 
 # Define augmentation pipeline
-aug = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.RandomBrightnessContrast(p=0.2),
-    A.Rotate(limit=30, p=0.5),
-    A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5)
-], bbox_params=A.BboxParams(format='yolo', label_fields=['class_labels']))
+aug = A.Compose(
+    [
+        A.HorizontalFlip(p=0.5),
+        A.RandomBrightnessContrast(p=0.2),
+        A.Rotate(limit=30, p=0.5),
+        A.RGBShift(
+            r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5
+        ),
+    ],
+    bbox_params=A.BboxParams(format="yolo", label_fields=["class_labels"]),
+)
+
 
 def augment_dataset(iterations=5):
-    image_files = glob.glob(os.path.join(train_img_dir, '*.png')) + glob.glob(os.path.join(train_img_dir, '*.jpg'))
+    image_files = glob.glob(os.path.join(train_img_dir, "*.png")) + glob.glob(
+        os.path.join(train_img_dir, "*.jpg")
+    )
 
     for img_path in image_files:
         img_name = os.path.splitext(os.path.basename(img_path))[0]
-        lbl_path = os.path.join(train_lbl_dir, f'{img_name}.txt')
+        lbl_path = os.path.join(train_lbl_dir, f"{img_name}.txt")
 
         # Skip if label file doesn't exist
-        if not os.path.exists(lbl_path): continue
+        if not os.path.exists(lbl_path):
+            continue
 
         image = cv2.imread(img_path)
-        if image is None: continue
+        if image is None:
+            continue
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        with open(lbl_path, 'r') as f:
+        with open(lbl_path, "r") as f:
             lines = f.readlines()
             bboxes = []
             class_labels = []
@@ -5501,18 +6364,30 @@ def augment_dataset(iterations=5):
 
         for i in range(iterations):
             try:
-                transformed = aug(image=image, bboxes=bboxes, class_labels=class_labels)
+                transformed = aug(
+                    image=image, bboxes=bboxes, class_labels=class_labels
+                )
 
                 aug_img_name = f"{img_name}_aug_{i}"
                 # Save augmented image
-                cv2.imwrite(os.path.join(train_img_dir, f"{aug_img_name}.jpg"), cv2.cvtColor(transformed['image'], cv2.COLOR_RGB2BGR))
+                cv2.imwrite(
+                    os.path.join(train_img_dir, f"{aug_img_name}.jpg"),
+                    cv2.cvtColor(transformed["image"], cv2.COLOR_RGB2BGR),
+                )
 
                 # Save augmented label
-                with open(os.path.join(train_lbl_dir, f"{aug_img_name}.txt"), 'w') as f:
-                    for box, label in zip(transformed['bboxes'], transformed['class_labels']):
+                with open(
+                    os.path.join(train_lbl_dir, f"{aug_img_name}.txt"), "w"
+                ) as f:
+                    for box, label in zip(
+                        transformed["bboxes"], transformed["class_labels"]
+                    ):
                         f.write(f"{label} {' '.join(map(str, box))}\n")
             except Exception as e:
-                print(f"Skipping augmentation for {img_name} due to error: {e}")
+                print(
+                    f"Skipping augmentation for {img_name} due to error: {e}"
+                )
+
 
 print("Starting augmentation...")
 augment_dataset(iterations=5)
@@ -5522,10 +6397,10 @@ from ultralytics import YOLO
 import os
 
 # Initialize the model with pre-trained weights
-model = YOLO('yolov8n.pt')
+model = YOLO("yolov8n.pt")
 
 # Define path to our data configuration
-config_path = '/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml'
+config_path = "/content/drive/MyDrive/Sting_Operation_AI/config/data.yaml"
 
 # Retrain the model on the augmented dataset (Version 5)
 # We use 50 epochs to ensure the model converges on the new data
@@ -5533,30 +6408,32 @@ results_v5 = model.train(
     data=config_path,
     epochs=50,
     imgsz=640,
-    project='/content/drive/MyDrive/Sting_Operation_AI/models/trained_models',
-    name='sting_operation_v5'
+    project="/content/drive/MyDrive/Sting_Operation_AI/models/trained_models",
+    name="sting_operation_v5",
 )
 
-print('\nTraining for sting_operation_v5 is complete. Results are saved in Google Drive.')
+print(
+    "\nTraining for sting_operation_v5 is complete. Results are saved in Google Drive."
+)
 
 from ultralytics import YOLO
 import os
 from IPython.display import Image, display
 
 # Load the best weights from the V5 run
-v5_model_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/weights/best.pt'
+v5_model_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/weights/best.pt"
 model_v5 = YOLO(v5_model_path)
 
 # Define the validation image path
-val_img_path = '/content/drive/MyDrive/Sting_Operation_AI/data/images/val'
+val_img_path = "/content/drive/MyDrive/Sting_Operation_AI/data/images/val"
 
 # Run prediction
 # We use a lower confidence threshold (0.15) to catch any early signs of improvement
 results = model_v5.predict(source=val_img_path, conf=0.15, save=True)
 
-print('\n--- Validation Inference Results (Version 5) ---')
+print("\n--- Validation Inference Results (Version 5) ---")
 for r in results:
-    if hasattr(r, 'save_dir'):
+    if hasattr(r, "save_dir"):
         save_path = os.path.join(r.save_dir, os.path.basename(r.path))
         if os.path.exists(save_path):
             display(Image(filename=save_path))
@@ -5564,16 +6441,16 @@ for r in results:
     # List detections per image
     labels = [model_v5.names[int(c)] for c in r.boxes.cls]
     if labels:
-        print(f'Image {os.path.basename(r.path)}: Found {labels}')
+        print(f"Image {os.path.basename(r.path)}: Found {labels}")
     else:
-        print(f'Image {os.path.basename(r.path)}: No detections.')
+        print(f"Image {os.path.basename(r.path)}: No detections.")
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
 # Path to v5 results
-v5_results_path = '/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/results.csv'
+v5_results_path = "/content/drive/MyDrive/Sting_Operation_AI/models/trained_models/sting_operation_v5/results.csv"
 
 if os.path.exists(v5_results_path):
     df_v5 = pd.read_csv(v5_results_path)
@@ -5582,18 +6459,20 @@ if os.path.exists(v5_results_path):
     fig, ax = plt.subplots(1, 2, figsize=(16, 6))
 
     # Plot Losses
-    ax[0].plot(df_v5['epoch'], df_v5['train/box_loss'], label='Train Box Loss')
-    ax[0].plot(df_v5['epoch'], df_v5['val/box_loss'], label='Val Box Loss')
-    ax[0].set_title('v5: Box Loss (Augmented Dataset)')
-    ax[0].set_xlabel('Epoch')
-    ax[0].set_ylabel('Loss')
+    ax[0].plot(df_v5["epoch"], df_v5["train/box_loss"], label="Train Box Loss")
+    ax[0].plot(df_v5["epoch"], df_v5["val/box_loss"], label="Val Box Loss")
+    ax[0].set_title("v5: Box Loss (Augmented Dataset)")
+    ax[0].set_xlabel("Epoch")
+    ax[0].set_ylabel("Loss")
     ax[0].legend()
 
     # Plot mAP
-    ax[1].plot(df_v5['epoch'], df_v5['metrics/mAP50(B)'], label='mAP50', color='green')
-    ax[1].set_title('v5: mAP50 Performance')
-    ax[1].set_xlabel('Epoch')
-    ax[1].set_ylabel('mAP50')
+    ax[1].plot(
+        df_v5["epoch"], df_v5["metrics/mAP50(B)"], label="mAP50", color="green"
+    )
+    ax[1].set_title("v5: mAP50 Performance")
+    ax[1].set_xlabel("Epoch")
+    ax[1].set_ylabel("mAP50")
     ax[1].legend()
 
     plt.tight_layout()
@@ -5601,7 +6480,7 @@ if os.path.exists(v5_results_path):
 
     print(f"Final v5 mAP50: {df_v5['metrics/mAP50(B)'].iloc[-1]:.4f}")
 else:
-    print('v5 results.csv not found.')
+    print("v5 results.csv not found.")
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5614,12 +6493,22 @@ if os.path.exists(v4_results_path) and os.path.exists(v5_results_path):
     df_v5.columns = [c.strip() for c in df_v5.columns]
 
     plt.figure(figsize=(10, 6))
-    plt.plot(df_v4['epoch'], df_v4['metrics/mAP50(B)'], label='v4 mAP50 (Original)', linestyle='--')
-    plt.plot(df_v5['epoch'], df_v5['metrics/mAP50(B)'], label='v5 mAP50 (Augmented)', linewidth=2)
+    plt.plot(
+        df_v4["epoch"],
+        df_v4["metrics/mAP50(B)"],
+        label="v4 mAP50 (Original)",
+        linestyle="--",
+    )
+    plt.plot(
+        df_v5["epoch"],
+        df_v5["metrics/mAP50(B)"],
+        label="v5 mAP50 (Augmented)",
+        linewidth=2,
+    )
 
-    plt.title('mAP50 Comparison: Original (v4) vs. Augmented (v5)')
-    plt.xlabel('Epoch')
-    plt.ylabel('mAP50')
+    plt.title("mAP50 Comparison: Original (v4) vs. Augmented (v5)")
+    plt.xlabel("Epoch")
+    plt.ylabel("mAP50")
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -5627,4 +6516,4 @@ if os.path.exists(v4_results_path) and os.path.exists(v5_results_path):
     print(f"v4 Max mAP50: {df_v4['metrics/mAP50(B)'].max():.4f}")
     print(f"v5 Max mAP50: {df_v5['metrics/mAP50(B)'].max():.4f}")
 else:
-    print('Results files missing for comparison.')
+    print("Results files missing for comparison.")

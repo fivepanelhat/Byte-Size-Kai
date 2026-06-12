@@ -7,12 +7,10 @@ Prevents 24/7 capture from saturating the RPi 5's SD/NVMe storage.
 
 import asyncio
 import logging
-import os
 import gzip
 import shutil
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -90,17 +88,25 @@ class MediaPruner:
         try:
             for file_path in self.media_dir.glob("*"):
                 if file_path.is_file():
-                    file_mtime = datetime.fromtimestamp(file_path.stat().st_mtime)
+                    file_mtime = datetime.fromtimestamp(
+                        file_path.stat().st_mtime
+                    )
                     if file_mtime < cutoff_time:
                         try:
                             file_path.unlink()
-                            logger.debug(f"Deleted media file: {file_path.name}")
+                            logger.debug(
+                                f"Deleted media file: {file_path.name}"
+                            )
                             deleted_count += 1
                         except Exception as e:
-                            logger.error(f"Failed to delete {file_path.name}: {e}")
+                            logger.error(
+                                f"Failed to delete {file_path.name}: {e}"
+                            )
 
             if deleted_count > 0:
-                logger.info(f"MediaPruner: deleted {deleted_count} old media files")
+                logger.info(
+                    f"MediaPruner: deleted {deleted_count} old media files"
+                )
 
         except Exception as e:
             logger.error(f"Prune media error: {e}")
@@ -115,7 +121,9 @@ class MediaPruner:
             Number of files compressed
         """
         if not self.sensor_logs_dir.exists():
-            logger.warning(f"Sensor logs directory not found: {self.sensor_logs_dir}")
+            logger.warning(
+                f"Sensor logs directory not found: {self.sensor_logs_dir}"
+            )
             return 0
 
         compressed_count = 0
@@ -124,7 +132,9 @@ class MediaPruner:
         try:
             for file_path in self.sensor_logs_dir.glob("*.json"):
                 if file_path.is_file() and not file_path.name.endswith(".gz"):
-                    file_mtime = datetime.fromtimestamp(file_path.stat().st_mtime)
+                    file_mtime = datetime.fromtimestamp(
+                        file_path.stat().st_mtime
+                    )
                     if file_mtime < cutoff_time:
                         try:
                             gz_path = file_path.with_suffix(".json.gz")
@@ -137,10 +147,14 @@ class MediaPruner:
                             )
                             compressed_count += 1
                         except Exception as e:
-                            logger.error(f"Failed to compress {file_path.name}: {e}")
+                            logger.error(
+                                f"Failed to compress {file_path.name}: {e}"
+                            )
 
             if compressed_count > 0:
-                logger.info(f"MediaPruner: compressed {compressed_count} old log files")
+                logger.info(
+                    f"MediaPruner: compressed {compressed_count} old log files"
+                )
 
         except Exception as e:
             logger.error(f"Compress logs error: {e}")
@@ -191,13 +205,17 @@ class MediaPruner:
             if self.media_dir.exists():
                 media_files = list(self.media_dir.glob("*"))
                 stats["media_count"] = len(media_files)
-                media_size = sum(f.stat().st_size for f in media_files if f.is_file())
+                media_size = sum(
+                    f.stat().st_size for f in media_files if f.is_file()
+                )
                 total_size += media_size / (1024 * 1024)
 
             if self.sensor_logs_dir.exists():
                 log_files = list(self.sensor_logs_dir.glob("*.json*"))
                 stats["logs_count"] = len(log_files)
-                logs_size = sum(f.stat().st_size for f in log_files if f.is_file())
+                logs_size = sum(
+                    f.stat().st_size for f in log_files if f.is_file()
+                )
                 total_size += logs_size / (1024 * 1024)
 
             stats["total_size_mb"] = total_size

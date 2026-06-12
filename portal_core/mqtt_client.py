@@ -8,7 +8,7 @@ Ingests raw sensor payloads (soil moisture, light, humidity) from edge hardware.
 import asyncio
 import json
 import logging
-from typing import Callable, Optional
+from typing import Optional
 from datetime import datetime
 
 import paho.mqtt.client as mqtt
@@ -105,7 +105,9 @@ class MQTTClient:
 
         for attempt in range(max_retries):
             try:
-                self.client.connect(self.broker_host, self.broker_port, keepalive=60)
+                self.client.connect(
+                    self.broker_host, self.broker_port, keepalive=60
+                )
                 self.client.loop_start()
                 logger.info("MQTT connection initiated")
                 return True
@@ -117,7 +119,9 @@ class MQTTClient:
                     await asyncio.sleep(retry_delay)
                     retry_delay *= 2  # exponential backoff
 
-        logger.error(f"Failed to connect to MQTT broker after {max_retries} attempts")
+        logger.error(
+            f"Failed to connect to MQTT broker after {max_retries} attempts"
+        )
         return False
 
     async def disconnect(self):

@@ -11,7 +11,6 @@ Supports both direct GPIO control (RPi) and simulated mode for testing.
 
 import asyncio
 import logging
-import os
 from enum import Enum
 from typing import Optional
 from datetime import datetime
@@ -116,7 +115,9 @@ class HardwareControl:
             # Setup pump control
             if self.pump_gpio_pin:
                 GPIO.setup(self.pump_gpio_pin, GPIO.OUT)
-                self.pump_pwm = GPIO.PWM(self.pump_gpio_pin, self.pump_pwm_frequency)
+                self.pump_pwm = GPIO.PWM(
+                    self.pump_gpio_pin, self.pump_pwm_frequency
+                )
                 self.pump_pwm.start(0)  # Start at 0% duty cycle
                 logger.info(f"Pump GPIO setup: pin={self.pump_gpio_pin}")
 
@@ -127,7 +128,9 @@ class HardwareControl:
                     self.lighting_gpio_pin, self.lighting_pwm_frequency
                 )
                 self.lighting_pwm.start(0)  # Start at 0% duty cycle
-                logger.info(f"Lighting GPIO setup: pin={self.lighting_gpio_pin}")
+                logger.info(
+                    f"Lighting GPIO setup: pin={self.lighting_gpio_pin}"
+                )
 
             # Setup alert pin
             if self.alert_gpio_pin:
@@ -216,7 +219,9 @@ class HardwareControl:
             self.lighting_duty_cycle = duty_cycle
 
             if self.simulation_mode:
-                logger.info(f"[SIM] Lighting: {state.value} (PWM {duty_cycle}%)")
+                logger.info(
+                    f"[SIM] Lighting: {state.value} (PWM {duty_cycle}%)"
+                )
             else:
                 if self.lighting_pwm:
                     self.lighting_pwm.ChangeDutyCycle(duty_cycle)
@@ -297,14 +302,18 @@ class HardwareControl:
                     lighting_ok = await self.set_lighting(lighting_state)
                     success = success and lighting_ok
                 except (ValueError, AttributeError) as e:
-                    logger.error(f"Invalid lighting action: {lighting_action} ({e})")
+                    logger.error(
+                        f"Invalid lighting action: {lighting_action} ({e})"
+                    )
                     success = False
 
             # Trigger alert if plan requires human review
             if plan.get("requires_human_review"):
                 await self.trigger_alert(duration_ms=1000)
 
-            logger.info(f"Plan enforcement {'successful' if success else 'had errors'}")
+            logger.info(
+                f"Plan enforcement {'successful' if success else 'had errors'}"
+            )
             return success
 
         except Exception as e:

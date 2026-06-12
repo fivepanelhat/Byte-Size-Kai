@@ -5,7 +5,7 @@ Pydantic schemas for strict JSON enforcement.
 Ensures LLM output conforms to deterministic hardware command structures.
 """
 
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
 from enum import Enum
 
@@ -41,10 +41,13 @@ class SensorReading(BaseModel):
         ..., description="Unique sensor identifier (e.g., 'soil_moisture_1')"
     )
     sensor_type: str = Field(
-        ..., description="Sensor type (e.g., 'capacitive_moisture', 'ambient_light')"
+        ...,
+        description="Sensor type (e.g., 'capacitive_moisture', 'ambient_light')",
     )
     value: float = Field(..., description="Measured value")
-    unit: str = Field(..., description="Unit of measurement (e.g., 'V', 'lux', '%RH')")
+    unit: str = Field(
+        ..., description="Unit of measurement (e.g., 'V', 'lux', '%RH')"
+    )
     timestamp: datetime = Field(default_factory=datetime.now)
 
 
@@ -57,10 +60,12 @@ class AnalysisResult(BaseModel):
 
     analysis_id: str = Field(..., description="Unique analysis ID")
     status: str = Field(
-        ..., description="Status assessment (e.g., 'healthy', 'warning', 'critical')"
+        ...,
+        description="Status assessment (e.g., 'healthy', 'warning', 'critical')",
     )
     soil_moisture_trend: str = Field(
-        ..., description="Trend direction ('stable', 'increasing', 'decreasing')"
+        ...,
+        description="Trend direction ('stable', 'increasing', 'decreasing')",
     )
     ambient_light_level: str = Field(
         ..., description="Light condition ('low', 'optimal', 'high')"
@@ -106,7 +111,10 @@ class CropOptimizationPlan(BaseModel):
         None, description="Harvest timing and resource requirements"
     )
     confidence_score: float = Field(
-        ..., ge=0.0, le=1.0, description="LLM confidence in this plan (0.0-1.0)"
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="LLM confidence in this plan (0.0-1.0)",
     )
 
     # Execution metadata

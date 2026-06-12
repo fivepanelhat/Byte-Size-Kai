@@ -19,7 +19,9 @@ logger = logging.getLogger(__name__)
 class OllamaConfig(BaseModel):
     """Ollama LLM configuration."""
 
-    host: str = Field(default="http://localhost:11434", description="Ollama API host")
+    host: str = Field(
+        default="http://localhost:11434", description="Ollama API host"
+    )
     model: str = Field(default="gemma4:e4b", description="Model name")
 
     @validator("host")
@@ -35,7 +37,9 @@ class OllamaConfig(BaseModel):
 class MQTTConfig(BaseModel):
     """MQTT broker configuration."""
 
-    broker: str = Field(default="localhost", description="MQTT broker hostname")
+    broker: str = Field(
+        default="localhost", description="MQTT broker hostname"
+    )
     port: int = Field(default=1883, ge=1, le=65535, description="MQTT port")
     username: Optional[str] = Field(default=None, description="MQTT username")
     password: Optional[str] = Field(default=None, description="MQTT password")
@@ -51,7 +55,8 @@ class StorageConfig(BaseModel):
     """Storage and media configuration."""
 
     media_dir: Path = Field(
-        default=Path("./telemetry_data/media"), description="Media storage directory"
+        default=Path("./telemetry_data/media"),
+        description="Media storage directory",
     )
     sensor_logs_dir: Path = Field(
         default=Path("./telemetry_data/sensor_logs"),
@@ -78,7 +83,9 @@ class StorageConfig(BaseModel):
 class CameraConfig(BaseModel):
     """Camera/video configuration."""
 
-    device_index: int = Field(default=0, ge=0, description="Camera device index")
+    device_index: int = Field(
+        default=0, ge=0, description="Camera device index"
+    )
     fps: int = Field(default=30, ge=15, le=120, description="Video frame rate")
 
     class Config:
@@ -88,9 +95,14 @@ class CameraConfig(BaseModel):
 class AudioConfig(BaseModel):
     """Audio configuration."""
 
-    sample_rate: int = Field(default=16000, description="Audio sample rate in Hz")
+    sample_rate: int = Field(
+        default=16000, description="Audio sample rate in Hz"
+    )
     chunk_size: int = Field(
-        default=4096, ge=512, le=65536, description="Audio chunk size in samples"
+        default=4096,
+        ge=512,
+        le=65536,
+        description="Audio chunk size in samples",
     )
 
     @validator("sample_rate")
@@ -107,7 +119,9 @@ class AudioConfig(BaseModel):
 class HardwareConfig(BaseModel):
     """Hardware GPIO and control configuration."""
 
-    pump_gpio_pin: Optional[int] = Field(default=None, description="Pump GPIO pin")
+    pump_gpio_pin: Optional[int] = Field(
+        default=None, description="Pump GPIO pin"
+    )
     pump_pwm_frequency: int = Field(
         default=1000, ge=100, le=10000, description="Pump PWM frequency"
     )
@@ -117,7 +131,9 @@ class HardwareConfig(BaseModel):
     lighting_pwm_frequency: int = Field(
         default=1000, ge=100, le=10000, description="Lighting PWM frequency"
     )
-    alert_gpio_pin: Optional[int] = Field(default=None, description="Alert GPIO pin")
+    alert_gpio_pin: Optional[int] = Field(
+        default=None, description="Alert GPIO pin"
+    )
     enable_hardware_control: bool = Field(
         default=False, description="Enable actual hardware control"
     )
@@ -174,7 +190,9 @@ def load_config() -> PortalConfig:
         load_dotenv(env_file)
         logger.info(f"Loaded configuration from {env_file}")
     else:
-        logger.warning("No .env file found; using environment variables and defaults")
+        logger.warning(
+            "No .env file found; using environment variables and defaults"
+        )
 
     try:
         # Parse each configuration section
@@ -197,7 +215,9 @@ def load_config() -> PortalConfig:
                 os.getenv("SENSOR_LOGS_DIR", "./telemetry_data/sensor_logs")
             ),
             retention_hours=int(os.getenv("MEDIA_RETENTION_HOURS", "48")),
-            critical_disk_usage_pct=float(os.getenv("CRITICAL_DISK_USAGE_PCT", "85.0")),
+            critical_disk_usage_pct=float(
+                os.getenv("CRITICAL_DISK_USAGE_PCT", "85.0")
+            ),
         )
 
         camera_config = CameraConfig(
@@ -214,9 +234,13 @@ def load_config() -> PortalConfig:
             pump_gpio_pin=(
                 int(p) if (p := os.getenv("HARDWARE_PUMP_GPIO_PIN")) else None
             ),
-            pump_pwm_frequency=int(os.getenv("HARDWARE_PUMP_PWM_FREQUENCY", "1000")),
+            pump_pwm_frequency=int(
+                os.getenv("HARDWARE_PUMP_PWM_FREQUENCY", "1000")
+            ),
             lighting_gpio_pin=(
-                int(p) if (p := os.getenv("HARDWARE_LIGHTING_GPIO_PIN")) else None
+                int(p)
+                if (p := os.getenv("HARDWARE_LIGHTING_GPIO_PIN"))
+                else None
             ),
             lighting_pwm_frequency=int(
                 os.getenv("HARDWARE_LIGHTING_PWM_FREQUENCY", "1000")

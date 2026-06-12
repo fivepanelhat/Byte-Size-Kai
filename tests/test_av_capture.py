@@ -6,7 +6,10 @@ from portal_core.av_capture import AVCapture
 @pytest.fixture
 def av_capture():
     return AVCapture(
-        camera_index=0, video_fps=30, audio_sample_rate=16000, audio_chunk_size=4096
+        camera_index=0,
+        video_fps=30,
+        audio_sample_rate=16000,
+        audio_chunk_size=4096,
     )
 
 

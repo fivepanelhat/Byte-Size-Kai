@@ -43,7 +43,9 @@ class AIAgent:
         self.ollama_host = ollama_host
         self.model = model
         self.client = ollama.Client(host=ollama_host)
-        logger.info(f"AI Agent initialized with model: {model} at {ollama_host}")
+        logger.info(
+            f"AI Agent initialized with model: {model} at {ollama_host}"
+        )
 
     async def analyze_sensor_state(
         self,
@@ -96,19 +98,27 @@ JSON format: {{"status":"healthy|warning|critical", "soil_moisture_trend":"stabl
             # Parse JSON response
             try:
                 analysis_data = json.loads(response_text)
-                analysis_data["analysis_id"] = f"analysis-{datetime.now().isoformat()}"
+                analysis_data["analysis_id"] = (
+                    f"analysis-{datetime.now().isoformat()}"
+                )
                 analysis_data["timestamp"] = datetime.now().isoformat()
                 return analysis_data
             except json.JSONDecodeError:
-                logger.warning("Failed to parse LLM JSON response, returning defaults")
-                return self._generate_default_analysis(observation=response_text[:500])
+                logger.warning(
+                    "Failed to parse LLM JSON response, returning defaults"
+                )
+                return self._generate_default_analysis(
+                    observation=response_text[:500]
+                )
 
         except Exception as e:
             logger.error(f"Sensor analysis error: {e}")
             return self._generate_default_analysis(error_msg=str(e))
 
     def _generate_default_analysis(
-        self, error_msg: Optional[str] = None, observation: Optional[str] = None
+        self,
+        error_msg: Optional[str] = None,
+        observation: Optional[str] = None,
     ) -> dict:
         """Generate a safe default analysis on error."""
         return {
@@ -168,7 +178,9 @@ JSON format: {{"status":"healthy|warning|critical", "soil_moisture_trend":"stabl
                     "frame_bytes": len(frame_data),
                 }
             response_text = response.get("response", "").strip()
-            logger.debug(f"Visual analysis LLM response: {response_text[:200]}...")
+            logger.debug(
+                f"Visual analysis LLM response: {response_text[:200]}..."
+            )
 
             # Parse response
             import json
@@ -206,7 +218,10 @@ JSON format: {{"status":"healthy|warning|critical", "soil_moisture_trend":"stabl
         """
         if not audio_data:
             logger.warning("Audio feedback: audio_data is empty")
-            return {"anomaly_detected": False, "timestamp": datetime.now().isoformat()}
+            return {
+                "anomaly_detected": False,
+                "timestamp": datetime.now().isoformat(),
+            }
 
         try:
             logger.debug(f"Processing audio input ({len(audio_data)} bytes)")
@@ -300,11 +315,15 @@ JSON: {{"plan_id":"opt-{datetime.now().strftime('%Y%m%d')}", "pump_action":"off|
                     timeout=60.0,  # 60 second timeout for planning
                 )
             except asyncio.TimeoutError:
-                logger.error("LLM request timeout during optimization planning")
+                logger.error(
+                    "LLM request timeout during optimization planning"
+                )
                 return self._generate_default_plan()
 
             response_text = response.get("response", "").strip()
-            logger.debug(f"Optimization plan LLM response: {response_text[:300]}...")
+            logger.debug(
+                f"Optimization plan LLM response: {response_text[:300]}..."
+            )
 
             # Extract JSON from response (handle cases where LLM adds extra text)
             # Try to find JSON object in response
@@ -330,9 +349,16 @@ JSON: {{"plan_id":"opt-{datetime.now().strftime('%Y%m%d')}", "pump_action":"off|
 
                     if isinstance(plan_data.get("lighting_action"), str):
                         lighting_action = plan_data["lighting_action"].lower()
-                        if lighting_action not in ["off", "dim", "normal", "full"]:
+                        if lighting_action not in [
+                            "off",
+                            "dim",
+                            "normal",
+                            "full",
+                        ]:
                             lighting_action = "normal"
-                        plan_data["lighting_action"] = LightingAction(lighting_action)
+                        plan_data["lighting_action"] = LightingAction(
+                            lighting_action
+                        )
 
                     # Validate and create Pydantic model
                     validated_plan = CropOptimizationPlan(**plan_data)
@@ -342,7 +368,9 @@ JSON: {{"plan_id":"opt-{datetime.now().strftime('%Y%m%d')}", "pump_action":"off|
                     return validated_plan.dict()
 
                 except json.JSONDecodeError as je:
-                    logger.error(f"Failed to parse JSON from LLM response: {je}")
+                    logger.error(
+                        f"Failed to parse JSON from LLM response: {je}"
+                    )
                     return self._generate_default_plan()
                 except Exception as e:
                     logger.error(f"Failed to validate optimization plan: {e}")
@@ -395,7 +423,9 @@ JSON: {{"plan_id":"opt-{datetime.now().strftime('%Y%m%d')}", "pump_action":"off|
             )
             return is_healthy
         except asyncio.TimeoutError:
-            logger.error("Ollama health check timeout - service may be unresponsive")
+            logger.error(
+                "Ollama health check timeout - service may be unresponsive"
+            )
             return False
         except Exception as e:
             logger.error(f"Ollama health check failed: {e}")
