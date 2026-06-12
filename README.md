@@ -3,22 +3,21 @@
 [![CI](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml)
 [![RedTeam](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml)
 
-
 ![Blue Moon Portal Banner](assets/social_preview.png)
 
 **Welcome to the Blue Moon Portal**—the central nervous system for the Byte Size Kai initiative. This repository houses the architecture for an autonomous, on-premise agritech crop tracker designed to optimize microgreen cultivation through edge-based AI.
 
 [![License](https://img.shields.io/badge/License-Proprietary--Commercial-blue?style=flat-square)](LICENSE)  
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)  
-[![Hardware Target](https://img.shields.io/badge/Hardware-Raspberry%20Pi%205%2016GB-C11A5B?style=flat-square&logo=raspberry-pi&logoColor=white)]()  
-[![NPU Acceleration](https://img.shields.io/badge/NPU-Hailo--10H%20Accelerated-005A9C?style=flat-square)]()  
-[![Sovereignty](https://img.shields.io/badge/Sovereignty-NZ%20Data%20Bound-00247D?style=flat-square)]()  
+![Hardware Target](https://img.shields.io/badge/Hardware-Raspberry%20Pi%205%2016GB-C11A5B?style=flat-square&logo=raspberry-pi&logoColor=white)  
+![NPU Acceleration](https://img.shields.io/badge/NPU-Hailo--10H%20Accelerated-005A9C?style=flat-square)  
+![Sovereignty](https://img.shields.io/badge/Sovereignty-NZ%20Data%20Bound-00247D?style=flat-square)  
 [![CI/CD: Active](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/ci.yml/badge.svg)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions)  
 [![SecOps Scan](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Blue-Moon-Portal/secops.yml?branch=main&label=SecOps%20Scan&style=flat-square&color=success)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml)  
 [![RedTeam](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Blue-Moon-Portal/redteam.yml?branch=main&label=RedTeam&style=flat-square&color=critical)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml)  
-[![Dependabot](https://img.shields.io/badge/Dependencies-Monitored-brightgreen?style=flat-square&logo=dependabot)]()  
-[![Interop](https://img.shields.io/badge/Interop-MQTT%20%7C%20OPC--UA-orange?style=flat-square)]()  
-[![Sustainability](https://img.shields.io/badge/EECA%20NZ-Carbon%20Tracked-green?style=flat-square)]()
+![Dependabot](https://img.shields.io/badge/Dependencies-Monitored-brightgreen?style=flat-square&logo=dependabot)  
+![Interop](https://img.shields.io/badge/Interop-MQTT%20%7C%20OPC--UA-orange?style=flat-square)  
+![Sustainability](https://img.shields.io/badge/EECA%20NZ-Carbon%20Tracked-green?style=flat-square)
 
 ## The 5 Ws: Project Context
 
@@ -88,6 +87,7 @@ python validate.py
 ```
 
 This will test:
+
 - ✓ Configuration loading from `.env`
 - ✓ Ollama connectivity and model availability
 - ✓ MQTT broker connectivity
@@ -97,7 +97,8 @@ This will test:
 - ✓ AI Agent methods and LLM integration
 
 **Expected output (6-7/7 tests pass):**
-```
+
+```plaintext
 ✓ PASS: configuration
 ✓ PASS: ollama
 ✓ PASS: mqtt (or ✗ FAIL if broker not running)
@@ -117,6 +118,7 @@ python main.py
 ```
 
 The portal will:
+
 1. Connect to your MQTT broker for sensor telemetry
 2. Initialize audio/video capture streams
 3. Perform health checks on all subsystems
@@ -127,7 +129,7 @@ The portal will:
 
 This is **not** a simple chatbot hooked up to a water pump—it's a fully agentic architecture:
 
-```
+```plaintext
 ┌─────────────────────────────────────────────────────┐
 │           EDGE HARDWARE (RPi 5 + AI HAT+)           │
 ├─────────────────────────────────────────────────────┤
@@ -162,13 +164,14 @@ This is **not** a simple chatbot hooked up to a water pump—it's a fully agenti
 ```
 
 **Data Flow:**
+
 1. **Ingestion:** Paho MQTT streams raw sensor data asynchronously; AV module buffers frame captures and audio clips.
 2. **Analysis:** Gemma 4 E4B-it acts as the orchestrator. It parses multi-modal input against historical logs to spot trends.
 3. **Action & Prediction:** Model generates live optimization scripts. Anomalies trigger local hardware (pumps, lights); predictions feed real-time crop yield and logistics info to the user.
 
 ## Directory Structure
 
-```
+```plaintext
 Blue_Moon_Portal/
 │
 ├── portal_core/               # The Engine Room
@@ -209,6 +212,7 @@ Blue_Moon_Portal/
 ## Technology Stack
 
 ### Hardware
+
 - **Compute:** Raspberry Pi 5 (16GB RAM)
 - **Acceleration:** Raspberry Pi AI HAT+ (Hailo-8 NPU, 26 TOPS)
 - **Sensors:** ESP32 microcontrollers streaming via MQTT
@@ -216,6 +220,7 @@ Blue_Moon_Portal/
 - **Audio:** USB microphone (anomaly detection)
 
 ### Software
+
 - **Language:** Python 3.10+
 - **LLM Runtime:** Ollama (local, no cloud)
 - **Model:** Gemma 4 E4B (4B effective parameters, multi-modal)
@@ -237,9 +242,9 @@ Blue_Moon_Portal/
 
 ## Performance & Benchmarks
 
-* **Local Inference Latency:** ~0.95 seconds per query running Google's `gemma4:e4b` on Raspberry Pi 5.
-* **Energy Consumption:** Peak active NPU execution draw is ~1.5W, enabling solar-powered off-grid deployment.
-* **Storage Footprint:** media pruner limits raw camera frame buffer size below 500MB, retaining compliance records for 7+ years in compressed format.
+- **Local Inference Latency:** ~0.95 seconds per query running Google's `gemma4:e4b` on Raspberry Pi 5.
+- **Energy Consumption:** Peak active NPU execution draw is ~1.5W, enabling solar-powered off-grid deployment.
+- **Storage Footprint:** media pruner limits raw camera frame buffer size below 500MB, retaining compliance records for 7+ years in compressed format.
 
 ---
 
