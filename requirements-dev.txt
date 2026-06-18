@@ -40,3 +40,9 @@ pre-commit>=4.0.0
 # Development Utilities
 ipython>=8.30.0
 ipdb>=0.13.13
+
+# Platform-Specific Dependencies (PEP 508 markers)
+colorama>=0.4.6; sys_platform == 'win32'
+pywin32>=306; sys_platform == 'win32'
+uvloop>=0.21.0; sys_platform == 'linux'
+

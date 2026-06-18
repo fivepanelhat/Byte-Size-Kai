@@ -1,9 +1,5 @@
 # Blue Moon Portal: Byte Size Kai
 
-![CI](https://github.com/fivepanelhat/Blue-Moon-Portal.git
-/actions/workflows/secops.yml/badge.svg?branch=main)
-
-
 [![CI](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml)
 [![RedTeam](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml)
 
@@ -47,7 +43,28 @@
 - Ollama (local LLM runtime)
 - Gemma 4 E4B-it model (via `ollama pull gemma4:e4b`)
 
-### Installation (Bare Metal + Virtual Environment)
+### Installation & Setup
+
+We provide separate guides for system environment setup and installation for Windows and Linux users:
+
+* **Prerequisites & System Setup Guide**: Read [setup.md](setup.md)
+* **Installation Guide**: Read [installation.md](installation.md)
+
+### Quick Start (Automated Setup)
+The fastest way to install is running the cross-platform bootstrap script:
+
+```bash
+python bootstrap.py
+```
+
+n-portal
+python bootstrap.py
+```
+
+### Manual Installation (Bare Metal + Virtual Environment)
+
+<details open>
+<summary><strong>🐧 Linux / macOS (Bash)</strong></summary>
 
 ```bash
 # Clone the repository
@@ -55,8 +72,8 @@ git clone https://github.com/fivepanelhat/blue-moon-portal.git
 cd blue-moon-portal
 
 # Create virtual environment
-python3.10 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python3 -m venv venv
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -65,6 +82,32 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your settings (MQTT broker, Ollama host, etc.)
 ```
+
+</details>
+
+<details>
+<summary><strong>🪟 Windows (PowerShell)</strong></summary>
+
+```powershell
+# Clone the repository
+git clone https://github.com/fivepanelhat/blue-moon-portal.git
+cd blue-moon-portal
+
+# Create virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy environment template and configure
+Copy-Item .env.example .env
+# Edit .env with your settings (MQTT broker, Ollama host, etc.)
+```
+
+> **Note:** If you receive an execution policy error, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` first.
+
+</details>
 
 ### Ollama Model Setup
 
