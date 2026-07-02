@@ -267,7 +267,7 @@ async def main():
 - ✓ **Effective 4B params** — Fits in RPi 5 RAM with headroom
 - ✓ **Multi-modal** — Native support for text, image, audio embeddings
 - ✓ **Quantized** — Deployable on edge (typically 4-bit or 8-bit)
-- ✓ **Fast inference** — ~100-200ms per token on RPi 5 CPU; faster with Hailo-10H NPU acceleration
+- ✓ **Fast inference** — ~100-200ms per token on RPi 5 CPU; faster with Hailo-10L NPU acceleration
 - ✓ **Low latency** — Suitable for real-time decision-making in agriculture
 
 ### Ollama Setup
@@ -293,7 +293,7 @@ ollama list
 - **Name:** `gemma4:e4b`
 - **Size:** ~9.6 GB (GGUF quantized format)
 - **Effective Parameters:** 4B (4 billion)
-- **Quantization:** Optimized for RPi 5 with Hailo-10H NPU acceleration
+- **Quantization:** Optimized for RPi 5 with Hailo-10L NPU acceleration
 
 ### Prompt Engineering
 
@@ -319,9 +319,9 @@ Respond with a JSON optimization plan conforming to this schema:
 Do not deviate from this schema. Invalid JSON will cause hardware failure.
 ```
 
-### NPU Acceleration (Hailo-10H NPU)
+### NPU Acceleration (Hailo-10L NPU)
 
-The Hailo-10H NPU PCIe accelerator offloads neural inference:
+The Hailo-10L NPU PCIe accelerator offloads neural inference:
 - **Without NPU:** Gemma 4 runs on RPi 5 CPU (~5 FPS for video, ~500ms per token)
 - **With NPU:** Video processing at 30 FPS, LLM inference 3-5x faster
 

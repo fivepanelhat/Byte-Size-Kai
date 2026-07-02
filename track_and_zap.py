@@ -93,7 +93,7 @@ folders = [
     "data/labels/train",  # The text files with our target bounding boxes
     "data/labels/val",
     "models/base_weights",  # Where we download the raw YOLO nano models
-    "models/exported_onnx",  # Where the final Hailo-8 ready files will sit
+    "models/exported_onnx",  # Where the final Hailo-10L ready files will sit
     "config",  # For our dataset YAML files
     "test_inference",  # A place to dump a video and test the trained model
 ]
@@ -6228,7 +6228,7 @@ new_summary = f"""
 ## Latest Performance Summary (Version 4)
 - **Overall mAP50**: {metrics.results_dict['metrics/mAP50(B)']:.4f}
 - **Overall mAP50-95**: {metrics.results_dict['metrics/mAP50-95(B)']:.4f}
-- **Status**: Deployment Ready for Hailo-8 testing.
+- **Status**: Deployment Ready for Hailo-10L testing.
 """
 
 with open(readme_path, "a") as f:

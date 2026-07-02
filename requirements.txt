@@ -10,7 +10,7 @@ ollama>=0.4.8
 paho-mqtt>=2.1.0
 
 # Schema Validation & Enforcement
-pydantic>=2.5.0
+pydantic>=2.5.0,<3.0.0
 pydantic-settings>=2.1.0
 
 # Computer Vision
