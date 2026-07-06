@@ -19,7 +19,7 @@ from coastal_alpine_core.portal_core import (
     HardwareController,
 )
 
-from coastal_alpine_core.flywheel import DataFlywheel
+from coastal_alpine_core import DataFlywheel
 
 # Configure logging
 logging.basicConfig(
