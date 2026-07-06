@@ -37,4 +37,4 @@ aiofiles>=23.2.1
 structlog>=23.2.0
 
 # Shared Core SDK
-coastal-alpine-core @ git+https://github.com/fivepanelhat/coastal-alpine-core.git@v0.5.1
+coastal-alpine-core @ git+https://github.com/fivepanelhat/coastal-alpine-core.git@v0.5.2
