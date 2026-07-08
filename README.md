@@ -1,6 +1,6 @@
 # Blue Moon Portal: Byte Size Kai
 
-[![CI](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml)
+[![CI](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/ci-scan.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/ci-scan.yml)
 [![RedTeam](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml)
 
 ![Blue Moon Portal Banner](assets/social_preview.png)
