@@ -141,7 +141,7 @@ import os
 
 # 1. Authenticate with Roboflow
 # Replace 'YOUR_API_KEY_HERE' with your actual key
-rf = Roboflow(api_key="NQNQbsiMxbU33fU0UvbC")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY")
 
 # 2. Target the Dataset
 # We are pulling down a publicly available YOLOv8 dataset for Bees and Wasps
@@ -178,7 +178,7 @@ from inference_sdk import InferenceHTTPClient
 
 # 2. Connect to your workflow
 client = InferenceHTTPClient(
-    api_url="https://detect.roboflow.com", api_key="NQNQbsiMxbU33fU0UvbC"
+    api_url="https://detect.roboflow.com", api_key="REDACTED_ROBOFLOW_API_KEY"
 )
 
 # 3. Run your workflow on an image
@@ -198,7 +198,7 @@ print(result)
 from roboflow import Roboflow
 
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Using the provided API key directly
+    "REDACTED_ROBOFLOW_API_KEY"  # Using the provided API key directly
 )
 
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
@@ -224,7 +224,7 @@ import shutil
 import os
 
 # 1. Authenticate using your key from the workspace
-rf = Roboflow(api_key="NQNQbsiMxbU33fUOUvbC")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY")
 
 # 2. Pull down a massive, high-quality public Vespidae & Apis dataset
 # This specific project has clean bounding boxes for bees and wasps
@@ -263,47 +263,7 @@ import os
 
 # 1. Authenticate using your key from the workspace
 # Using the newly provided API Key
-rf = Roboflow(api_key="rf_wW5Au3wlhqccRLWOczLZePvRIgy1")
-
-# 2. Pull down a massive, high-quality public Vespidae & Apis dataset
-# This specific project has clean bounding boxes for bees and wasps
-# Note: The workspace "v-r8u4s" has previously caused issues. Please ensure it is correct and accessible.
-project = rf.workspace("v-r8u4s").project("bee-and-wasp-detection-yolo")
-version = project.version(2)
-
-print("Downloading the dataset into your environment...")
-dataset = version.download("yolov8")
-
-# 3. Move the downloaded data directly into your persistent Google Drive structure
-downloaded_path = dataset.location
-target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
-
-print("Moving files into persistent Google Drive structure...")
-try:
-    # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
-    shutil.copytree(
-        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
-    )
-    shutil.copytree(
-        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
-    )
-    print(
-        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
-    )
-except Exception as e:
-    print(f"Encountered an issue moving the files: {e}")
-
-# Commented out IPython magic to ensure Python compatibility.
-# Install the core Roboflow library (if not already installed)
-# %pip install roboflow
-
-from roboflow import Roboflow
-import shutil
-import os
-
-# 1. Authenticate using your key from the workspace
-# Using the newly provided API Key
-rf = Roboflow(api_key="rf_wW5Au3wlhqccRLWOczLZePvRIgy1")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY_2")
 
 # 2. Pull down a massive, high-quality public Vespidae & Apis dataset
 # This specific project has clean bounding boxes for bees and wasps
@@ -343,7 +303,47 @@ import os
 
 # 1. Authenticate using your key from the workspace
 # Using the newly provided API Key
-rf = Roboflow(api_key="NQNQbsiMxbU33fU0UvbC")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY_2")
+
+# 2. Pull down a massive, high-quality public Vespidae & Apis dataset
+# This specific project has clean bounding boxes for bees and wasps
+# Note: The workspace "v-r8u4s" has previously caused issues. Please ensure it is correct and accessible.
+project = rf.workspace("v-r8u4s").project("bee-and-wasp-detection-yolo")
+version = project.version(2)
+
+print("Downloading the dataset into your environment...")
+dataset = version.download("yolov8")
+
+# 3. Move the downloaded data directly into your persistent Google Drive structure
+downloaded_path = dataset.location
+target_path = "/content/drive/MyDrive/Sting_Operation_AI/data"
+
+print("Moving files into persistent Google Drive structure...")
+try:
+    # Ensure any temporary directory limits are avoided by writing clean to your Drive structure
+    shutil.copytree(
+        f"{downloaded_path}/train", f"{target_path}/train", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        f"{downloaded_path}/valid", f"{target_path}/val", dirs_exist_ok=True
+    )
+    print(
+        f"Awesome! The images and labels are fully loaded into your Drive at: {target_path}"
+    )
+except Exception as e:
+    print(f"Encountered an issue moving the files: {e}")
+
+# Commented out IPython magic to ensure Python compatibility.
+# Install the core Roboflow library (if not already installed)
+# %pip install roboflow
+
+from roboflow import Roboflow
+import shutil
+import os
+
+# 1. Authenticate using your key from the workspace
+# Using the newly provided API Key
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY")
 
 # 2. Pull down a massive, high-quality public Vespidae & Apis dataset
 # This specific project has clean bounding boxes for bees and wasps
@@ -376,8 +376,8 @@ except Exception as e:
 # To find your available Roboflow Workspaces, we will use the Roboflow library.
 from roboflow import Roboflow
 
-# Use the API key that worked previously (NQNQbsiMxbU33fU0UvbC)
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+# Use the API key that worked previously (REDACTED_ROBOFLOW_API_KEY)
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -438,8 +438,8 @@ from roboflow import Roboflow
 import shutil
 import os
 
-# Use the API key that worked previously (NQNQbsiMxbU33fU0UvbC)
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+# Use the API key that worked previously (REDACTED_ROBOFLOW_API_KEY)
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -1066,7 +1066,7 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
@@ -1166,7 +1166,7 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
@@ -1266,7 +1266,7 @@ import shutil
 from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
 # Define the project path from previous steps
@@ -2434,7 +2434,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -2537,7 +2537,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -2644,7 +2644,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -2751,7 +2751,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -3568,7 +3568,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -3717,7 +3717,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -3832,7 +3832,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -4550,7 +4550,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -4662,7 +4662,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -4774,7 +4774,7 @@ from roboflow import Roboflow
 
 # Authenticate with Roboflow using the working API key
 ROBOFLOW_API_KEY = (
-    "NQNQbsiMxbU33fU0UvbC"  # Keep using the previously successful API key
+    "REDACTED_ROBOFLOW_API_KEY"  # Keep using the previously successful API key
 )
 rf = Roboflow(api_key=ROBOFLOW_API_KEY)
 
@@ -5221,7 +5221,7 @@ NEW_WORKSPACE = "ws-workspace-yhner"
 NEW_PROJECT = "find-vespula-germanica"
 NEW_VERSION = 1
 
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 DRIVE_BASE_PATH = "/content/drive/MyDrive/Sting_Operation_AI/data"
 
 # --- 2. DOWNLOAD ---
@@ -5307,7 +5307,7 @@ import shutil
 from roboflow import Roboflow
 
 # 1. Configuration
-ROBOFLOW_API_KEY = "NQNQbsiMxbU33fU0UvbC"
+ROBOFLOW_API_KEY = "REDACTED_ROBOFLOW_API_KEY"
 NEW_ROBOFLOW_WORKSPACE = "ws-workspace-yhner"
 NEW_ROBOFLOW_PROJECT = "find-vespula-germanica"
 
@@ -5358,7 +5358,7 @@ else:
 from roboflow import Roboflow
 
 # Initialize with your API Key
-rf = Roboflow(api_key="NQNQbsiMxbU33fU0UvbC")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY")
 
 print("Fetching all accessible workspaces and projects...\n")
 
@@ -5635,7 +5635,7 @@ from roboflow import Roboflow
 import os
 
 # 2. Attempt download using the exact project from your URL
-rf = Roboflow(api_key="NQNQbsiMxbU33fU0UvbC")
+rf = Roboflow(api_key="REDACTED_ROBOFLOW_API_KEY")
 project = rf.workspace("ws-workspace-yhner").project("find-vespula-germanica")
 
 try:
