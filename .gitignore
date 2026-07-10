@@ -87,3 +87,9 @@ dist/
 build/
 coverage/
 
+
+# Non-product bulk / Colab exports
+track_and_zap.py
+flywheel_*.jsonl
+!flywheel_*.jsonl.example
+

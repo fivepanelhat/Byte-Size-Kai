@@ -1,5 +1,19 @@
 # Blue Moon Portal - Changelog
 
+## Version 1.3.0 - 2026-07-10
+
+### Fixed
+- Restored complete `main.py` lifecycle (`start` / `stop` / health / pruner / CLI entry).
+- Exception-safe multimodal gather (failed frame/audio no longer poison the plan path).
+
+### Changed / optimised (edge)
+- Plan rate limiting via `BLUE_MOON_MIN_PLAN_INTERVAL_SEC` (default 30s).
+- Optional adaptive AV skip when sensors are stable (`BLUE_MOON_ADAPTIVE_AV`).
+- Compact flywheel outcome metadata + JSONL rotation on size.
+- Prefer `opencv-python-headless` for Pi deployments.
+- Removed non-product `track_and_zap.py` Colab export; ignore flywheel JSONL data files.
+
+---
 ## Version 1.2.0 - 2026-06-08
 
 - Aligned project with Coastal Alpine Stack version 1.2.0.
