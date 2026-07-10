@@ -11,7 +11,7 @@ paho-mqtt>=2.1.0
 
 # Schema Validation & Enforcement
 pydantic>=2.5.0,<3.0.0
-pydantic-settings>=2.1.0
+pydantic-settings>=2.14.2
 
 # Computer Vision
 # Upgraded from 4.8.1.78: missing patch for CVE-2025-53644 (critical, CVSS 9.8, fixed in 4.12.0)
