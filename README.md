@@ -37,7 +37,7 @@
 
 ### Prerequisites
 
-- Raspberry Pi 5 (16GB RAM) with Raspberry Pi AI HAT+ (Hailo-10L NPU)
+- Raspberry Pi 5 (16GB RAM) with Raspberry Pi AI Accelerator / AI HAT+ 2 (Hailo-10H NPU)
 - ESP32 microcontrollers for sensor integration
 - Python 3.10+
 - Ollama (local LLM runtime)
@@ -246,14 +246,14 @@ Blue_Moon_Portal/
 │
 ├── README.md                  # This file
 ├── ARCHITECTURE.md            # Detailed technical breakdown
-├── HARDWARE_SETUP.md          # RPi5 + Hailo-10L NPU assembly & driver installation
+├── HARDWARE_SETUP.md          # RPi5 + Hailo-10H NPU assembly & driver installation
 └── DEVELOPMENT.md             # Local dev setup, mocking, testing
 ```
 
 ## Documentation
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Data flow, module responsibilities, Gemma 4 config, Pydantic schema definitions
-- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)** — RPi 5 + Hailo-10L NPU assembly, ESP32 wiring, Ollama installation, **critical NPU driver setup**
+- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)** — RPi 5 + Hailo-10H NPU assembly, ESP32 wiring, Ollama installation, **critical NPU driver setup**
 - **[DEVELOPMENT.md](DEVELOPMENT.md)** — Local dev environment, mock MQTT payloads, testing strategies
 
 ## Technology Stack
@@ -261,7 +261,7 @@ Blue_Moon_Portal/
 ### Hardware
 
 - **Compute:** Raspberry Pi 5 (16GB RAM)
-- **Acceleration:** Raspberry Pi AI HAT+ (Hailo-10L NPU, 26 TOPS)
+- **Acceleration:** Raspberry Pi AI Accelerator / AI HAT+ 2 (Hailo-10H NPU, 40 TOPS)
 - **Sensors:** ESP32 microcontrollers streaming via MQTT
 - **Cameras:** CSI camera module (leaf health)
 - **Audio:** USB microphone (anomaly detection)

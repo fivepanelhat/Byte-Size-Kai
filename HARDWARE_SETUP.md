@@ -1,4 +1,4 @@
-# HARDWARE_SETUP.md – Raspberry Pi 5 + Hailo-10L NPU Configuration
+# HARDWARE_SETUP.md – Raspberry Pi 5 + Hailo-10H NPU Configuration
 
 This guide covers the physical assembly and software configuration for deploying Blue Moon Portal on edge hardware.
 
@@ -7,7 +7,7 @@ This guide covers the physical assembly and software configuration for deploying
 | Component | Part Number / Model | Qty | Notes |
 |-----------|---------------------|-----|-------|
 | **Compute** | Raspberry Pi 5 (16GB) | 1 | Main orchestrator |
-| **Acceleration** | Hailo-10L NPU | 1 | PCIe neural processing unit |
+| **Acceleration** | Hailo-10H NPU | 1 | PCIe neural processing unit |
 | **Storage** | 512GB NVMe + adapter | 1 | For telemetry_data/ |
 | **Camera** | CSI Camera v2 / v3 | 1 | Leaf health monitoring |
 | **Audio** | USB Microphone | 1 | Anomaly detection (optional) |
@@ -57,13 +57,13 @@ sudo nano /etc/fstab
 # Add line: /dev/nvme0n1p1 /mnt/nvm ext4 defaults,noatime 0 2
 ```
 
-### 3. Connect Hailo-10L NPU (Hailo PCIe Accelerator)
+### 3. Connect Hailo-10H NPU (Hailo PCIe Accelerator)
 
 **CRITICAL: This section ensures your NPU is properly configured.**
 
 ```bash
 # 1. Power off RPi 5
-# 2. Gently insert Hailo-10L NPU into the PCIe M.2 edge connector
+# 2. Gently insert Hailo-10H NPU into the PCIe M.2 edge connector
 #    (Note: This is NOT the NVMe socket; separate connector on RPi 5)
 # 3. Power on
 
@@ -355,7 +355,7 @@ Before running the portal, verify all hardware:
 
 - [ ] RPi 5 booted and updated (`sudo apt update && sudo apt upgrade`)
 - [ ] NVMe SSD mounted at `/mnt/nvm` (or alt storage configured)
-- [ ] Hailo-10L NPU detected (`lspci | grep hailo`)
+- [ ] Hailo-10H NPU detected (`lspci | grep hailo`)
 - [ ] Hailo drivers installed (`hailo --help` works)
 - [ ] CSI camera connected and detected (`vcgencmd get_camera` → supported=1 detected=1)
 - [ ] Microphone detected (`arecord -l` shows device)
@@ -371,7 +371,7 @@ Before running the portal, verify all hardware:
 
 ## Troubleshooting
 
-### Hailo-10L NPU Not Detected
+### Hailo-10H NPU Not Detected
 
 ```bash
 # Check PCIe bus:
@@ -450,7 +450,7 @@ export OLLAMA_NUM_GPU=1  # Enable GPU for inference
 systemctl restart ollama
 ```
 
-### NPU Offloading (Hailo-10L NPU)
+### NPU Offloading (Hailo-10H NPU)
 
 The Hailo drivers automatically offload compatible operations. No additional configuration needed after driver installation. Monitor performance:
 
