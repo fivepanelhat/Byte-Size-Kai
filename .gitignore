@@ -74,6 +74,7 @@ Thumbs.db
 
 # Coastal Alpine Tech - Portal SecOps
 .env.*
+!.env.example
 *.pem
 *.key
 *.crt
