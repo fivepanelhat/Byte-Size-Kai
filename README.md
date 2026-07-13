@@ -1,5 +1,7 @@
 # Blue Moon Portal: Byte Size Kai
 
+**Coastal Alpine Tech Limited** — pre-seed startup, New Plymouth, Taranaki, Aotearoa New Zealand.
+
 ![Blue Moon Portal Banner](assets/social_preview.png)
 
 
@@ -159,6 +161,8 @@ The portal will:
 5. Run background media pruning (auto-cleanup of old AV buffers)
 
 ## Architecture Overview
+
+> **Diagrams:** Architecture images and Mermaid maps describe the **target product architecture** for this pre-seed stack. They are engineering design maps — not claims of large-scale commercial fleet deployment.
 
 Blue Moon is a closed-loop **microgreens / crop** edge agent for Byte Size Kai. MQTT sensors, CSI vision, and audio drive local multimodal Gemma 4 on **RPi 5 16GB + Hailo-10H** with deterministic hardware control.
 
