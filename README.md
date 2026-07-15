@@ -1,4 +1,4 @@
-# Blue Moon Portal: Byte Size Kai
+# Byte Size Kai
 
 <!-- BEGIN CAT_CONGRUENCE_SNIPPET -->
 ## Coastal Alpine Tech portfolio
@@ -15,6 +15,17 @@
 **Agents inform, draft, prepare, monitor, and remind. Humans advise, sign, file, send, and pay.**  
 Anti-hallucination policy: [`.github/agent-fleet/anti-hallucination.md`](./.github/agent-fleet/anti-hallucination.md) | Congruence: [`CAT_CONGRUENCE.md`](./CAT_CONGRUENCE.md)
 <!-- END CAT_CONGRUENCE_SNIPPET -->
+
+## Product name vs stack name
+
+| Name | Use |
+|------|-----|
+| **Byte Size Kai** | Product brand - growers, Mana Kai partners, and the [org front page](https://github.com/fivepanelhat/fivepanelhat) lead with this |
+| **Blue-Moon-Portal** | Repository / edge portal package name (background technical identity) |
+
+This repository implements **Byte Size Kai** on the Kiwi Edge stack (RPi 5 16GB + Hailo-10H, Core SDK, local Ollama).
+
+
 
 
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary--Commercial-blue.svg)](./LICENSE)
@@ -43,10 +54,10 @@ Anti-hallucination policy: [`.github/agent-fleet/anti-hallucination.md`](./.gith
 
 **Coastal Alpine Tech Limited**  pre-seed startup, New Plymouth, Taranaki, Aotearoa New Zealand.
 
-![Blue Moon Portal Banner](assets/social_preview.png)
+![Byte Size Kai Banner](assets/social_preview.png)
 
 
-**Welcome to the Blue Moon Portal**the central nervous system for the Byte Size Kai initiative. This repository houses the architecture for an autonomous, on-premise agritech crop tracker designed to optimize microgreen cultivation through edge-based AI.
+**Byte Size Kai** is Coastal Alpine Tech's agritech product for sovereign, on-farm microgreen and crop intelligence. The engineering stack and GitHub repository path remain **Blue-Moon-Portal** (technical / package name) - use that for clones, CI, and Core SDK imports.
 
 ## The 5 Ws: Project Context
 
@@ -55,6 +66,10 @@ Anti-hallucination policy: [`.github/agent-fleet/anti-hallucination.md`](./.gith
 - **Where:** Deployed on-site in Horowhenua, New Zealand (Engineered at HQ in New Plymouth, Taranaki).
 - **When:** Active development. We are building the sovereign digital infrastructure of tomorrow, today.
 - **Why:** To establish localized data sovereignty. Relying on cloud compute for real-time agricultural decisions introduces latency and creates dependencies. We are bringing the brain directly to the soil.
+
+## Autonomy (edge agents)
+
+Agents **inform, draft, prepare, monitor, and remind**. Physical actuation and commercial decisions stay human-in-the-loop unless an explicit local allow-list is configured on-site.
 
 ## The Problems We Are Solving
 
@@ -86,19 +101,16 @@ The fastest way to install is running the cross-platform bootstrap script:
 python bootstrap.py
 ```
 
-n-portal
-python bootstrap.py
-```
 
 ### Manual Installation (Bare Metal + Virtual Environment)
 
 <details open>
-<summary><strong>ðŸ§ Linux / macOS (Bash)</strong></summary>
+<summary><strong>Linux / macOS (Bash)</strong></summary>
 
 ```bash
 # Clone the repository
-git clone https://github.com/fivepanelhat/blue-moon-portal.git
-cd blue-moon-portal
+git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
+cd Blue-Moon-Portal
 
 # Create virtual environment
 python3 -m venv venv
@@ -115,12 +127,12 @@ cp .env.example .env
 </details>
 
 <details>
-<summary><strong>ðŸªŸ Windows (PowerShell)</strong></summary>
+<summary><strong>Windows (PowerShell)</strong></summary>
 
 ```powershell
 # Clone the repository
-git clone https://github.com/fivepanelhat/blue-moon-portal.git
-cd blue-moon-portal
+git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
+cd Blue-Moon-Portal
 
 # Create virtual environment
 python -m venv venv

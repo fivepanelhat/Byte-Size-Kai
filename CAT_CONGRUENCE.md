@@ -65,6 +65,6 @@ Product IP is generally **dual proprietary + commercial** unless a specific repo
 | Field | Value |
 |-------|-------|
 | **Repo** | `Blue-Moon-Portal` |
-| **Role in stack** | Crop / microgreens domain portal |
+| **Role in stack** | Byte Size Kai product (Blue-Moon stack - agritech beachhead) |
 | **Agent fleet** | `.github/agent-fleet/` |
 | **Canonical skills runtime** | [NZ-Start-Up](https://github.com/fivepanelhat/NZ-Start-Up) |
