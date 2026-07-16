@@ -74,7 +74,7 @@ See **Solution we have built** above. Cross-portfolio map: [Kiwi Edge AI Stack](
 |------|-----|
 | **Byte Size Kai** | Product brand (growers, Mana Kai partners, org front page) |
 | **Byte-Size-Kai** | GitHub repository (this repo) |
-| *Blue-Moon-Portal* | **Former** repo name — GitHub redirects old URLs |
+| *Blue-Moon-Portal* | **Former** repo name - GitHub redirects old URLs |
 
 This repository **is** Byte Size Kai on the Kiwi Edge stack (RPi 5 16GB + Hailo-10H, Core SDK, local Ollama).
 
@@ -224,24 +224,24 @@ python validate.py
 
 This will test:
 
-- âœ" Configuration loading from `.env`
-- âœ" Ollama connectivity and model availability
-- âœ" MQTT broker connectivity
-- âœ" Audio/Video capture streams
-- âœ" Hardware control simulation
-- âœ" Media pruner functionality
-- âœ" AI Agent methods and LLM integration
+- [OK] Configuration loading from `.env`
+- [OK] Ollama connectivity and model availability
+- [OK] MQTT broker connectivity
+- [OK] Audio/Video capture streams
+- [OK] Hardware control simulation
+- [OK] Media pruner functionality
+- [OK] AI Agent methods and LLM integration
 
 **Expected output (6-7/7 tests pass):**
 
 ```plaintext
-âœ" PASS: configuration
-âœ" PASS: ollama
-âœ" PASS: mqtt (or âœ- FAIL if broker not running)
-âœ" PASS: av_capture
-âœ" PASS: hardware_control
-âœ" PASS: media_pruner
-âœ" PASS: ai_agent_methods
+[OK] PASS: configuration
+[OK] PASS: ollama
+[OK] PASS: mqtt (or [X] FAIL if broker not running)
+[OK] PASS: av_capture
+[OK] PASS: hardware_control
+[OK] PASS: media_pruner
+[OK] PASS: ai_agent_methods
 ```
 
 **Note:** MQTT test may fail if no broker is running locally this is expected in development. The portal will attempt reconnection at runtime.
@@ -305,20 +305,20 @@ flowchart TB
     classDef ai fill:#3b0764,stroke:#e879f9,stroke-width:2px,color:#fdf4ff
     classDef app fill:#1e1b4b,stroke:#c4b5fd,stroke-width:2px,color:#eef2ff
 
-    subgraph IN["â'  Grow-room inputs"]
+    subgraph IN["1. Grow-room inputs"]
         MQTT["MQTT sensors<br/>moisture | light | RH"]
         CAM["CSI camera<br/>leaf health"]
         MIC["Microphone<br/>anomaly audio"]
     end
 
-    subgraph EDGE["â'¡ Edge hardware  RPi 5 16GB + Hailo-10H"]
+    subgraph EDGE["2. Edge hardware  RPi 5 16GB + Hailo-10H"]
         CORE["Coastal-Alpine-Core"]
         LLM["Gemma 4 e4b via Ollama"]
         AG["AI agent + schemas"]
         PRUNE["Media pruner<br/>SD-safe buffers"]
     end
 
-    subgraph OUT["â'¢ Actuation"]
+    subgraph OUT["3. Actuation"]
         PUMP["Pump control"]
         LIGHT["Light control"]
         ALERT["Alerts"]
@@ -347,34 +347,34 @@ flowchart TB
 
 ```plaintext
 Blue_Moon_Portal/
-â"‚
-â"œâ"€â"€ portal_core/               # The Engine Room
-â"‚   â"œâ"€â"€ __init__.py
-â"‚   â"œâ"€â"€ ai_agent.py            # Multi-modal LLM controller (Gemma 4 via Ollama)
-â"‚   â"œâ"€â"€ mqtt_client.py         # Paho MQTT subscriber for ESP32 telemetry
-â"‚   â"œâ"€â"€ av_capture.py          # OpenCV/PyAudio streams (CSI camera + mic)
-â"‚   â""â"€â"€ media_pruner.py        # Storage lifecycle management (auto-delete/compress)
-â"‚
-â"œâ"€â"€ portal_schemas/            # The Rulebook (Pydantic enforcement)
-â"‚   â"œâ"€â"€ __init__.py
-â"‚   â""â"€â"€ ai_models.py           # Pydantic classes (SensorReading, AnalysisResult, CropOptimizationPlan)
-â"‚
-â"œâ"€â"€ telemetry_data/            # Local Knowledge Base
-â"‚   â"œâ"€â"€ sensor_logs/           # Historical MQTT JSON payloads
-â"‚   â""â"€â"€ media/                 # Image and audio buffer storage
-â"‚
-â"œâ"€â"€ requirements.txt           # Python dependencies
-â"œâ"€â"€ requirements-dev.txt       # Development tools (pytest, black, mypy)
-â"œâ"€â"€ main.py                    # Asynchronous event loop orchestrator
-â"œâ"€â"€ setup.py                   # Package configuration
-â"œâ"€â"€ .env.example               # Environment variable template
-â"œâ"€â"€ .gitignore                 # Git exclusions (media, .env, __pycache__)
-â"œâ"€â"€ blue-moon.service          # Systemd service for auto-start on boot
-â"‚
-â"œâ"€â"€ README.md                  # This file
-â"œâ"€â"€ ARCHITECTURE.md            # Detailed technical breakdown
-â"œâ"€â"€ HARDWARE_SETUP.md          # RPi5 + Hailo-10H NPU assembly & driver installation
-â""â"€â"€ DEVELOPMENT.md             # Local dev setup, mocking, testing
+|
+|-- portal_core/               # The Engine Room
+|   |-- __init__.py
+|   |-- ai_agent.py            # Multi-modal LLM controller (Gemma 4 via Ollama)
+|   |-- mqtt_client.py         # Paho MQTT subscriber for ESP32 telemetry
+|   |-- av_capture.py          # OpenCV/PyAudio streams (CSI camera + mic)
+|   `-- media_pruner.py        # Storage lifecycle management (auto-delete/compress)
+|
+|-- portal_schemas/            # The Rulebook (Pydantic enforcement)
+|   |-- __init__.py
+|   `-- ai_models.py           # Pydantic classes (SensorReading, AnalysisResult, CropOptimizationPlan)
+|
+|-- telemetry_data/            # Local Knowledge Base
+|   |-- sensor_logs/           # Historical MQTT JSON payloads
+|   `-- media/                 # Image and audio buffer storage
+|
+|-- requirements.txt           # Python dependencies
+|-- requirements-dev.txt       # Development tools (pytest, black, mypy)
+|-- main.py                    # Asynchronous event loop orchestrator
+|-- setup.py                   # Package configuration
+|-- .env.example               # Environment variable template
+|-- .gitignore                 # Git exclusions (media, .env, __pycache__)
+|-- blue-moon.service          # Systemd service for auto-start on boot
+|
+|-- README.md                  # This file
+|-- ARCHITECTURE.md            # Detailed technical breakdown
+|-- HARDWARE_SETUP.md          # RPi5 + Hailo-10H NPU assembly & driver installation
+`-- DEVELOPMENT.md             # Local dev setup, mocking, testing
 ```
 
 ## Documentation
@@ -405,12 +405,12 @@ Blue_Moon_Portal/
 
 ## Key Features
 
-âœ" **Edge-Native:** All inference runs locally on RPi 5. No cloud dependency.
-âœ" **Multi-Modal AI:** Simultaneously processes sensor telemetry, visual, and audio data.
-âœ" **Deterministic Output:** Pydantic schemas prevent conversational hallucinations; LLM must output valid JSON or fail loudly.
-âœ" **Auto-Recovery:** Systemd service ensures portal restarts after power loss.
-âœ" **Storage-Aware:** Automated media pruning prevents 24/7 AV capture from filling the SD card.
-- **Source transparency:** Public engineering repo under the Coastal Alpine Tech proprietary licence (see `LICENSE`) — not an open-source grant.
+[OK] **Edge-Native:** All inference runs locally on RPi 5. No cloud dependency.
+[OK] **Multi-Modal AI:** Simultaneously processes sensor telemetry, visual, and audio data.
+[OK] **Deterministic Output:** Pydantic schemas prevent conversational hallucinations; LLM must output valid JSON or fail loudly.
+[OK] **Auto-Recovery:** Systemd service ensures portal restarts after power loss.
+[OK] **Storage-Aware:** Automated media pruning prevents 24/7 AV capture from filling the SD card.
+- **Source transparency:** Public engineering repo under the Coastal Alpine Tech proprietary licence (see `LICENSE`) - not an open-source grant.
 - **Honesty:** Pre-seed target architecture; see [REALITY.md](./REALITY.md).
 
 ---
@@ -420,14 +420,14 @@ Blue_Moon_Portal/
 > **Illustrative / re-measure on your hardware.** Not audited production SLAs. Informal ballparks on RPi 5 16GB + Hailo-10H + local Ollama; re-run before quoting externally.
 
 - **Local inference latency:** order of ~1 second per routing/query class workload (model- and load-dependent).
-- **Energy:** NPU-assisted vision workloads are designed for low power edge draw — measure joules on your node via Core telemetry.
+- **Energy:** NPU-assisted vision workloads are designed for low power edge draw - measure joules on your node via Core telemetry.
 - **Storage:** media pruner is intended to keep AV buffers bounded on SD cards; retention policy is site-configured.
 
 ---
 
 ## Contributing
 
-This repository is **proprietary** (Coastal Alpine Tech Limited). External contributions require a written agreement. Agritech and edge AI partners interested in pilots should open a GitHub Discussion/Issue for commercial contact — do not assume an open-source CLA.
+This repository is **proprietary** (Coastal Alpine Tech Limited). External contributions require a written agreement. Agritech and edge AI partners interested in pilots should open a GitHub Discussion/Issue for commercial contact - do not assume an open-source CLA.
 
 ### Getting Started as a Contributor
 
