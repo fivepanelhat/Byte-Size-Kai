@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "@fivepanelhat/coastal-alpine-core": "file:../coastal_alpine_core"
-  }
+ "dependencies": {
+ "@fivepanelhat/coastal-alpine-core": "file:../coastal_alpine_core"
+ }
 }

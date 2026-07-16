@@ -1,4 +1,4 @@
-# ARCHITECTURE.md – Byte Size Kai Technical Design
+# ARCHITECTURE.md - Byte Size Kai Technical Design
 
 This document describes the system architecture, data flow, and design principles of the Byte Size Kai.
 
@@ -19,77 +19,77 @@ The Byte Size Kai is a **closed-loop, autonomous edge AI system** for real-time 
 ## Data Flow Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                    INGESTION LAYER                               │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  MQTT Broker ──┐   CSI Camera ──┐   Microphone ──┐              │
-│  (ESP32 data)  │   (Vision)      │   (Audio)      │              │
-│                └────┬────────────┴────────┬───────┘              │
-│                     │                     │                       │
-│              ┌──────▼─────────────────────▼──────┐               │
-│              │   Data Normalization & Buffering  │               │
-│              │  (Parse JSON, frame queue, PCM)  │               │
-│              └──────┬──────────────────────────┬─┘               │
-│                     │                          │                  │
-└─────────────────────┼──────────────────────────┼──────────────────┘
+------------------------------------------------------------------
+| INGESTION LAYER |
+|------------------------------------------------------------------
+| |
+| MQTT Broker -- CSI Camera -- Microphone -- |
+| (ESP32 data) | (Vision) | (Audio) | |
+| `------------------------------- |
+| | | |
+| --------------------------------- |
+| | Data Normalization & Buffering | |
+| | (Parse JSON, frame queue, PCM) | |
+| `--------------------------------- |
+| | | |
+`-----------------------------------------------------------------
 
-┌─────────────────────┬──────────────────────────┼──────────────────┐
-│                PROCESSING LAYER                │                  │
-├──────────────────────────────────────────┬────▼──┐                │
-│                                          │       │                │
-│  ┌──────────────────────────────────┐   │       ▼                │
-│  │    AI Agent (Gemma 4 E4B)        │   │  ┌─────────────────┐   │
-│  │                                  │◄──┘  │ Historical Logs │   │
-│  │  • Sensor analysis               │      │ & Time Series   │   │
-│  │  • Visual feature extraction     │      └─────────────────┘   │
-│  │  • Audio anomaly detection       │                            │
-│  │  • Trend prediction              │                            │
-│  │  • Yield forecasting             │                            │
-│  └──────────┬───────────────────────┘                            │
-│             │                                                     │
-│             ▼                                                     │
-│  ┌──────────────────────────────────┐                            │
-│  │  Pydantic Schema Validation       │                            │
-│  │  (Enforce CropOptimizationPlan)   │                            │
-│  │  → If invalid → FAIL loudly       │                            │
-│  └──────────┬───────────────────────┘                            │
-│             │                                                     │
-└─────────────┼────────────────────────────────────────────────────┘
+-----------------------------------------------------------------
+| PROCESSING LAYER | |
+|------------------------------------------------ |
+| | | |
+| ---------------------------------- | |
+| | AI Agent (Gemma 4 E4B) | | ----------------- |
+| | |-- | Historical Logs | |
+| | - Sensor analysis | | & Time Series | |
+| | - Visual feature extraction | `----------------- |
+| | - Audio anomaly detection | |
+| | - Trend prediction | |
+| | - Yield forecasting | |
+| `--------------------------------- |
+| | |
+| |
+| ---------------------------------- |
+| | Pydantic Schema Validation | |
+| | (Enforce CropOptimizationPlan) | |
+| | -> If invalid -> FAIL loudly | |
+| `--------------------------------- |
+| | |
+`-----------------------------------------------------------------
 
-┌─────────────┼────────────────────────────────────────────────────┐
-│    ACTION LAYER                                                  │
-├─────────────▼────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────┐          │
-│  │ Pump Control │  │Light Control │  │Alert/Logging  │          │
-│  │ (GPIO/I2C)   │  │ (PWM GPIO)   │  │(MQTT publish) │          │
-│  └──────────────┘  └──────────────┘  └───────────────┘          │
-│                                                                   │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │   Media Pruner (Background Task)                         │    │
-│  │   • Delete old media (>48hrs)                            │    │
-│  │   • Compress old logs (.gz)                              │    │
-│  │   • Monitor disk usage (alert if >85%)                   │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│                                                                   │
-└───────────────────────────────────────────────────────────────────┘
+-----------------------------------------------------------------
+| ACTION LAYER |
+|-----------------------------------------------------------------
+| |
+| -------------- -------------- --------------- |
+| | Pump Control | |Light Control | |Alert/Logging | |
+| | (GPIO/I2C) | | (PWM GPIO) | |(MQTT publish) | |
+| `-------------- `-------------- `--------------- |
+| |
+| ---------------------------------------------------------- |
+| | Media Pruner (Background Task) | |
+| | - Delete old media (>48hrs) | |
+| | - Compress old logs (.gz) | |
+| | - Monitor disk usage (alert if >85%) | |
+| `---------------------------------------------------------- |
+| |
+`-------------------------------------------------------------------
 ```
 
 ---
 
 ## Module Responsibilities
 
-### `portal_core/ai_agent.py` — AI Agent (Gemma 4 E4B)
+### `portal_core/ai_agent.py` - AI Agent (Gemma 4 E4B)
 
 **Purpose:** Core reasoning engine. Analyzes multi-modal input and generates optimization plans.
 
 **Key Methods:**
-- `analyze_sensor_state(sensor_data, historical_context)` — Parse telemetry trends
-- `process_visual_feedback(frame_data)` — Extract crop health metrics from camera feed
-- `process_audio_feedback(audio_data)` — Detect anomalies (pump failure, pests)
-- `generate_optimization_plan(sensor_analysis, visual_analysis, audio_analysis)` — Generate Pydantic-validated action plan
-- `health_check()` — Verify Ollama and Gemma 4 E4B are loaded
+- `analyze_sensor_state(sensor_data, historical_context)` - Parse telemetry trends
+- `process_visual_feedback(frame_data)` - Extract crop health metrics from camera feed
+- `process_audio_feedback(audio_data)` - Detect anomalies (pump failure, pests)
+- `generate_optimization_plan(sensor_analysis, visual_analysis, audio_analysis)` - Generate Pydantic-validated action plan
+- `health_check()` - Verify Ollama and Gemma 4 E4B are loaded
 
 **Configuration:**
 - **Model:** Gemma 4 (via `gemma4:e4b`)
@@ -99,23 +99,23 @@ The Byte Size Kai is a **closed-loop, autonomous edge AI system** for real-time 
 
 ---
 
-### `portal_core/mqtt_client.py` — MQTT Subscriber
+### `portal_core/mqtt_client.py` - MQTT Subscriber
 
 **Purpose:** Real-time telemetry ingestion from ESP32 sensor nodes.
 
 **Key Methods:**
-- `connect()` — Establish broker connection
-- `read_message()` — Async read from message queue
-- `health_check()` — Verify broker connectivity
+- `connect()` - Establish broker connection
+- `read_message()` - Async read from message queue
+- `health_check()` - Verify broker connectivity
 
 **Message Format:**
 ESP32 publishes JSON to topics like `horowhenua/sensors/soil_moisture_1`:
 ```json
 {
-  "sensor_id": "soil_moisture_1",
-  "value": 65.3,
-  "unit": "V",
-  "timestamp": "2026-05-31T23:45:00Z"
+ "sensor_id": "soil_moisture_1",
+ "value": 65.3,
+ "unit": "V",
+ "timestamp": "2026-05-31T23:45:00Z"
 }
 ```
 
@@ -124,16 +124,16 @@ ESP32 publishes JSON to topics like `horowhenua/sensors/soil_moisture_1`:
 
 ---
 
-### `portal_core/av_capture.py` — Audio/Video Capture
+### `portal_core/av_capture.py` - Audio/Video Capture
 
 **Purpose:** Real-time streaming from CSI camera and USB microphone.
 
 **Key Methods:**
-- `start_video_stream()` — Initialize OpenCV camera (30 fps)
-- `start_audio_stream()` — Initialize PyAudio (16kHz, mono)
-- `capture_frame()` — Get single JPEG frame
-- `capture_audio_chunk()` — Get audio buffer (4096 samples)
-- `health_check()` — Verify both streams are operational
+- `start_video_stream()` - Initialize OpenCV camera (30 fps)
+- `start_audio_stream()` - Initialize PyAudio (16kHz, mono)
+- `capture_frame()` - Get single JPEG frame
+- `capture_audio_chunk()` - Get audio buffer (4096 samples)
+- `health_check()` - Verify both streams are operational
 
 **Hardware:**
 - **Camera:** CSI module (native RPi 5 connector)
@@ -141,19 +141,19 @@ ESP32 publishes JSON to topics like `horowhenua/sensors/soil_moisture_1`:
 
 **Encoding:**
 - Video: JPEG (compressed)
-- Audio: PCM (raw bytes → converted to WAV/FLAC by LLM interface)
+- Audio: PCM (raw bytes -> converted to WAV/FLAC by LLM interface)
 
 ---
 
-### `portal_core/media_pruner.py` — Storage Lifecycle Management
+### `portal_core/media_pruner.py` - Storage Lifecycle Management
 
 **Purpose:** Prevent 24/7 AV capture from saturating RPi 5's SD/NVMe storage.
 
 **Key Methods:**
-- `prune_old_media()` — Delete media files >N hours old (default 48hrs)
-- `compress_old_logs()` — gzip sensor logs >7 days old
-- `check_disk_usage()` — Monitor; alert if >85% full
-- `get_storage_stats()` — Return current disk utilization
+- `prune_old_media()` - Delete media files >N hours old (default 48hrs)
+- `compress_old_logs()` - gzip sensor logs >7 days old
+- `check_disk_usage()` - Monitor; alert if >85% full
+- `get_storage_stats()` - Return current disk utilization
 
 **Configuration:**
 - Retention: `MEDIA_RETENTION_HOURS` env var (default 48)
@@ -163,20 +163,20 @@ ESP32 publishes JSON to topics like `horowhenua/sensors/soil_moisture_1`:
 **Behavior:**
 ```
 Media File Lifecycle:
-1. Captured → stored in telemetry_data/media/
-2. Analyzed by LLM → flagged for deletion
-3. After 48 hours → auto-deleted
-4. If disk >85% → aggressive pruning + alert
+1. Captured -> stored in telemetry_data/media/
+2. Analyzed by LLM -> flagged for deletion
+3. After 48 hours -> auto-deleted
+4. If disk >85% -> aggressive pruning + alert
 
 Sensor Logs Lifecycle:
 1. Accumulated in telemetry_data/sensor_logs/
-2. After 7 days → compressed to .gz
+2. After 7 days -> compressed to .gz
 3. Archived .gz kept indefinitely (optional S3 backup)
 ```
 
 ---
 
-### `portal_schemas/ai_models.py` — Pydantic Schema Enforcement
+### `portal_schemas/ai_models.py` - Pydantic Schema Enforcement
 
 **Purpose:** Ensure LLM output conforms to deterministic structures. Prevents hallucinations from breaking hardware.
 
@@ -185,46 +185,46 @@ Sensor Logs Lifecycle:
 #### `SensorReading`
 ```python
 SensorReading(
-    sensor_id: str,
-    sensor_type: str,
-    value: float,
-    unit: str,
-    timestamp: datetime
+ sensor_id: str,
+ sensor_type: str,
+ value: float,
+ unit: str,
+ timestamp: datetime
 )
 ```
 
 #### `AnalysisResult`
 ```python
 AnalysisResult(
-    analysis_id: str,
-    status: str,  # "healthy", "warning", "critical"
-    soil_moisture_trend: str,  # "stable", "increasing", "decreasing"
-    ambient_light_level: str,  # "low", "optimal", "high"
-    humidity_status: str,
-    visual_observations: Optional[str],  # From camera
-    audio_observations: Optional[str],   # From microphone
+ analysis_id: str,
+ status: str, # "healthy", "warning", "critical"
+ soil_moisture_trend: str, # "stable", "increasing", "decreasing"
+ ambient_light_level: str, # "low", "optimal", "high"
+ humidity_status: str,
+ visual_observations: Optional[str], # From camera
+ audio_observations: Optional[str], # From microphone
 )
 ```
 
 #### `CropOptimizationPlan` (PRIMARY OUTPUT)
 ```python
 CropOptimizationPlan(
-    plan_id: str,
-    pump_action: PumpAction,  # "off", "low", "medium", "high"
-    lighting_action: LightingAction,  # "off", "dim", "normal", "full"
-    predicted_yield_impact: Optional[str],
-    logistical_notes: Optional[str],
-    confidence_score: float,  # 0.0 - 1.0
-    execution_window_minutes: int,
-    requires_human_review: bool
+ plan_id: str,
+ pump_action: PumpAction, # "off", "low", "medium", "high"
+ lighting_action: LightingAction, # "off", "dim", "normal", "full"
+ predicted_yield_impact: Optional[str],
+ logistical_notes: Optional[str],
+ confidence_score: float, # 0.0 - 1.0
+ execution_window_minutes: int,
+ requires_human_review: bool
 )
 ```
 
 **Validation Flow:**
 1. LLM generates JSON response
 2. Pydantic validates against schema
-3. If invalid → exception → no hardware action
-4. If valid → hardware commands enforced atomically
+3. If invalid -> exception -> no hardware action
+4. If valid -> hardware commands enforced atomically
 
 ---
 
@@ -232,29 +232,29 @@ CropOptimizationPlan(
 
 ```python
 async def main():
-    portal = BlueMonPortal()
-    
-    # Initialize all components
-    ai_agent = AIAgent(ollama_host, model)
-    mqtt_client = MQTTClient(broker_host)
-    av_capture = AVCapture()
-    media_pruner = MediaPruner()
-    
-    # Health check all subsystems
-    health = await portal.health_check()
-    
-    # Start background tasks
-    asyncio.create_task(media_pruner.start())  # Disk cleanup
-    asyncio.create_task(sensor_processing_loop())  # Main loop
-    
-    # Main event loop processes MQTT → LLM → Hardware
-    while running:
-        message = await mqtt_client.read_message()
-        analysis = await ai_agent.analyze_sensor_state(message)
-        frame = await av_capture.capture_frame()
-        audio = await av_capture.capture_audio_chunk()
-        plan = await ai_agent.generate_optimization_plan(...)
-        # Execute plan (pump, lights, etc.)
+ portal = BlueMonPortal()
+ 
+ # Initialize all components
+ ai_agent = AIAgent(ollama_host, model)
+ mqtt_client = MQTTClient(broker_host)
+ av_capture = AVCapture()
+ media_pruner = MediaPruner()
+ 
+ # Health check all subsystems
+ health = await portal.health_check()
+ 
+ # Start background tasks
+ asyncio.create_task(media_pruner.start()) # Disk cleanup
+ asyncio.create_task(sensor_processing_loop()) # Main loop
+ 
+ # Main event loop processes MQTT -> LLM -> Hardware
+ while running:
+ message = await mqtt_client.read_message()
+ analysis = await ai_agent.analyze_sensor_state(message)
+ frame = await av_capture.capture_frame()
+ audio = await av_capture.capture_audio_chunk()
+ plan = await ai_agent.generate_optimization_plan(...)
+ # Execute plan (pump, lights, etc.)
 ```
 
 ---
@@ -264,11 +264,11 @@ async def main():
 ### Model Selection
 
 **Gemma 4 E4B** is chosen because:
-- ✓ **Effective 4B params** — Fits in RPi 5 RAM with headroom
-- ✓ **Multi-modal** — Native support for text, image, audio embeddings
-- ✓ **Quantized** — Deployable on edge (typically 4-bit or 8-bit)
-- ✓ **Fast inference** — ~100-200ms per token on RPi 5 CPU; faster with Hailo-10H NPU acceleration
-- ✓ **Low latency** — Suitable for real-time decision-making in agriculture
+- [OK] **Effective 4B params** - Fits in RPi 5 RAM with headroom
+- [OK] **Multi-modal** - Native support for text, image, audio embeddings
+- [OK] **Quantized** - Deployable on edge (typically 4-bit or 8-bit)
+- [OK] **Fast inference** - ~100-200ms per token on RPi 5 CPU; faster with Hailo-10H NPU acceleration
+- [OK] **Low latency** - Suitable for real-time decision-making in agriculture
 
 ### Ollama Setup
 
@@ -283,7 +283,7 @@ ollama pull gemma4:e4b
 
 # Verify installation
 ollama list
-# Expected output: gemma4:e4b  c6eb396dbd59  9.6 GB  <timestamp>
+# Expected output: gemma4:e4b c6eb396dbd59 9.6 GB <timestamp>
 
 # API endpoint (used by AIAgent):
 # POST http://localhost:11434/api/generate
@@ -310,10 +310,10 @@ You have access to:
 
 Respond with a JSON optimization plan conforming to this schema:
 {
-  "plan_id": "...",
-  "pump_action": "off" | "low" | "medium" | "high",
-  "lighting_action": "off" | "dim" | "normal" | "full",
-  ...
+ "plan_id": "...",
+ "pump_action": "off" | "low" | "medium" | "high",
+ "lighting_action": "off" | "dim" | "normal" | "full",
+ ...
 }
 
 Do not deviate from this schema. Invalid JSON will cause hardware failure.
@@ -342,38 +342,38 @@ python validate.py
 **Tests Performed:**
 
 1. **Configuration Test**
-   - Loads `.env` file
-   - Validates all required environment variables
-   - Reports configuration summary
+ - Loads `.env` file
+ - Validates all required environment variables
+ - Reports configuration summary
 
 2. **Ollama Health Check**
-   - Connects to Ollama API endpoint
-   - Verifies Gemma 4 model is loaded and accessible
-   - Confirms model version and availability
+ - Connects to Ollama API endpoint
+ - Verifies Gemma 4 model is loaded and accessible
+ - Confirms model version and availability
 
 3. **MQTT Connectivity**
-   - Attempts connection to configured MQTT broker
-   - Validates message subscription
-   - Note: May fail if broker not running locally (expected in dev)
+ - Attempts connection to configured MQTT broker
+ - Validates message subscription
+ - Note: May fail if broker not running locally (expected in dev)
 
 4. **Audio/Video Capture**
-   - Tests camera stream initialization
-   - Tests microphone/audio stream initialization
-   - Expected to warn on non-RPi environments (e.g., development machines)
+ - Tests camera stream initialization
+ - Tests microphone/audio stream initialization
+ - Expected to warn on non-RPi environments (e.g., development machines)
 
 5. **Hardware Control**
-   - Validates GPIO simulation (runs in safe mode on dev machines)
-   - Confirms pump and lighting control modules are functional
+ - Validates GPIO simulation (runs in safe mode on dev machines)
+ - Confirms pump and lighting control modules are functional
 
 6. **Media Pruner**
-   - Verifies storage directory structure
-   - Confirms pruning daemon can initialize
-   - Reports current disk usage statistics
+ - Verifies storage directory structure
+ - Confirms pruning daemon can initialize
+ - Reports current disk usage statistics
 
 7. **AI Agent Methods**
-   - Initializes AIAgent with configured Ollama parameters
-   - Attempts LLM calls (sensor analysis, visual analysis, audio analysis, optimization planning)
-   - Validates Pydantic schema enforcement
+ - Initializes AIAgent with configured Ollama parameters
+ - Attempts LLM calls (sensor analysis, visual analysis, audio analysis, optimization planning)
+ - Validates Pydantic schema enforcement
 
 **Success Criteria:**
 - All tests should pass (6/7 minimum; 7/7 ideal)
@@ -382,16 +382,16 @@ python validate.py
 
 **Example Output:**
 ```
-✓ PASS: configuration
-✓ PASS: ollama
-✗ FAIL: mqtt (broker not running - expected in dev)
-✓ PASS: av_capture
-✓ PASS: hardware_control
-✓ PASS: media_pruner
-✓ PASS: ai_agent_methods
+[OK] PASS: configuration
+[OK] PASS: ollama
+[X] FAIL: mqtt (broker not running - expected in dev)
+[OK] PASS: av_capture
+[OK] PASS: hardware_control
+[OK] PASS: media_pruner
+[OK] PASS: ai_agent_methods
 
 Results: 6/7 tests passed
-⚠ 1 test(s) failed - review configuration and dependencies
+ 1 test(s) failed - review configuration and dependencies
 ```
 
 ### Pre-Deployment Checklist
@@ -476,5 +476,5 @@ WantedBy=multi-user.target
 
 ---
 
-**For detailed hardware setup, see [HARDWARE_SETUP.md](HARDWARE_SETUP.md).**  
+**For detailed hardware setup, see [HARDWARE_SETUP.md](HARDWARE_SETUP.md).** 
 **For development & testing, see [DEVELOPMENT.md](DEVELOPMENT.md).**

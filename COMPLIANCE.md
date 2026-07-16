@@ -22,7 +22,7 @@ The HSNO Act controls the management of environmental pests and hazardous substa
 
 ---
 
-## 3. Māori Data Sovereignty (Te Mana Raraunga)
+## 3. Maori Data Sovereignty (Te Mana Raraunga)
 
 * **Physical Land Stewardship (Kaitiakitanga):** Visual coordinates, crop density reports, and pest activity hotspots represent direct indicators of whenua health.
 * **Edge-Bound Logging:** To support data sovereignty, the Byte Size Kai service processes raw camera telemetry and audio watchdogs locally on-device. Production logs and crop status audits are retained strictly on local hardware, ensuring iwi managers keep data custody.

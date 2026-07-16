@@ -1,4 +1,4 @@
-# HARDWARE_SETUP.md – Raspberry Pi 5 + Hailo-10H NPU Configuration
+# HARDWARE_SETUP.md - Raspberry Pi 5 + Hailo-10H NPU Configuration
 
 This guide covers the physical assembly and software configuration for deploying Byte Size Kai on edge hardware.
 
@@ -42,11 +42,11 @@ The RPi 5 has an M.2 socket for NVMe drives:
 
 ```bash
 # 1. Power off and unplug RPi 5
-# 2. Insert NVMe drive into M.2 socket (angled 30°, press down until it clicks)
+# 2. Insert NVMe drive into M.2 socket (angled 30, press down until it clicks)
 # 3. Power on
 
 # After boot, format and mount:
-sudo fdisk -l  # Identify the NVMe device (e.g., /dev/nvme0n1)
+sudo fdisk -l # Identify the NVMe device (e.g., /dev/nvme0n1)
 sudo mkfs.ext4 /dev/nvme0n1p1
 sudo mkdir -p /mnt/nvm
 sudo mount /dev/nvme0n1p1 /mnt/nvm
@@ -64,7 +64,7 @@ sudo nano /etc/fstab
 ```bash
 # 1. Power off RPi 5
 # 2. Gently insert Hailo-10H NPU into the PCIe M.2 edge connector
-#    (Note: This is NOT the NVMe socket; separate connector on RPi 5)
+# (Note: This is NOT the NVMe socket; separate connector on RPi 5)
 # 3. Power on
 
 # Verify hardware detection:
@@ -130,8 +130,8 @@ arecord -l
 # Should list: USB Microphone or I2S device
 
 # Test recording:
-arecord -d 3 -f cd -t wav test.wav  # Record 3 seconds
-aplay test.wav  # Playback
+arecord -d 3 -f cd -t wav test.wav # Record 3 seconds
+aplay test.wav # Playback
 ```
 
 ### 6. ESP32 Sensor Nodes
@@ -147,51 +147,51 @@ Configure 2-4 ESP32 microcontrollers as MQTT publishers:
 
 const char* ssid = "your_wifi";
 const char* password = "your_password";
-const char* mqtt_server = "192.168.1.100";  // RPi 5 MQTT broker IP
+const char* mqtt_server = "192.168.1.100"; // RPi 5 MQTT broker IP
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 void setup() {
-  Serial.begin(115200);
-  
-  // Connect to WiFi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) delay(500);
-  
-  // Connect to MQTT
-  client.setServer(mqtt_server, 1883);
-  while (!client.connected()) {
-    if (client.connect("ESP32_Sensor_1")) {
-      Serial.println("MQTT Connected");
-    } else delay(5000);
-  }
+ Serial.begin(115200);
+ 
+ // Connect to WiFi
+ WiFi.begin(ssid, password);
+ while (WiFi.status() != WL_CONNECTED) delay(500);
+ 
+ // Connect to MQTT
+ client.setServer(mqtt_server, 1883);
+ while (!client.connected()) {
+ if (client.connect("ESP32_Sensor_1")) {
+ Serial.println("MQTT Connected");
+ } else delay(5000);
+ }
 }
 
 void loop() {
-  // Read soil moisture (ADC pin)
-  int raw_soil = analogRead(A0);
-  float soil_voltage = (raw_soil / 4095.0) * 3.3;
-  
-  // Read humidity + temperature (DHT22)
-  float humidity = dht.readHumidity();
-  float temperature = dht.readTemperature();
-  
-  // Read ambient light (BH1750)
-  uint16_t lux = lightMeter.readLightLevel();
-  
-  // Publish to MQTT
-  StaticJsonDocument<256> doc;
-  doc["sensor_id"] = "soil_moisture_1";
-  doc["value"] = soil_voltage;
-  doc["unit"] = "V";
-  doc["timestamp"] = millis();
-  
-  char buffer[256];
-  serializeJson(doc, buffer);
-  client.publish("horowhenua/sensors/soil_moisture_1", buffer);
-  
-  delay(5000);  // Publish every 5 seconds
+ // Read soil moisture (ADC pin)
+ int raw_soil = analogRead(A0);
+ float soil_voltage = (raw_soil / 4095.0) * 3.3;
+ 
+ // Read humidity + temperature (DHT22)
+ float humidity = dht.readHumidity();
+ float temperature = dht.readTemperature();
+ 
+ // Read ambient light (BH1750)
+ uint16_t lux = lightMeter.readLightLevel();
+ 
+ // Publish to MQTT
+ StaticJsonDocument<256> doc;
+ doc["sensor_id"] = "soil_moisture_1";
+ doc["value"] = soil_voltage;
+ doc["unit"] = "V";
+ doc["timestamp"] = millis();
+ 
+ char buffer[256];
+ serializeJson(doc, buffer);
+ client.publish("horowhenua/sensors/soil_moisture_1", buffer);
+ 
+ delay(5000); // Publish every 5 seconds
 }
 ```
 
@@ -205,7 +205,7 @@ curl -fsSL https://ollama.ai/install.sh | sh
 
 # Start Ollama service
 sudo systemctl start ollama
-sudo systemctl enable ollama  # Auto-start on boot
+sudo systemctl enable ollama # Auto-start on boot
 
 # Download Gemma 4 E4B model (requires ~8-12GB storage)
 ollama pull gemma4:e4b
@@ -213,8 +213,8 @@ ollama pull gemma4:e4b
 # Verify model is loaded:
 ollama list
 # Expected output:
-# NAME              ID              SIZE    MODIFIED
-# gemma4:e4b        xyz...          9.5GB   10 minutes ago
+# NAME ID SIZE MODIFIED
+# gemma4:e4b xyz... 9.5GB 10 minutes ago
 
 # Test the model:
 ollama run gemma4:e4b "What is 2+2?"
@@ -236,9 +236,9 @@ import ollama
 client = ollama.Client(host='http://localhost:11434')
 
 response = client.generate(
-    model='gemma4:e4b',
-    prompt='Your prompt here',
-    stream=False
+ model='gemma4:e4b',
+ prompt='Your prompt here',
+ stream=False
 )
 print(response['response'])
 ```
@@ -344,7 +344,7 @@ sudo systemctl start blue-moon.service
 
 # Check status:
 sudo systemctl status blue-moon.service
-journalctl -u blue-moon.service -f  # Follow logs
+journalctl -u blue-moon.service -f # Follow logs
 ```
 
 ---
@@ -357,7 +357,7 @@ Before running the portal, verify all hardware:
 - [ ] NVMe SSD mounted at `/mnt/nvm` (or alt storage configured)
 - [ ] Hailo-10H NPU detected (`lspci | grep hailo`)
 - [ ] Hailo drivers installed (`hailo --help` works)
-- [ ] CSI camera connected and detected (`vcgencmd get_camera` → supported=1 detected=1)
+- [ ] CSI camera connected and detected (`vcgencmd get_camera` -> supported=1 detected=1)
 - [ ] Microphone detected (`arecord -l` shows device)
 - [ ] Ollama running (`curl http://localhost:11434/api/tags`)
 - [ ] Gemma 4 E4B model downloaded (`ollama list`)
@@ -391,7 +391,7 @@ sudo reboot
 
 # Manual test with rpicam-hello:
 sudo apt install -y libcamera0 rpicam-apps
-rpicam-hello -t 5000  # Preview for 5 seconds
+rpicam-hello -t 5000 # Preview for 5 seconds
 ```
 
 ### Ollama Unresponsive
@@ -409,7 +409,7 @@ journalctl -u ollama -n 50
 # Manual restart (if service doesn't work):
 ps aux | grep ollama
 kill -9 <ollama_pid>
-ollama serve  # Restart manually
+ollama serve # Restart manually
 ```
 
 ### MQTT Broker Not Accepting Connections
@@ -446,7 +446,7 @@ sudo systemctl restart mosquitto
 ```bash
 # Add to Ollama environment:
 export OLLAMA_NUM_THREADS=4
-export OLLAMA_NUM_GPU=1  # Enable GPU for inference
+export OLLAMA_NUM_GPU=1 # Enable GPU for inference
 systemctl restart ollama
 ```
 

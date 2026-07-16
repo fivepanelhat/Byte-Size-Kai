@@ -9,7 +9,7 @@ cd Blue_Moon_Portal
 
 # Create virtual environment
 python3.10 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -77,20 +77,20 @@ python validate.py
 
 Expected output:
 ```
-╔════════════════════════════════════════════════════════════╗
-║     Byte Size Kai - System Validation & Tests          ║
-╚════════════════════════════════════════════════════════════╝
 
-✓ PASS: configuration
-✓ PASS: ollama
-✓ PASS: mqtt
-✓ PASS: av_capture
-✓ PASS: hardware_control
-✓ PASS: media_pruner
-✓ PASS: ai_agent_methods
+ Byte Size Kai - System Validation & Tests 
+
+
+[OK] PASS: configuration
+[OK] PASS: ollama
+[OK] PASS: mqtt
+[OK] PASS: av_capture
+[OK] PASS: hardware_control
+[OK] PASS: media_pruner
+[OK] PASS: ai_agent_methods
 
 Results: 7/7 tests passed
-✓ ALL TESTS PASSED - System is ready for deployment!
+[OK] ALL TESTS PASSED - System is ready for deployment!
 ```
 
 ### 6. Start Portal
@@ -111,59 +111,59 @@ You should see:
 ### Core Components
 
 1. **AIAgent** (`portal_core/ai_agent.py`)
-   - Interfaces with Ollama for LLM reasoning
-   - Analyzes sensor data, visual frames, and audio
-   - Generates optimization plans
-   - Enforces Pydantic schema validation
+ - Interfaces with Ollama for LLM reasoning
+ - Analyzes sensor data, visual frames, and audio
+ - Generates optimization plans
+ - Enforces Pydantic schema validation
 
 2. **MQTTClient** (`portal_core/mqtt_client.py`)
-   - Async Paho MQTT subscriber
-   - Ingests sensor telemetry from ESP32
-   - Handles connection retry logic
-   - Buffers messages in async queue
+ - Async Paho MQTT subscriber
+ - Ingests sensor telemetry from ESP32
+ - Handles connection retry logic
+ - Buffers messages in async queue
 
 3. **AVCapture** (`portal_core/av_capture.py`)
-   - OpenCV video capture from CSI camera
-   - PyAudio microphone capture
-   - Feeds multi-modal input to LLM
+ - OpenCV video capture from CSI camera
+ - PyAudio microphone capture
+ - Feeds multi-modal input to LLM
 
 4. **HardwareControl** (`portal_core/hardware_control.py`)
-   - GPIO/PWM control of pump and lighting
-   - Supports both real GPIO (RPi) and simulation mode
-   - Tracks action history for auditing
+ - GPIO/PWM control of pump and lighting
+ - Supports both real GPIO (RPi) and simulation mode
+ - Tracks action history for auditing
 
 5. **MediaPruner** (`portal_core/media_pruner.py`)
-   - Auto-cleanup of old media files
-   - Log compression (.gz)
-   - Disk usage monitoring
+ - Auto-cleanup of old media files
+ - Log compression (.gz)
+ - Disk usage monitoring
 
 6. **Configuration** (`portal_core/config.py`)
-   - Pydantic-based configuration validation
-   - Environment variable loading with defaults
-   - Type-safe configuration access
+ - Pydantic-based configuration validation
+ - Environment variable loading with defaults
+ - Type-safe configuration access
 
 ## Data Flow
 
 ```
 Sensors (MQTT)
-      ↓
-  [MQTT Client] → Queue
-      ↓
-  [AI Agent Analysis]
-      ↓
-   + Camera Frame → [Visual Feedback]
-   + Microphone  → [Audio Feedback]
-      ↓
-  [Generate Optimization Plan]
-      ↓
-  [Pydantic Validation]
-      ↓
-  [Hardware Control]
-  - Pump (PWM)
-  - Lighting (PWM)
-  - Alerts
-      ↓
-  [Media Pruner] ← Background task
+ 
+ [MQTT Client] -> Queue
+ 
+ [AI Agent Analysis]
+ 
+ + Camera Frame -> [Visual Feedback]
+ + Microphone -> [Audio Feedback]
+ 
+ [Generate Optimization Plan]
+ 
+ [Pydantic Validation]
+ 
+ [Hardware Control]
+ - Pump (PWM)
+ - Lighting (PWM)
+ - Alerts
+ 
+ [Media Pruner] <- Background task
 ```
 
 ## Development Workflow
@@ -187,9 +187,9 @@ Send mock MQTT data:
 ```bash
 # Using mosquitto_pub
 mosquitto_pub -h localhost -t "horowhenua/sensors/soil" -m '{
-  "sensor_id": "soil_moisture_1",
-  "value": 65.5,
-  "unit": "percent"
+ "sensor_id": "soil_moisture_1",
+ "value": 65.5,
+ "unit": "percent"
 }'
 ```
 
@@ -222,8 +222,8 @@ from portal_core.ai_agent import AIAgent
 
 agent = AIAgent(ollama_host="http://localhost:11434", model="gemma4:e4b")
 analysis = asyncio.run(agent.analyze_sensor_state({
-    "soil_moisture": 65.5,
-    "light": 450
+ "soil_moisture": 65.5,
+ "light": 450
 }))
 print(analysis)
 
@@ -312,9 +312,9 @@ Default pins (customize in .env):
 
 Wiring diagram:
 ```
-RPi 5 GPIO 17 → Relay 1 → Pump
-RPi 5 GPIO 22 → PWM Pin → LED/Light Controller
-RPi 5 GPIO 27 → Buzzer → Alert
+RPi 5 GPIO 17 -> Relay 1 -> Pump
+RPi 5 GPIO 22 -> PWM Pin -> LED/Light Controller
+RPi 5 GPIO 27 -> Buzzer -> Alert
 ```
 
 ## Troubleshooting
@@ -380,7 +380,7 @@ CAMERA_FPS=15
 AUDIO_CHUNK_SIZE=2048
 
 # Tune LLM request timeout in ai_agent.py
-timeout=10.0  # seconds
+timeout=10.0 # seconds
 ```
 
 ### Storage Management
