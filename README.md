@@ -16,6 +16,58 @@
 Anti-hallucination policy: [`.github/agent-fleet/anti-hallucination.md`](./.github/agent-fleet/anti-hallucination.md) | Congruence: [`CAT_CONGRUENCE.md`](./CAT_CONGRUENCE.md)
 <!-- END CAT_CONGRUENCE_SNIPPET -->
 
+<!-- BEGIN PROBLEMS_SOLUTIONS_ECONOMY -->
+## Problems we are solving
+
+**Byte Size Kai** is Coastal Alpine Tech's **lead agritech beachhead** - sovereign multi-modal crop intelligence for microgreens and Mana Kai-class growers.
+
+1. **Rural cloud blackouts** - Farms cannot wait on a distant API when the cell tower drops; irrigation and crop decisions must continue offline.
+2. **Unstructured sensor noise** - Raw MQTT floats, camera frames, and audio do not become decisions until structured into auditable records.
+3. **Fragmented farm context** - Moisture, leaf vision, and equipment sound are usually siloed; growers need one multi-modal picture.
+4. **Compliance and food-system pressure** - Biosecurity, food safety, and environmental expectations demand local logs, not opaque foreign SaaS.
+5. **Data sovereignty on whenua** - Operational farm data should remain under grower / mana whenua custody (Te Mana Raraunga), not default to offshore models.
+
+## Solution we have built
+
+| Built capability | What it does |
+| :--- | :--- |
+| **Byte Size Kai portal** (this repo) | Multi-modal edge pipeline: sensors + vision + local LLM on **RPi 5 16GB + Hailo-10H** |
+| **Coastal-Alpine-Core SDK** | Shared security, telemetry, Ollama, and portal primitives |
+| **Sovereign-Edge-Firmware** | ESP32 field nodes with mTLS MQTT into the local hub |
+| **Sister portals** | SoilGuard (soil/N caps), AquaGuard (water), Sting (biosecurity vision) when the wedge needs them |
+| **HITL policy** | Agents inform / draft / prepare / monitor / remind - humans approve actuation and commercial decisions |
+
+**Clone / CI path:** `https://github.com/fivepanelhat/Byte-Size-Kai`  
+**Portfolio map:** [fivepanelhat / Kiwi Edge AI Stack](https://github.com/fivepanelhat/fivepanelhat)
+
+### Local (Taranaki) and national (Aotearoa) economic benefits
+
+Coastal Alpine Tech is a **pre-seed** company engineering in **New Plymouth, Taranaki**, with field context in regional primary industries (including Mana Kai-class / Horowhenua agritech). Benefits are framed as **pathways**, not guaranteed job numbers.
+
+#### Local / regional (Taranaki and rural NZ)
+
+| Pathway | What it creates |
+| :--- | :--- |
+| **R&D and product HQ** | Engineering, product, and IP ownership in region - counterweight to capital-city-only tech |
+| **Field install and support** | RPi / Hailo edge nodes, ESP32 sensors, and pilot support need local technicians and partners |
+| **EDA leverage** | Tools that help Venture Taranaki-class programmes onboard more founders without linear staff growth |
+| **Contractor network** | Legal, cultural advisory, hardware, and pilot ops spend that stays in NZ |
+
+#### National economy and employment
+
+| Pathway | What it creates |
+| :--- | :--- |
+| **Primary sector competitiveness** | Better yield, compliance, and biosecurity decisions support NZ's export food economy |
+| **Onshore data value** | Farm, whanau, and SME operational data stays under NZ custody (Privacy Act + Te Mana Raraunga) |
+| **Founder formation** | Faster, cleaner company setup and RDTI-ready logging keeps more early companies investable **in NZ** |
+| **Digital capability outside main centres** | Edge AI skills (vision, MQTT, local LLM) transferable across regions |
+| **Quality of work** | Human-in-the-loop design preserves skilled human roles in advice, compliance, and care |
+
+#### How this product contributes
+
+See **Solution we have built** above. Cross-portfolio map: [Kiwi Edge AI Stack](https://github.com/fivepanelhat/fivepanelhat) | employment detail: [NZ-Start-Up investor pack](https://github.com/fivepanelhat/NZ-Start-Up/blob/main/docs/INVESTOR_RD_AND_MARKET_REFERENCE.md).
+<!-- END PROBLEMS_SOLUTIONS_ECONOMY -->
+
 ## Repository identity
 
 | Name | Use |
@@ -68,11 +120,6 @@ This repository **is** Byte Size Kai on the Kiwi Edge stack (RPi 5 16GB + Hailo-
 
 Agents **inform, draft, prepare, monitor, and remind**. Physical actuation and commercial decisions stay human-in-the-loop unless an explicit local allow-list is configured on-site.
 
-## The Problems We Are Solving
-
-1. **Cloud Dependency & Latency:** Agricultural hardware shouldn't stop working when the internet drops. We are moving inference to the edge.
-2. **Unstructured IoT Data:** Sensors generate massive amounts of noise. We are solving the problem of parsing raw floats and integers into structured, deterministic JSON for automated actions.
-3. **Fragmented Context:** Traditional setups look at water levels or camera feeds in isolation. We are building a multi-modal agent that contextualizes soil moisture alongside visual leaf health and ambient acoustic data.
 
 ## Quick Start
 
