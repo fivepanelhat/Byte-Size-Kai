@@ -362,21 +362,24 @@ Blue_Moon_Portal/
 âœ" **Deterministic Output:** Pydantic schemas prevent conversational hallucinations; LLM must output valid JSON or fail loudly.
 âœ" **Auto-Recovery:** Systemd service ensures portal restarts after power loss.
 âœ" **Storage-Aware:** Automated media pruning prevents 24/7 AV capture from filling the SD card.
-âœ" **Open Source:** Full transparency for agricultural data sovereignty.
+- **Source transparency:** Public engineering repo under the Coastal Alpine Tech proprietary licence (see `LICENSE`) — not an open-source grant.
+- **Honesty:** Pre-seed target architecture; see [REALITY.md](./REALITY.md).
 
 ---
 
 ## Performance & Benchmarks
 
-- **Local Inference Latency:** ~0.95 seconds per query running Google's `gemma4:e4b` on Raspberry Pi 5.
-- **Energy Consumption:** Peak active NPU execution draw is ~1.5W, enabling solar-powered off-grid deployment.
-- **Storage Footprint:** media pruner limits raw camera frame buffer size below 500MB, retaining compliance records for 7+ years in compressed format.
+> **Illustrative / re-measure on your hardware.** Not audited production SLAs. Informal ballparks on RPi 5 16GB + Hailo-10H + local Ollama; re-run before quoting externally.
+
+- **Local inference latency:** order of ~1 second per routing/query class workload (model- and load-dependent).
+- **Energy:** NPU-assisted vision workloads are designed for low power edge draw — measure joules on your node via Core telemetry.
+- **Storage:** media pruner is intended to keep AV buffers bounded on SD cards; retention policy is site-configured.
 
 ---
 
 ## Contributing
 
-This project is open-source and welcomes contributions from the agritech and edge AI communities.
+This repository is **proprietary** (Coastal Alpine Tech Limited). External contributions require a written agreement. Agritech and edge AI partners interested in pilots should open a GitHub Discussion/Issue for commercial contact — do not assume an open-source CLA.
 
 ### Getting Started as a Contributor
 
