@@ -1,6 +1,6 @@
-# Installation Guide - Blue-Moon-Portal
+# Installation Guide - Byte-Size-Kai
 
-Follow the instructions below to install Blue-Moon-Portal on your operating system.
+Follow the instructions below to install Byte-Size-Kai on your operating system.
 
 ## Linux Installation
 
@@ -14,8 +14,8 @@ python3 bootstrap.py
 If you prefer to perform the setup steps manually:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
-   cd Blue-Moon-Portal
+   git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
+   cd Byte-Size-Kai
    ```
 2. Create and activate a virtual environment:
    ```bash
@@ -43,8 +43,8 @@ python bootstrap.py
 If you prefer to perform the setup steps manually:
 1. Clone the repository:
    ```powershell
-   git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
-   cd Blue-Moon-Portal
+   git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
+   cd Byte-Size-Kai
    ```
 2. Create and activate a virtual environment:
    ```powershell

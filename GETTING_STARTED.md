@@ -1,4 +1,4 @@
-# Blue Moon Portal - Getting Started & Development Guide
+# Byte Size Kai - Getting Started & Development Guide
 
 ## Quick Start
 
@@ -78,7 +78,7 @@ python validate.py
 Expected output:
 ```
 ╔════════════════════════════════════════════════════════════╗
-║     Blue Moon Portal - System Validation & Tests          ║
+║     Byte Size Kai - System Validation & Tests          ║
 ╚════════════════════════════════════════════════════════════╝
 
 ✓ PASS: configuration
@@ -101,9 +101,9 @@ python main.py
 
 You should see:
 ```
-2026-05-31 23:45:00 - __main__ - INFO - Blue Moon Portal orchestrator initialized
+2026-05-31 23:45:00 - __main__ - INFO - Byte Size Kai orchestrator initialized
 2026-05-31 23:45:00 - portal_core.ai_agent - INFO - Ollama health check: OK
-2026-05-31 23:45:00 - __main__ - INFO - Blue Moon Portal is ONLINE and processing
+2026-05-31 23:45:00 - __main__ - INFO - Byte Size Kai is ONLINE and processing
 ```
 
 ## Architecture Overview
@@ -270,7 +270,7 @@ Create `/etc/systemd/system/blue-moon-portal.service`:
 
 ```ini
 [Unit]
-Description=Blue Moon Portal - Autonomous Crop Optimization
+Description=Byte Size Kai - Autonomous Crop Optimization
 After=network-online.target mqtt.service ollama.service
 Wants=network-online.target
 
@@ -404,6 +404,6 @@ CRITICAL_DISK_USAGE_PCT=80
 ## Support
 
 For issues, questions, or contributions:
-- GitHub Issues: https://github.com/yourusername/blue-moon-portal/issues
-- Documentation: https://github.com/yourusername/blue-moon-portal/wiki
+- GitHub Issues: https://github.com/fivepanelhat/Byte-Size-Kai/issues
+- Documentation: https://github.com/fivepanelhat/Byte-Size-Kai/wiki
 - Contact: info@coastalalpine.co.nz

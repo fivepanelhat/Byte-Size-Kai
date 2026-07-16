@@ -1,5 +1,5 @@
 """
-Blue Moon Portal - Main Orchestrator with Full Data Flywheel Integration
+Byte Size Kai - Main Orchestrator with Full Data Flywheel Integration
 
 Edge optimisations (RPi 5 16GB + Hailo-10H friendly):
 - Exception-safe multimodal gather
@@ -35,7 +35,7 @@ logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-logger = logging.getLogger("BlueMoonPortal")
+logger = logging.getLogger("ByteSizeKai")
 
 # Loop / edge policy (overridable via env)
 MIN_PLAN_INTERVAL_SEC = float(os.getenv("BLUE_MOON_MIN_PLAN_INTERVAL_SEC", "30"))
@@ -98,8 +98,8 @@ def _is_stable_status(analysis: Any) -> bool:
     return status in ("healthy", "optimal", "ok", "stable", "normal")
 
 
-class BlueMonPortal:
-    """Blue Moon Portal orchestrator (name kept for test/API compatibility)."""
+class ByteSizeKaiPortal:
+    """Byte Size Kai edge orchestrator."""
 
     def __init__(self, config):
         self.config = config
@@ -154,7 +154,7 @@ class BlueMonPortal:
         self._loop = None
 
         logger.info(
-            "Blue Moon Portal initialized (model=%s, adaptive_av=%s, min_plan_interval=%ss)",
+            "Byte Size Kai initialized (model=%s, adaptive_av=%s, min_plan_interval=%ss)",
             config.ollama.model,
             ADAPTIVE_AV,
             MIN_PLAN_INTERVAL_SEC,
@@ -355,7 +355,7 @@ class BlueMonPortal:
             asyncio.create_task(self.process_sensor_loop(), name="sensor_loop"),
             asyncio.create_task(self._pruner_loop(), name="media_pruner"),
         ]
-        logger.info("Blue Moon Portal started")
+        logger.info("Byte Size Kai started")
         await asyncio.gather(*self._tasks, return_exceptions=True)
 
     async def stop(self) -> None:
@@ -380,11 +380,12 @@ class BlueMonPortal:
         except Exception:
             pass
         await self.cleanup()
-        logger.info("Blue Moon Portal stopped")
+        logger.info("Byte Size Kai stopped")
 
 
-# Back-compat alias
-BlueMoonPortal = BlueMonPortal
+# Back-compat aliases (pre-rename Blue Moon Portal)
+BlueMoonPortal = ByteSizeKaiPortal
+BlueMonPortal = ByteSizeKaiPortal
 
 
 async def _amain() -> int:
@@ -394,7 +395,7 @@ async def _amain() -> int:
         logger.error("Failed to load configuration: %s", e)
         return 1
 
-    portal = BlueMonPortal(config)
+    portal = ByteSizeKaiPortal(config)
     loop = asyncio.get_running_loop()
 
     def _signal_handler():

@@ -1,5 +1,5 @@
 """
-setup.py - Blue Moon Portal Package Configuration
+setup.py - Byte Size Kai Package Configuration
 
 Enables installation via 'pip install .' or 'pip install -e .'
 """
@@ -17,18 +17,18 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     ]
 
 setup(
-    name="blue_moon_portal",
-    version="1.2.0",
+    name="byte_size_kai",
+    version="1.3.0",
     author="Coastal Alpine Tech Limited",
     author_email="info@coastalalpine.co.nz",
-    description="Autonomous on-premise agritech crop tracker with edge AI",
+    description="Byte Size Kai — sovereign multi-modal edge agritech for microgreens / Mana Kai",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/blue-moon-portal",
+    url="https://github.com/fivepanelhat/Byte-Size-Kai",
     project_urls={
-        "Bug Tracker": "https://github.com/yourusername/blue-moon-portal/issues",
-        "Documentation": "https://github.com/yourusername/blue-moon-portal/wiki",
-        "Source Code": "https://github.com/yourusername/blue-moon-portal",
+        "Bug Tracker": "https://github.com/fivepanelhat/Byte-Size-Kai/issues",
+        "Documentation": "https://github.com/fivepanelhat/Byte-Size-Kai/wiki",
+        "Source Code": "https://github.com/fivepanelhat/Byte-Size-Kai",
     },
     packages=find_packages(),
     classifiers=[
@@ -59,9 +59,10 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "blue-moon-portal=main:main",
+            "byte-size-kai=main:main",
+            "blue-moon-portal=main:main",  # back-compat
         ],
     },
-    keywords="agriculture IoT edge-ai microgreens automation crop-tracking",
+    keywords="byte-size-kai agriculture IoT edge-ai microgreens automation crop-tracking mana-kai",
     include_package_data=True,
 )

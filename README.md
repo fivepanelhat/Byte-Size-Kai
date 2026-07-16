@@ -16,14 +16,15 @@
 Anti-hallucination policy: [`.github/agent-fleet/anti-hallucination.md`](./.github/agent-fleet/anti-hallucination.md) | Congruence: [`CAT_CONGRUENCE.md`](./CAT_CONGRUENCE.md)
 <!-- END CAT_CONGRUENCE_SNIPPET -->
 
-## Product name vs stack name
+## Repository identity
 
 | Name | Use |
 |------|-----|
-| **Byte Size Kai** | Product brand - growers, Mana Kai partners, and the [org front page](https://github.com/fivepanelhat/fivepanelhat) lead with this |
-| **Blue-Moon-Portal** | Repository / edge portal package name (background technical identity) |
+| **Byte Size Kai** | Product brand (growers, Mana Kai partners, org front page) |
+| **Byte-Size-Kai** | GitHub repository (this repo) |
+| *Blue-Moon-Portal* | **Former** repo name — GitHub redirects old URLs |
 
-This repository implements **Byte Size Kai** on the Kiwi Edge stack (RPi 5 16GB + Hailo-10H, Core SDK, local Ollama).
+This repository **is** Byte Size Kai on the Kiwi Edge stack (RPi 5 16GB + Hailo-10H, Core SDK, local Ollama).
 
 
 
@@ -32,32 +33,32 @@ This repository implements **Byte Size Kai** on the Kiwi Edge stack (RPi 5 16GB 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?logo=python&logoColor=white)](https://www.python.org)
 [![Ollama](https://img.shields.io/badge/Ollama-Gemma%204-000000?logo=ollama&logoColor=white)](https://ollama.com)
 
-[![Linux](https://img.shields.io/badge/Linux-Ubuntu%2C%20Debian%2C%20Fedora-FCC624?logo=linux&logoColor=black)](https://github.com/fivepanelhat/Blue-Moon-Portal)
-[![Windows](https://img.shields.io/badge/Windows-10%2B-0078D4?logo=windows&logoColor=white)](https://github.com/fivepanelhat/Blue-Moon-Portal)
-[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://github.com/fivepanelhat/Blue-Moon-Portal)
-[![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-5%20%2816GB%29-C11A5B?logo=raspberry-pi&logoColor=white)](https://github.com/fivepanelhat/Blue-Moon-Portal)
+[![Linux](https://img.shields.io/badge/Linux-Ubuntu%2C%20Debian%2C%20Fedora-FCC624?logo=linux&logoColor=black)](https://github.com/fivepanelhat/Byte-Size-Kai)
+[![Windows](https://img.shields.io/badge/Windows-10%2B-0078D4?logo=windows&logoColor=white)](https://github.com/fivepanelhat/Byte-Size-Kai)
+[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://github.com/fivepanelhat/Byte-Size-Kai)
+[![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-5%20%2816GB%29-C11A5B?logo=raspberry-pi&logoColor=white)](https://github.com/fivepanelhat/Byte-Size-Kai)
 
 [![Claude AI](https://img.shields.io/badge/Claude-Anthropic-9C27B0)](https://anthropic.com)
 [![Gemini](https://img.shields.io/badge/Gemini-Google-4285F4?logo=google&logoColor=white)](https://gemini.google.com)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-00A67E)](https://openai.com)
 [![Grok](https://img.shields.io/badge/Grok-xAI-000000)](https://x.ai)
 
-[![Hailo NPU](https://img.shields.io/badge/NPU-Hailo--10H-005A9C)](https://github.com/fivepanelhat/Blue-Moon-Portal)
+[![Hailo NPU](https://img.shields.io/badge/NPU-Hailo--10H-005A9C)](https://github.com/fivepanelhat/Byte-Size-Kai)
 [![MQTT](https://img.shields.io/badge/MQTT-Mosquitto-3C5280?logo=mqtt&logoColor=white)](https://mosquitto.org)
-[![Data Sovereign](https://img.shields.io/badge/Data%20Sovereign-NZ%20Bound-00247D)](https://github.com/fivepanelhat/Blue-Moon-Portal)
+[![Data Sovereign](https://img.shields.io/badge/Data%20Sovereign-NZ%20Bound-00247D)](https://github.com/fivepanelhat/Byte-Size-Kai)
 [![Sustainability](https://img.shields.io/badge/EECA%20NZ-Carbon%20Tracked-green)](https://www.eeca.govt.nz)
 
-[![CI Status](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/ci-scan.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/ci-scan.yml)
-[![SecOps](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Blue-Moon-Portal/secops.yml?branch=main&label=SecOps&color=success)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/secops.yml)
-[![RedTeam](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Blue-Moon-Portal/redteam.yml?branch=main&label=RedTeam&color=critical)](https://github.com/fivepanelhat/Blue-Moon-Portal/actions/workflows/redteam.yml)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Monitored-brightgreen?logo=dependabot)](https://github.com/fivepanelhat/Blue-Moon-Portal/security/dependabot)
+[![CI Status](https://github.com/fivepanelhat/Byte-Size-Kai/actions/workflows/ci-scan.yml/badge.svg?branch=main)](https://github.com/fivepanelhat/Byte-Size-Kai/actions/workflows/ci-scan.yml)
+[![SecOps](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Byte-Size-Kai/secops.yml?branch=main&label=SecOps&color=success)](https://github.com/fivepanelhat/Byte-Size-Kai/actions/workflows/secops.yml)
+[![RedTeam](https://img.shields.io/github/actions/workflow/status/fivepanelhat/Byte-Size-Kai/redteam.yml?branch=main&label=RedTeam&color=critical)](https://github.com/fivepanelhat/Byte-Size-Kai/actions/workflows/redteam.yml)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Monitored-brightgreen?logo=dependabot)](https://github.com/fivepanelhat/Byte-Size-Kai/security/dependabot)
 
 **Coastal Alpine Tech Limited**  pre-seed startup, New Plymouth, Taranaki, Aotearoa New Zealand.
 
 ![Byte Size Kai Banner](assets/social_preview.png)
 
 
-**Byte Size Kai** is Coastal Alpine Tech's agritech product for sovereign, on-farm microgreen and crop intelligence. The engineering stack and GitHub repository path remain **Blue-Moon-Portal** (technical / package name) - use that for clones, CI, and Core SDK imports.
+**Byte Size Kai** is Coastal Alpine Tech's agritech product for sovereign, on-farm microgreen and crop intelligence. Clone/CI path: `https://github.com/fivepanelhat/Byte-Size-Kai`.
 
 ## The 5 Ws: Project Context
 
@@ -109,8 +110,8 @@ python bootstrap.py
 
 ```bash
 # Clone the repository
-git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
-cd Blue-Moon-Portal
+git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
+cd Byte-Size-Kai
 
 # Create virtual environment
 python3 -m venv venv
@@ -131,8 +132,8 @@ cp .env.example .env
 
 ```powershell
 # Clone the repository
-git clone https://github.com/fivepanelhat/Blue-Moon-Portal.git
-cd Blue-Moon-Portal
+git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
+cd Byte-Size-Kai
 
 # Create virtual environment
 python -m venv venv
@@ -217,9 +218,9 @@ The portal will:
 
 > **Diagrams:** Architecture images and Mermaid maps describe the **target product architecture** for this pre-seed stack. They are engineering design maps  not claims of large-scale commercial fleet deployment.
 
-Blue Moon is a closed-loop **microgreens / crop** edge agent for Byte Size Kai. MQTT sensors, CSI vision, and audio drive local multimodal Gemma 4 on **RPi 5 16GB + Hailo-10H** with deterministic hardware control.
+Byte Size Kai is a closed-loop **microgreens / crop** edge agent for Byte Size Kai. MQTT sensors, CSI vision, and audio drive local multimodal Gemma 4 on **RPi 5 16GB + Hailo-10H** with deterministic hardware control.
 
-![Blue Moon Portal architecture  liquid glass overview](assets/architecture_overview.png)
+![Byte Size Kai architecture  liquid glass overview](assets/architecture_overview.png)
 
 ### System map
 

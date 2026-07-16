@@ -1,6 +1,6 @@
 # DEVELOPMENT.md – Local Development & Testing
 
-This guide covers setting up a development environment, mocking hardware, and testing strategies for Blue Moon Portal.
+This guide covers setting up a development environment, mocking hardware, and testing strategies for Byte Size Kai.
 
 ## Local Development Setup
 
@@ -15,8 +15,8 @@ This guide covers setting up a development environment, mocking hardware, and te
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/blue-moon-portal.git
-cd blue-moon-portal
+git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
+cd Byte-Size-Kai
 
 # Create virtual environment
 python3.10 -m venv venv

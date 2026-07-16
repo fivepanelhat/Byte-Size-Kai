@@ -1,6 +1,6 @@
-# Environment & Prerequisites Setup Guide - Blue-Moon-Portal
+# Environment & Prerequisites Setup Guide - Byte-Size-Kai
 
-This guide details the system prerequisites required before installing Blue-Moon-Portal on Windows or Linux.
+This guide details the system prerequisites required before installing Byte-Size-Kai on Windows or Linux.
 
 ## Linux Setup
 

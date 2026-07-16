@@ -1,6 +1,6 @@
 [Unit]
-Description=Blue Moon Portal - Autonomous Crop Tracker
-Documentation=https://github.com/yourusername/blue-moon-portal
+Description=Byte Size Kai - Autonomous Crop Tracker
+Documentation=https://github.com/fivepanelhat/Byte-Size-Kai
 After=network.target ollama.service mosquitto.service
 Requires=ollama.service
 

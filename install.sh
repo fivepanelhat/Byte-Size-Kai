@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Blue-Moon-Portal — dual-platform installer (Linux / macOS)
-# One-line: curl -fsSL https://raw.githubusercontent.com/fivepanelhat/Blue-Moon-Portal/main/install.sh | bash
+# Byte-Size-Kai — dual-platform installer (Linux / macOS)
+# One-line: curl -fsSL https://raw.githubusercontent.com/fivepanelhat/Byte-Size-Kai/main/install.sh | bash
 # From clone: ./install.sh
 set -euo pipefail
 
-REPO_URL="${PORTAL_REPO_URL:-https://github.com/fivepanelhat/Blue-Moon-Portal.git}"
-INSTALL_DIR="${PORTAL_HOME:-$HOME/.blue-moon-portal-app}"
+REPO_URL="${PORTAL_REPO_URL:-https://github.com/fivepanelhat/Byte-Size-Kai.git}"
+INSTALL_DIR="${PORTAL_HOME:-$HOME/.byte-size-kai-app}"
 
-info() { printf '\033[36m[blue-moon-portal]\033[0m %s\n' "$1"; }
-warn() { printf '\033[33m[blue-moon-portal]\033[0m %s\n' "$1"; }
-err()  { printf '\033[31m[blue-moon-portal]\033[0m %s\n' "$1" >&2; }
+info() { printf '\033[36m[byte-size-kai]\033[0m %s\n' "$1"; }
+warn() { printf '\033[33m[byte-size-kai]\033[0m %s\n' "$1"; }
+err()  { printf '\033[31m[byte-size-kai]\033[0m %s\n' "$1" >&2; }
 
 PYTHON_BIN="$(command -v python3 || command -v python || true)"
 if [[ -z "$PYTHON_BIN" ]]; then

@@ -1,4 +1,13 @@
-# Blue Moon Portal - Changelog
+# Byte Size Kai - Changelog
+
+## 1.3.0 - 2026-07-16
+
+### Repository rename
+- GitHub repository renamed: `Blue-Moon-Portal` -> `Byte-Size-Kai`
+- Product and repo name unified as **Byte Size Kai**
+- Old URL redirects on GitHub for existing clones/links
+- Package: `byte_size_kai`; CLI: `byte-size-kai` (`blue-moon-portal` kept as alias)
+- Class: `ByteSizeKaiPortal` (`BlueMoonPortal` / `BlueMonPortal` aliases for tests)
 
 ## Version 1.3.0 - 2026-07-10
 

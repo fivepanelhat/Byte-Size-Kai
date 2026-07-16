@@ -1,4 +1,4 @@
-# Blue Moon Portal - Python Dependencies
+# Byte Size Kai - Python Dependencies
 # Production runtime requirements
 
 # LLM Runtime & Ollama Interface

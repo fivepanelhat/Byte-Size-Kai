@@ -22,7 +22,7 @@ This repository is part of the **Kiwi Edge AI Stack** - hybrid edge (RPi 5 16GB 
 | Edge orchestration | Weaver |
 | Shared SDK | Coastal-Alpine-Core, coastal-alpine-stack |
 | Field | Sovereign-Edge-Firmware |
-| Domains | Blue-Moon-Portal, SoilGuard-Portal, AquaGuard-Portal, Sting-Operation-AI |
+| Domains | **Byte Size Kai** (Byte-Size-Kai), SoilGuard-Portal, AquaGuard-Portal, Sting-Operation-AI |
 | Whanau / social | whanau-preterm-support-hub, Front_Line_Whanau |
 | Privacy util | CAT-mail |
 
@@ -64,7 +64,7 @@ Product IP is generally **dual proprietary + commercial** unless a specific repo
 
 | Field | Value |
 |-------|-------|
-| **Repo** | `Blue-Moon-Portal` |
-| **Role in stack** | Byte Size Kai product (Blue-Moon stack - agritech beachhead) |
+| **Repo** | `Byte-Size-Kai` |
+| **Role in stack** | Byte Size Kai product (lead agritech beachhead) |
 | **Agent fleet** | `.github/agent-fleet/` |
 | **Canonical skills runtime** | [NZ-Start-Up](https://github.com/fivepanelhat/NZ-Start-Up) |

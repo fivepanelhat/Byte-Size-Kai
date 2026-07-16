@@ -1,15 +1,15 @@
-# Blue-Moon-Portal — dual-platform installer (Windows / PowerShell)
-# One-line: irm https://raw.githubusercontent.com/fivepanelhat/Blue-Moon-Portal/main/install.ps1 | iex
+# Byte-Size-Kai — dual-platform installer (Windows / PowerShell)
+# One-line: irm https://raw.githubusercontent.com/fivepanelhat/Byte-Size-Kai/main/install.ps1 | iex
 # From clone: powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 $ErrorActionPreference = "Stop"
 
-$RepoUrl    = if ($env:PORTAL_REPO_URL) { $env:PORTAL_REPO_URL } else { "https://github.com/fivepanelhat/Blue-Moon-Portal.git" }
-$InstallDir = if ($env:PORTAL_HOME)     { $env:PORTAL_HOME }     else { Join-Path $env:USERPROFILE ".blue-moon-portal-app" }
+$RepoUrl    = if ($env:PORTAL_REPO_URL) { $env:PORTAL_REPO_URL } else { "https://github.com/fivepanelhat/Byte-Size-Kai.git" }
+$InstallDir = if ($env:PORTAL_HOME)     { $env:PORTAL_HOME }     else { Join-Path $env:USERPROFILE ".byte-size-kai-app" }
 
-function Info($m) { Write-Host "[blue-moon-portal] $m" -ForegroundColor Cyan }
-function Warn($m) { Write-Host "[blue-moon-portal] $m" -ForegroundColor Yellow }
-function Fail($m) { Write-Host "[blue-moon-portal] $m" -ForegroundColor Red; exit 1 }
+function Info($m) { Write-Host "[byte-size-kai] $m" -ForegroundColor Cyan }
+function Warn($m) { Write-Host "[byte-size-kai] $m" -ForegroundColor Yellow }
+function Fail($m) { Write-Host "[byte-size-kai] $m" -ForegroundColor Red; exit 1 }
 function Require-Ok([string]$Step) {
     if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) { Fail "$Step failed (exit code $LASTEXITCODE)" }
 }

@@ -1,13 +1,14 @@
-"""Unit tests for Blue Moon main-loop optimisations (no hardware required)."""
+"""Unit tests for Byte Size Kai main-loop optimisations (no hardware required)."""
 
 import os
 from pathlib import Path
 
-from main import rotate_flywheel_if_needed, _is_stable_status, BlueMonPortal, BlueMoonPortal
+from main import rotate_flywheel_if_needed, _is_stable_status, ByteSizeKaiPortal, BlueMonPortal, BlueMoonPortal
 
 
 def test_blue_moon_alias():
-    assert BlueMoonPortal is BlueMonPortal
+    assert BlueMoonPortal is ByteSizeKaiPortal
+    assert BlueMonPortal is ByteSizeKaiPortal
 
 
 def test_is_stable_status():

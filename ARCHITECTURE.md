@@ -1,10 +1,10 @@
-# ARCHITECTURE.md – Blue Moon Portal Technical Design
+# ARCHITECTURE.md – Byte Size Kai Technical Design
 
-This document describes the system architecture, data flow, and design principles of the Blue Moon Portal.
+This document describes the system architecture, data flow, and design principles of the Byte Size Kai.
 
 ## System Overview
 
-The Blue Moon Portal is a **closed-loop, autonomous edge AI system** for real-time crop optimization. It ingests multi-modal data (sensors, vision, audio), reasons over it using Gemma 4 E4B, and generates deterministic hardware commands.
+The Byte Size Kai is a **closed-loop, autonomous edge AI system** for real-time crop optimization. It ingests multi-modal data (sensors, vision, audio), reasons over it using Gemma 4 E4B, and generates deterministic hardware commands.
 
 ### Design Principles
 
@@ -425,7 +425,7 @@ Before deploying the portal to production:
 The `blue-moon.service` ensures portal restarts after boot:
 ```ini
 [Unit]
-Description=Blue Moon Portal - Autonomous Crop Tracker
+Description=Byte Size Kai - Autonomous Crop Tracker
 After=network.target
 
 [Service]
@@ -469,7 +469,7 @@ WantedBy=multi-user.target
 
 - [ ] RAG (Retrieval-Augmented Generation) for long-term learning from historical logs
 - [ ] Multi-crop templates (lettuce, spinach, basil, etc.) with adaptive parameters
-- [ ] Federated learning across multiple Blue Moon Portals
+- [ ] Federated learning across multiple Byte Size Kais
 - [ ] S3/NAS backup for compressed historical data
 - [ ] Web dashboard for real-time monitoring
 - [ ] Hardware failover (standby RPi 5 for redundancy)

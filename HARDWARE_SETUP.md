@@ -1,6 +1,6 @@
 # HARDWARE_SETUP.md – Raspberry Pi 5 + Hailo-10H NPU Configuration
 
-This guide covers the physical assembly and software configuration for deploying Blue Moon Portal on edge hardware.
+This guide covers the physical assembly and software configuration for deploying Byte Size Kai on edge hardware.
 
 ## Hardware Bill of Materials
 
@@ -228,7 +228,7 @@ ollama run gemma4:e4b "What is 2+2?"
 
 ### Ollama API Configuration
 
-The AIAgent in Blue Moon Portal communicates with Ollama via HTTP API:
+The AIAgent in Byte Size Kai communicates with Ollama via HTTP API:
 
 ```python
 import ollama
@@ -311,8 +311,8 @@ Create `/etc/systemd/system/blue-moon.service`:
 
 ```ini
 [Unit]
-Description=Blue Moon Portal - Autonomous Crop Tracker
-Documentation=https://github.com/yourusername/blue-moon-portal
+Description=Byte Size Kai - Autonomous Crop Tracker
+Documentation=https://github.com/fivepanelhat/Byte-Size-Kai
 After=network.target ollama.service mosquitto.service
 Requires=ollama.service
 

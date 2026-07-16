@@ -28,7 +28,7 @@ ROOT_VENV_DIR = ".venv"
 
 PORTALS = [
     "AquaGuard-Portal",
-    "Blue-Moon-Portal",
+    "Byte-Size-Kai",
     "SoilGuard-Portal",
     "Sting-Operation-AI",
     "Weaver",

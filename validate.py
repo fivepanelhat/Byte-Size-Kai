@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Blue Moon Portal - Validation & Testing Script
+Byte Size Kai - Validation & Testing Script
 
 Comprehensive validation of system components before production deployment.
 Tests configuration, LLM connectivity, MQTT broker, and hardware initialization.
@@ -300,7 +300,7 @@ async def main():
     logger.info("║" + " " * 58 + "║")
     logger.info(
         "║"
-        + "  Blue Moon Portal - System Validation & Tests  ".center(58)
+        + "  Byte Size Kai - System Validation & Tests  ".center(58)
         + "║"
     )
     logger.info("║" + " " * 58 + "║")
