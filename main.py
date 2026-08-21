@@ -8,6 +8,7 @@ Edge optimisations (RPi 5 16GB + Hailo-10H friendly):
 - Optional adaptive AV (skip when sensors stable)
 - Background media pruner
 - Bounded flywheel log rotation
+- Soft SessionEvent + Trajectory on plan enforce (Core ≥0.5.9)
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ from coastal_alpine_core.portal_core import (
     HardwareController,
 )
 from coastal_alpine_core import DataFlywheel
+from session_bridge import PortalSession, timed
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
@@ -37,7 +39,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ByteSizeKai")
 
-# Loop / edge policy (overridable via env)
 MIN_PLAN_INTERVAL_SEC = float(os.getenv("BLUE_MOON_MIN_PLAN_INTERVAL_SEC", "30"))
 ADAPTIVE_AV = os.getenv("BLUE_MOON_ADAPTIVE_AV", "false").lower() in (
     "1",
@@ -72,7 +73,6 @@ def rotate_flywheel_if_needed(
             return
         lines = p.read_text(encoding="utf-8", errors="replace").splitlines()
         if len(lines) <= keep_lines:
-            # Size large but few lines — keep last half of file by bytes approx
             data = p.read_bytes()
             p.write_bytes(data[-max_bytes // 2 :])
             logger.warning("Flywheel rotated by size trim: %s", p)
@@ -105,6 +105,7 @@ class ByteSizeKaiPortal:
         self.config = config
         self.flywheel_path = "flywheel_blue_moon.jsonl"
         self.flywheel = DataFlywheel(storage_path=self.flywheel_path)
+        self.session = PortalSession("byte_size_kai")
 
         self.ai_agent = AIAgent(
             ollama_host=config.ollama.host,
@@ -134,7 +135,6 @@ class ByteSizeKaiPortal:
             retention_hours=storage.retention_hours,
             critical_disk_usage_pct=storage.critical_disk_usage_pct,
         )
-        # Prefer full config object; kwargs still work for older core versions
         try:
             self.hardware_control = HardwareController(config=config)
         except TypeError:
@@ -160,10 +160,7 @@ class ByteSizeKaiPortal:
             MIN_PLAN_INTERVAL_SEC,
         )
 
-    # ----- lifecycle helpers used by tests / hardware adapters -----
-
     async def setup(self) -> None:
-        """Optional hardware setup hook (tests may mock hardware_control.setup)."""
         setup = getattr(self.hardware_control, "setup", None)
         if setup is not None:
             result = setup()
@@ -200,7 +197,7 @@ class ByteSizeKaiPortal:
         return checks
 
     async def process_sensor_loop(self):
-        """Main closed-loop: MQTT → multimodal AI → plan → actuate → flywheel."""
+        """Main closed-loop: MQTT → multimodal AI → plan → actuate → flywheel + session."""
         while self.is_running:
             try:
                 message = await asyncio.wait_for(
@@ -208,7 +205,6 @@ class ByteSizeKaiPortal:
                     timeout=MQTT_READ_TIMEOUT_SEC,
                 )
 
-                # Coalesce: keep latest payload (also allows bursty brokers)
                 if isinstance(message, dict):
                     self._latest_sensor = message
                 else:
@@ -216,7 +212,6 @@ class ByteSizeKaiPortal:
 
                 payload = self._latest_sensor.get("payload", self._latest_sensor)
 
-                # Rate-limit full planning (first event always runs)
                 now = asyncio.get_event_loop().time()
                 if (
                     self._last_plan_at is not None
@@ -231,11 +226,9 @@ class ByteSizeKaiPortal:
                     sensor_data=payload
                 )
 
-                # Multimodal capture (exception-safe)
                 frame, audio = None, None
                 want_av = ENABLE_MEDIA_RECORDING
                 if ADAPTIVE_AV and _is_stable_status(analysis):
-                    # Still allow AV periodically via rate limit window
                     want_av = False
                     logger.debug("Adaptive AV: sensors stable — skipping capture")
 
@@ -281,6 +274,14 @@ class ByteSizeKaiPortal:
 
                 if plan and (isinstance(plan, dict) and plan.get("plan_id") or plan):
                     plan_dict = plan if isinstance(plan, dict) else {"plan_id": str(plan)}
+                    session_id = self.session.new_session_id()
+                    t0 = timed()
+                    self.session.emit(
+                        session_id,
+                        "prompt_received",
+                        actor="byte_size_kai",
+                        payload={"plan_id": plan_dict.get("plan_id")},
+                    )
                     enforcement_ok = await self.hardware_control.enforce_plan(plan_dict)
 
                     action = (
@@ -311,10 +312,18 @@ class ByteSizeKaiPortal:
                             "Plan enforcement failed: %s", plan_dict.get("plan_id")
                         )
 
+                    self.session.complete_cycle(
+                        session_id,
+                        action="byte_size_kai.plan_cycle",
+                        outcome="success" if enforcement_ok else "error",
+                        latency_seconds=timed() - t0,
+                        input_summary=f"plan={plan_dict.get('plan_id')}",
+                        output_summary=f"enforced={enforcement_ok}",
+                        flywheel_path=self.flywheel_path,
+                    )
                     rotate_flywheel_if_needed(self.flywheel_path)
 
             except asyncio.TimeoutError:
-                # Idle broker — continue waiting
                 pass
             except asyncio.CancelledError:
                 logger.info("Sensor loop cancelled")
@@ -324,7 +333,6 @@ class ByteSizeKaiPortal:
                 await asyncio.sleep(1)
 
     async def _pruner_loop(self):
-        """Run media pruner in background (hourly cycle lives inside MediaPruner.start)."""
         try:
             await self.media_pruner.start()
         except asyncio.CancelledError:
@@ -332,7 +340,6 @@ class ByteSizeKaiPortal:
             raise
 
     async def start(self) -> None:
-        """Connect subsystems and run forever until stop()."""
         if self.is_running:
             return
 
@@ -359,7 +366,6 @@ class ByteSizeKaiPortal:
         await asyncio.gather(*self._tasks, return_exceptions=True)
 
     async def stop(self) -> None:
-        """Graceful shutdown."""
         self.is_running = False
         for task in self._tasks:
             task.cancel()
@@ -383,7 +389,6 @@ class ByteSizeKaiPortal:
         logger.info("Byte Size Kai stopped")
 
 
-# Back-compat aliases (pre-rename Blue Moon Portal)
 BlueMoonPortal = ByteSizeKaiPortal
 BlueMonPortal = ByteSizeKaiPortal
 
@@ -406,7 +411,6 @@ async def _amain() -> int:
         try:
             loop.add_signal_handler(sig, _signal_handler)
         except NotImplementedError:
-            # Windows
             signal.signal(sig, lambda *_: asyncio.create_task(portal.stop()))
 
     try:
