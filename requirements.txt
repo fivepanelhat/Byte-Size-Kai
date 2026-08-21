@@ -36,5 +36,5 @@ aiofiles>=23.2.1
 # Logging
 structlog>=23.2.0
 
-# Shared Core SDK
-coastal-alpine-core @ git+https://github.com/fivepanelhat/Coastal-Alpine-Core.git@v0.5.4
+# Shared Core SDK (SessionEvent + providers + session→trajectory)
+coastal-alpine-core @ git+https://github.com/fivepanelhat/Coastal-Alpine-Core.git@v0.5.9
