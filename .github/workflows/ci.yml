@@ -11,7 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
+  test:
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,6 +25,3 @@ jobs:
         run: python -m pip install --upgrade pip && pip install flake8
       - name: Lint (fatal errors — syntax and undefined names)
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv,venv,node_modules,build,dist,data,out
-
-# Public repo is posture-only. Do not clone Coastal-Alpine-Core here.
-# Full pytest and verify-core-update live on private repos.
