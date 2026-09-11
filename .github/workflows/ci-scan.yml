@@ -12,39 +12,18 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
-  packages: read
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install lint tooling
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements-dev.txt ]; then
-            pip install -r requirements-dev.txt
-          fi
+      - name: Install flake8
+        run: python -m pip install --upgrade pip && pip install flake8
       - name: Lint (fatal errors — syntax and undefined names)
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv,venv,node_modules,build,dist,data,out
-      - name: Run public tests (no private Core clone)
-        shell: bash
-        run: |
-          if ! compgen -G "tests/test_*.py" > /dev/null; then
-            echo "No pytest suite at tests/ — lint-only scan."
-            exit 0
-          fi
-          if [ -f requirements.txt ]; then
-            sudo apt-get update -qq && sudo apt-get install -y -qq portaudio19-dev || true
-            grep -v -E 'coastal-alpine-core|Coastal-Alpine-Core' requirements.txt > /tmp/requirements-public-ci.txt
-            pip install -r /tmp/requirements-public-ci.txt
-          fi
-          python -m pytest tests -q --tb=short -m "not core" || python -m pytest tests -q --tb=short --ignore-glob='*core*' 
+# Public repo is posture-only. Full pytest lives on private Core / cat-byte-size-kai-edge.
