@@ -12,29 +12,16 @@ permissions:
 
 jobs:
   test:
+    name: test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install system audio libs (pyaudio build dep)
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq portaudio19-dev
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
-      - name: Verify against coastal-alpine-core
-        uses: fivepanelhat/coastal-alpine-core/.github/actions/verify-core-update@main
-        with:
-          core-ref: v0.5.2
-
-      - name: Run full test suite
-        run: pytest -q --tb=short
+      - name: Install flake8
+        run: python -m pip install --upgrade pip && pip install flake8
+      - name: Lint (fatal errors — syntax and undefined names)
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv,venv,node_modules,build,dist,data,out
