@@ -26,15 +26,16 @@ jobs:
       - name: Install system audio libs (pyaudio build dep)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq portaudio19-dev
 
-      - name: Install dependencies
+      - name: Install public dependencies (skip private Core)
         run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          grep -v -E 'coastal-alpine-core|Coastal-Alpine-Core' requirements.txt > /tmp/requirements-public-ci.txt
+          pip install -r /tmp/requirements-public-ci.txt
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
 
-      - name: Verify against coastal-alpine-core
-        uses: fivepanelhat/coastal-alpine-core/.github/actions/verify-core-update@main
-        with:
-          core-ref: v0.5.2
-
-      - name: Run full test suite
+      - name: Run public test suite
         run: pytest -q --tb=short
+
+# Private Core verify lives on fivepanelhat/cat-byte-size-kai-edge and Coastal-Alpine-Core.
+# Do not call fivepanelhat/coastal-alpine-core composite actions from this public repo.
