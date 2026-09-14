@@ -22,7 +22,7 @@ async def test_full_portal_integration_flow(test_config):
 
     # Mock sensor message payload
     mock_sensor_msg = {
-        "topic": "horowhenua/sensors/soil_moisture_1",
+        "topic": "site/sensors/soil_moisture_1",
         "payload": {
             "sensor_id": "soil_moisture_1",
             "sensor_type": "capacitive_moisture",
