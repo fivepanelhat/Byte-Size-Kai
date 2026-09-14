@@ -1,16 +1,3 @@
-# Byte Size Kai - Python Dependencies
-# Production runtime requirements
-
-ollama>=0.4.8
-paho-mqtt>=2.1.0
-pydantic>=2.5.0,<3.0.0
-pydantic-settings>=2.1.0
-opencv-python-headless>=4.12.0
-numpy>=2.0,<3
-python-dotenv>=1.2.2
-orjson>=3.11.6
-aiofiles>=23.2.1
-structlog>=23.2.0
-
-# Shared Core SDK (SessionEvent + providers + trajectory + Sprint E)
-coastal-alpine-core @ git+https://github.com/fivepanelhat/Coastal-Alpine-Core.git@v0.5.10
+# Public Python requirements disabled — commercial-track / private.
+# Runtime dependency inventories and private SDK pins are not published.
+# See README.md and PUBLIC_POSTURE.md.

@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "@fivepanelhat/coastal-alpine-core": "file:../coastal_alpine_core"
-  }
+  "name": "byte-size-kai",
+  "private": true,
+  "description": "Public Node package manifest disabled — commercial-track / private. See README.md and PUBLIC_POSTURE.md.",
+  "dependencies": {}
 }
