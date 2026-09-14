@@ -1,1 +1,1 @@
-# portal_schemas package
+"""Public portal_schemas package stub."""
