@@ -1,4 +1,3 @@
-# agent-hardening (portfolio pack)
+# Changelog — public notice
 
-## 1.1.1 - 2026-07-15
-- ASCII-safe punctuation for congruent rendering
+Detailed agent-hardening changelogs are **commercial-track / private**.

@@ -1,35 +1,7 @@
----
-name: cat-architectural-standards
-version: "1.0.0"
-model_tier: light
-type: workflow
-requires_hitl: false
-cultural_sensitivity: low
-description: >
-  Map work to Coastal Alpine Tech Gold (workflow), Diamond (foundation/security),
-  and Platinum (intelligence/flywheel) tiers for portfolio repos.
-metadata:
-  status: active
-  owner: Coastal Alpine Tech
-  last_updated: "2026-07-15"
-tags:
-  - standards
-  - architecture
-  - gold
-  - diamond
-  - platinum
----
+# CAT architectural standards — public notice
 
-# CAT Architectural Standards (portfolio)
+**Updated:** 14 September 2026
 
-## Gold - workflow-native
-Map to real operator lifecycle (founder, farmer, mentor, clinician-path with HITL). Prefer checklists and deterministic tools.
+Gold / Diamond / Platinum method packs are **commercial-track / private**.
 
-## Diamond - foundation
-CI, security scanning, secret refusal, licence clarity, privacy, HITL gates, sandboxing.
-
-## Platinum - intelligence
-Memory, feedback loops, evals, freshness of knowledge, cost/telemetry - without removing Diamond ceilings.
-
-## Rule
-Never trade Diamond safety for Platinum "autonomy" demos.
+See repo [`AGENTS.md`](../../../AGENTS.md) · [`PUBLIC_POSTURE.md`](../../../PUBLIC_POSTURE.md).
