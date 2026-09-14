@@ -1,22 +1,9 @@
-# Environment & Prerequisites Setup Guide - Byte-Size-Kai
+# Setup — public notice
 
-This guide details the system prerequisites required before installing Byte-Size-Kai on Windows or Linux.
+**Updated:** 14 September 2026
 
-## Linux Setup
+Public prerequisite and environment setup guides are **not published** on this repository.
 
-### Prerequisites
-1. **Python 3.10+**: Make sure Python and its virtual environment modules are installed.
-2. **System Dependencies**:
-   ```bash
-   sudo apt-get update
-   sudo apt-get install -y python3-dev python3-venv python3-pip git build-essential
-   sudo apt-get install -y portaudio19-dev libasound2-dev libgl1 libglib2.0-0
-   ```
+Commercial-track / private.
 
----
-
-## Windows Setup
-
-### Prerequisites
-1. **Python 3.10+**: Ensure Python is installed from python.org and "Add Python to PATH" is checked during installation.
-2. **Git for Windows**: Download and install from [git-scm.com](https://git-scm.com/).
+See [`README.md`](./README.md) · [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md).
