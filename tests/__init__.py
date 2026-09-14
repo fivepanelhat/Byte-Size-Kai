@@ -1,3 +1,1 @@
-"""
-Byte Size Kai - Test Suite
-"""
+"""Public tests package stub — commercial-track / private."""
