@@ -1,17 +1,9 @@
-# Agent fleet (portfolio congruence pack)
+# Agent fleet — public notice
 
-Portable **Coastal Alpine Tech** agent policy for every public repo.
+**Updated:** 14 September 2026
 
-| File | Role |
-|------|------|
-| `AGENTS.md` | Load order, HITL, tool use, testing |
-| `anti-hallucination.md` | Refusal calibration, FACT/INFERENCE/UNKNOWN, extended thinking |
-| `agent-hardening/SKILL.md` | Security skill (v1.1) |
-| `cat-architectural-standards/SKILL.md` | Gold / Diamond / Platinum |
+Portable CAT agent policy, hardening skills, and architectural method packs are **commercial-track / private**.
 
-**Full digital-employee fleet + CLI:** [NZ-Start-Up](https://github.com/fivepanelhat/NZ-Start-Up)  
-**Org architecture map:** [fivepanelhat](https://github.com/fivepanelhat/fivepanelhat)
+Private Founder OS and full digital-employee fleets are not published on public GitHub.
 
-Install skills into Claude/Aether paths by copying this directory, or clone NZ-Start-Up and run `nz-startup install-skills`.
-
-**Encoding:** UTF-8 without BOM. Prefer ASCII punctuation (`|`, `-`) so GitHub and terminals render consistently.
+See repo [`AGENTS.md`](../../AGENTS.md) · [`PUBLIC_POSTURE.md`](../../PUBLIC_POSTURE.md).

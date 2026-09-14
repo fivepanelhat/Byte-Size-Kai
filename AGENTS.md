@@ -1,83 +1,41 @@
-# AGENTS.md - Coastal Alpine Tech portfolio
+# AGENTS.md — Byte Size Kai (public posture)
 
-**Coastal Alpine Tech Limited - Pre-seed** | Taranaki | Aotearoa New Zealand  
-**R&D since 8 August 2025** | **Founded 8 August 2026**  
-**Org:** [fivepanelhat](https://github.com/fivepanelhat/fivepanelhat) | **Founder OS:** [NZ-Start-Up](https://github.com/fivepanelhat/NZ-Start-Up)
+**Updated:** 14 September 2026  
+**Org:** [fivepanelhat/fivepanelhat](https://github.com/fivepanelhat/fivepanelhat)
 
-Instructions for any coding or agentic assistant in this repository.
-
-## Always load first
-
-1. `.github/agent-fleet/agent-hardening/SKILL.md` - autonomy, secrets, sandbox, HITL
-2. `.github/agent-fleet/anti-hallucination.md` - refusal calibration, sources, extended thinking
-3. `CAT_CONGRUENCE.md` (repo root) - portfolio map + one-liner
-4. Repo-specific README / ARCHITECTURE for domain truth
-
-If NZ-Start-Up is available in the workspace, also prefer its full fleet (`skills/*`, `nz-startup harden status`).
+Instructions for assistants working in this **public** repository.
 
 ## Autonomy ceiling (non-negotiable)
 
 | Agents may | Humans must |
 |------------|-------------|
-| Inform, draft, prepare, monitor, remind | Advise, sign, file, send, pay |
+| Inform, draft, prepare, monitor, remind | Advise, decide, sign, file, send, pay |
 | Propose checklists and drafts | Approve high-risk actions |
-| Read local files / run safe tests | Deploy production, file IRD/Companies Office, RealMe |
+| Read local files / run safe tests | Deploy production, file government forms, move money |
 
-**Never invent:** NZBN, IRD numbers, financial figures, partner LOIs, iwi endorsements, medical advice, or "we are partnered with X" without a verified source in-repo.
+**Never invent:** NZBN, IRD numbers, financial figures, partner LOIs, iwi endorsements, medical advice, or unverified partnerships.
 
-## Tool use (reduce hallucination)
+## Tool use
 
-1. **Read before write** - open the file you will change.
-2. **Search before assert** - grep/docs for existing claims.
-3. **Prefer deterministic tools** - tests, linters, CLI validators over freeform stats.
-4. **Cite paths** - every external-facing claim should point to a file, commit, or primary URL.
-5. **If tool fails** - report failure; do not fabricate success.
-6. **No fake tools** - never invent `send_email`, `file_gst`, `pay_invoice`, or RealMe automation.
+1. Read before write.  
+2. Search before assert.  
+3. Prefer tests/linters over freeform stats.  
+4. Cite paths for external-facing claims.  
+5. If a tool fails, report failure — do not fabricate success.  
+6. No fake tools for email, filings, or payments.
 
-## Refusal calibration
+## Refusal
 
-**Refuse or escalate when:**
+Refuse or escalate when asked to bypass HITL, invent certifications, send mail, file forms, move money, or publish cultural content without a review path. Label FACT / INFERENCE / UNKNOWN on high-stakes answers.
 
-- User asks to bypass HITL, hide watermarks, or invent compliance certificates
-- Request requires sending mail, filing government forms, or moving money
-- Cultural / whenua / iwi content lacks a review path
-- Numbers/stats lack a `verified:` source or primary citation
-- Medical, legal, or tax conclusions are presented as advice
+## Load order (this public repo)
 
-**Refusal style:** short, clear, offer a safe alternative (draft checklist, link to counsel, label NEEDS_EVIDENCE).
+1. `CAT_CONGRUENCE.md`  
+2. `PUBLIC_POSTURE.md` / `README.md`  
+3. `SECURITY.md` as relevant  
 
-## Extended thinking (required for high-stakes)
-
-Before final answers on market, legal, funding, security, or cultural topics:
-
-1. Restate the question and constraints
-2. List known facts (with sources) vs unknowns
-3. List failure modes if wrong
-4. Then answer with labels: FACT / INFERENCE / UNKNOWN
-
-## Knowledge freshness
-
-- Prefer in-repo `verified: YYYY-MM-DD` knowledge files
-- Stats older than 90 days without re-verify -> flag stale
-- Do not paste model training "memory" as NZ market fact
-
-## Standards
-
-| Change | Tier |
-|--------|------|
-| Workflow / domain UX | CAT Gold |
-| CI, security, privacy, licence | CAT Diamond |
-| Memory / flywheel / agent improvement | CAT Platinum |
-
-## Testing before commit
-
-Run whatever this repo defines (pytest, cargo test, npm test, etc.). At minimum:
-
-- Do not commit secrets
-- Do not claim green CI without running it
-- Update CHANGELOG / skill version when behaviour changes
+Full digital-employee fleets, Founder OS internals, maturity-tier method packs, and private repo maps stay commercial-track / private.
 
 ## Tone
 
-Practical, NZ-grounded, pre-seed honest. No hype that agents "run the company."  
-Respect Te Mana Raraunga and Te Tiriti; escalate cultural content.
+Practical, NZ-grounded, pre-seed honest. Respect Te Mana Raraunga and Te Tiriti; escalate cultural content.
