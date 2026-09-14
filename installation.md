@@ -1,59 +1,9 @@
-# Installation Guide - Byte-Size-Kai
+# Installation — public notice
 
-Follow the instructions below to install Byte-Size-Kai on your operating system.
+**Updated:** 14 September 2026
 
-## Linux Installation
+Public installation guides are **not published** on this repository.
 
-### Option 1: Automated Setup (Recommended)
-Run the bootstrap script, which creates the virtual environment, configures environment files, upgrades pip, and installs all dependencies:
-```bash
-python3 bootstrap.py
-```
+Install scripts, bootstrap tooling, dependency pins, and Core/SDK install paths are **commercial-track / private**.
 
-### Option 2: Manual Setup
-If you prefer to perform the setup steps manually:
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
-   cd Byte-Size-Kai
-   ```
-2. Create and activate a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-3. Upgrade pip and install dependencies:
-   ```bash
-   pip install --upgrade pip
-   pip install git+https://github.com/fivepanelhat/coastal-alpine-core.git@v0.2.0
-   pip install -r requirements-dev.txt
-   ```
-
----
-
-## Windows Installation
-
-### Option 1: Automated Setup (Recommended)
-Run the bootstrap script in PowerShell or Command Prompt:
-```powershell
-python bootstrap.py
-```
-
-### Option 2: Manual Setup
-If you prefer to perform the setup steps manually:
-1. Clone the repository:
-   ```powershell
-   git clone https://github.com/fivepanelhat/Byte-Size-Kai.git
-   cd Byte-Size-Kai
-   ```
-2. Create and activate a virtual environment:
-   ```powershell
-   python -m venv venv
-   .\venv\Scripts\activate
-   ```
-3. Upgrade pip and install dependencies:
-   ```powershell
-   python -m pip install --upgrade pip
-   pip install git+https://github.com/fivepanelhat/coastal-alpine-core.git@v0.2.0
-   pip install -r requirements-dev.txt
-   ```
+See [`README.md`](./README.md) · [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md).
