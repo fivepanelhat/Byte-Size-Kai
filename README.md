@@ -5,6 +5,8 @@
 [![HITL](https://img.shields.io/badge/HITL-Draft%2FPrepare%20only-dc2626)](./COMPLIANCE.md)
 [![Security](https://img.shields.io/badge/Security-No%20silent%20exfil%20%2B%20SecOps-dc2626)](./SECURITY.md)
 
+![Byte Size Kai](./assets/social_preview.png)
+
 **Coastal Alpine Tech Limited** — pre-seed, Taranaki, Aotearoa New Zealand.
 
 Part of the [Kiwi Edge AI Stack](https://github.com/fivepanelhat/fivepanelhat) (public posture).
