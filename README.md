@@ -81,7 +81,7 @@ Fleet policy: [fivepanelhat / Kiwi Edge AI Stack](https://github.com/fivepanelha
 
 ### Local (Taranaki) and national (Aotearoa) economic benefits
 
-Coastal Alpine Tech is a **pre-seed** company engineering in **New Plymouth, Taranaki**, with field context in regional primary industries (including Mana Kai-class / Horowhenua agritech). Benefits are framed as **pathways**, not guaranteed job numbers.
+Coastal Alpine Tech is a **pre-seed** company engineering in **New Plymouth, Taranaki**, with field context in regional primary industries (Mana Kai–class agritech as **pilot context only**). Benefits are framed as **pathways**, not guaranteed job numbers.
 
 #### Local / regional (Taranaki and rural NZ)
 
@@ -153,11 +153,11 @@ This repository **is** Byte Size Kai on the Kiwi Edge stack (RPi 5 16GB + Hailo-
 
 ## The 5 Ws: Project Context
 
-- **Who:** Built by Coastal Alpine Tech Limited, supporting the Horowhenua Mana Kai Project.
-- **What:** A multi-modal, agentic IoT pipeline that ingests sensor telemetry, audio, and visual data to autonomously manage and predict crop yields.
-- **Where:** Deployed on-site in Horowhenua, New Zealand (Engineered at HQ in New Plymouth, Taranaki).
-- **When:** Active development. We are building the sovereign digital infrastructure of tomorrow, today.
-- **Why:** To establish localized data sovereignty. Relying on cloud compute for real-time agricultural decisions introduces latency and creates dependencies. We are bringing the brain directly to the soil.
+- **Who:** Built by Coastal Alpine Tech Limited. Horowhenua Mana Kai is **pilot context only** (no claimed mandate or live programme).
+- **What:** A multi-modal, agentic IoT pipeline that ingests sensor telemetry, audio, and visual data to inform crop decisions under Human-in-the-Loop.
+- **Where:** Engineered at HQ in New Plymouth, Taranaki. Field sites are local configuration — this repo does **not** claim an on-site deployment fleet.
+- **When:** Active development (pre-seed).
+- **Why:** Localized data sovereignty for agricultural decisions — bring inference to the edge so farms are not dependent on distant cloud round-trips.
 
 ## Autonomy (edge agents)
 
@@ -302,125 +302,43 @@ The portal will:
 
 ## Architecture Overview
 
-> **Diagrams:** Architecture images and Mermaid maps describe the **target product architecture** for this pre-seed stack. They are engineering design maps  not claims of large-scale commercial fleet deployment.
+> **Public posture:** Deep proprietary architecture (module APIs, schemas, orchestration internals, performance tables) is **not published** on this surface. See the public stub: [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-Byte Size Kai is a closed-loop **microgreens / crop** edge agent for Byte Size Kai. MQTT sensors, CSI vision, and audio drive local multimodal Gemma 4 on **RPi 5 16GB + Hailo-10H** with deterministic hardware control.
+Byte Size Kai is a closed-loop **microgreens / crop** edge agent intent for Byte Size Kai. MQTT sensors, vision, and audio inform local multimodal reasoning on **RPi 5–class + Hailo-10H** hardware, with deterministic hardware control under Human-in-the-Loop.
 
 ![Byte Size Kai architecture  liquid glass overview](assets/architecture_overview.png)
 
-### System map
+| Layer | Role |
+| :--- | :--- |
+| **Inputs** | Sensors + vision + audio |
+| **Reasoning** | Local multimodal model via Ollama |
+| **Control** | Pump / light / alert plans (HITL for high-stakes) |
+| **Storage** | Local media lifecycle (site-configured retention) |
 
-```mermaid
-%%{init: {
-  "theme": "dark",
-  "themeVariables": {
-    "fontSize": "16px",
-    "fontFamily": "Inter, ui-sans-serif, system-ui, sans-serif",
-    "primaryColor": "#0ea5e9",
-    "primaryTextColor": "#f8fafc",
-    "primaryBorderColor": "#38bdf8",
-    "lineColor": "#67e8f9",
-    "secondaryColor": "#1e293b",
-    "tertiaryColor": "#0f172a",
-    "clusterBkg": "#0b1220cc",
-    "clusterBorder": "#38bdf880",
-    "titleColor": "#e2e8f0"
-  },
-  "flowchart": {
-    "nodeSpacing": 40,
-    "rankSpacing": 48,
-    "padding": 20,
-    "htmlLabels": true,
-    "curve": "basis"
-  }
-}}%%
-flowchart TB
+*Hardware class: [HARDWARE_SETUP.md](./HARDWARE_SETUP.md) (posture) · Claim hygiene: [PUBLIC_POSTURE.md](./PUBLIC_POSTURE.md)*
 
-    classDef sense fill:#052e16,stroke:#4ade80,stroke-width:2px,color:#f0fdf4
-    classDef edge fill:#0c4a6e,stroke:#38bdf8,stroke-width:2px,color:#f0f9ff
-    classDef core fill:#134e4a,stroke:#2dd4bf,stroke-width:2px,color:#f0fdfa
-    classDef act fill:#422006,stroke:#fbbf24,stroke-width:2px,color:#fffbeb
-    classDef store fill:#1e1b4b,stroke:#a5b4fc,stroke-width:2px,color:#eef2ff
-    classDef ai fill:#3b0764,stroke:#e879f9,stroke-width:2px,color:#fdf4ff
-    classDef app fill:#1e1b4b,stroke:#c4b5fd,stroke-width:2px,color:#eef2ff
-
-    subgraph IN["1. Grow-room inputs"]
-        MQTT["MQTT sensors<br/>moisture | light | RH"]
-        CAM["CSI camera<br/>leaf health"]
-        MIC["Microphone<br/>anomaly audio"]
-    end
-
-    subgraph EDGE["2. Edge hardware  RPi 5 16GB + Hailo-10H"]
-        CORE["Coastal-Alpine-Core"]
-        LLM["Gemma 4 e4b via Ollama"]
-        AG["AI agent + schemas"]
-        PRUNE["Media pruner<br/>SD-safe buffers"]
-    end
-
-    subgraph OUT["3. Actuation"]
-        PUMP["Pump control"]
-        LIGHT["Light control"]
-        ALERT["Alerts"]
-    end
-
-    MQTT & CAM & MIC --> CORE --> LLM --> AG
-    AG --> PUMP & LIGHT & ALERT
-    CAM --> PRUNE
-
-    class MQTT,CAM,MIC sense
-    class CORE,AG,PRUNE core
-    class LLM ai
-    class PUMP,LIGHT,ALERT act
-```
-
- | Layer | Components | Role |
- | :--- | :--- | :--- |
- | **Inputs** | Sensors + vision + audio | Multi-modal crop state |
- | **Reasoning** | Gemma 4 multimodal | Local, offline |
- | **Control** | Pumps | lights | alerts | Deterministic JSON plans |
- | **Storage** | Media pruner | Prevents SD saturation |
-
-*Full detail: [ARCHITECTURE.md](./ARCHITECTURE.md) | [HARDWARE_SETUP.md](./HARDWARE_SETUP.md)*
 
 ## Directory Structure
 
 ```plaintext
-Blue_Moon_Portal/
-|
-|-- portal_core/               # The Engine Room
-|   |-- __init__.py
-|   |-- ai_agent.py            # Multi-modal LLM controller (Gemma 4 via Ollama)
-|   |-- mqtt_client.py         # Paho MQTT subscriber for ESP32 telemetry
-|   |-- av_capture.py          # OpenCV/PyAudio streams (CSI camera + mic)
-|   `-- media_pruner.py        # Storage lifecycle management (auto-delete/compress)
-|
-|-- portal_schemas/            # The Rulebook (Pydantic enforcement)
-|   |-- __init__.py
-|   `-- ai_models.py           # Pydantic classes (SensorReading, AnalysisResult, CropOptimizationPlan)
-|
-|-- telemetry_data/            # Local Knowledge Base
-|   |-- sensor_logs/           # Historical MQTT JSON payloads
-|   `-- media/                 # Image and audio buffer storage
-|
-|-- requirements.txt           # Python dependencies
-|-- requirements-dev.txt       # Development tools (pytest, black, mypy)
-|-- main.py                    # Asynchronous event loop orchestrator
-|-- setup.py                   # Package configuration
-|-- .env.example               # Environment variable template
-|-- .gitignore                 # Git exclusions (media, .env, __pycache__)
-|-- blue-moon.service          # Systemd service for auto-start on boot
-|
-|-- README.md                  # This file
-|-- ARCHITECTURE.md            # Detailed technical breakdown
-|-- HARDWARE_SETUP.md          # RPi5 + Hailo-10H NPU assembly & driver installation
-`-- DEVELOPMENT.md             # Local dev setup, mocking, testing
+Byte-Size-Kai/
+|-- portal_core/          # Edge runtime (commercial detail withheld)
+|-- portal_schemas/       # Schema enforcement
+|-- telemetry_data/       # Local knowledge base (gitignored media)
+|-- main.py               # Orchestrator entry
+|-- .env.example          # Template (MQTT default prefix: site/sensors)
+|-- README.md
+|-- ARCHITECTURE.md       # Public posture stub
+|-- HARDWARE_SETUP.md     # Public hardware class posture
+`-- DEVELOPMENT.md        # Local software development
 ```
+
 
 ## Documentation
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)**  Data flow, module responsibilities, Gemma 4 config, Pydantic schema definitions
-- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)**  RPi 5 + Hailo-10H NPU assembly, ESP32 wiring, Ollama installation, **critical NPU driver setup**
-- **[DEVELOPMENT.md](DEVELOPMENT.md)**  Local dev environment, mock MQTT payloads, testing strategies
+- **[ARCHITECTURE.md](ARCHITECTURE.md)**  Public architecture posture (deep maps are commercial-track)
+- **[HARDWARE_SETUP.md](HARDWARE_SETUP.md)**  Public hardware class posture (BOM / assembly packs are commercial-track)
+- **[DEVELOPMENT.md](DEVELOPMENT.md)**  Local software development, mock MQTT (`site/sensors`), testing
 
 ## Technology Stack
 
@@ -489,9 +407,9 @@ This project is Licensed under the Coastal Alpine Tech Limited License. See `LIC
 ## Attribution
 
 **Built by:** Wayne Roberts, Coastal Alpine Tech Limited
-**Supporting:** Horowhenua Mana Kai Project
-**Location:** New Plymouth, Taranaki / Horowhenua, New Zealand
-**Date:** Active development (as of May 31, 2026)
+**Pilot context:** Horowhenua Mana Kai (pilot only — not a claimed deployment or mandate)
+**Location:** New Plymouth, Taranaki, Aotearoa New Zealand
+**Date:** Active development (pre-seed)
 
 **Reference:**
 [Running Gemma 4 E4B Locally](https://www.youtube.com/watch?v=NB9zRquoeI0)  Hardware constraints and edge configuration walkthrough.
