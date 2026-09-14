@@ -1,16 +1,9 @@
-# Skills (public evaluation layer)
+# Skills (public posture)
 
-Coastal Alpine Tech maintains a fleet of **93 named, versioned skills**. They are customisable for any industry under the same HITL and Te Mana Raraunga contract.
+Coastal Alpine Tech maintains governed, versioned skills under hard HITL and Te Mana Raraunga-aligned ceilings.
 
-This public repository shows **one working set** — **Edge / farm**:
+This public repository does **not** publish skill catalogues, fleet counts, named chains, or procedure bodies. Full packs load under written agreement only.
 
-- `kiwi-edge-architecture`
-- `edge-node-commissioning`
-- `cat-model-sentinel`
-- `cat-egress-sentinel`
-- `cat-doctor`
-- `pilot-loi-drafter` (role card only)
-
-Full commissioning packs are private. Horowhenua Mana Kai is framed as pilot only.
+Horowhenua Mana Kai is framed as **early tests / pilot context only**.
 
 Humans still advise, decide, sign, file, send, and pay.
