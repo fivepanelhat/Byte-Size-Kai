@@ -106,140 +106,20 @@ You should see:
 2026-05-31 23:45:00 - __main__ - INFO - Byte Size Kai is ONLINE and processing
 ```
 
-## Architecture Overview
 
-### Core Components
+## Architecture (public posture)
 
-1. **AIAgent** (`portal_core/ai_agent.py`)
-   - Interfaces with Ollama for LLM reasoning
-   - Analyzes sensor data, visual frames, and audio
-   - Generates optimization plans
-   - Enforces Pydantic schema validation
+Deep proprietary architecture, module APIs, schemas, dataflow diagrams, and runtime tables are **not published** on public GitHub.
 
-2. **MQTTClient** (`portal_core/mqtt_client.py`)
-   - Async Paho MQTT subscriber
-   - Ingests sensor telemetry from ESP32
-   - Handles connection retry logic
-   - Buffers messages in async queue
+See [`ARCHITECTURE.md`](./ARCHITECTURE.md) and [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md).
 
-3. **AVCapture** (`portal_core/av_capture.py`)
-   - OpenCV video capture from CSI camera
-   - PyAudio microphone capture
-   - Feeds multi-modal input to LLM
+Operational MQTT topic prefixes and site names are **local configuration** (public template default: `site/sensors`).
 
-4. **HardwareControl** (`portal_core/hardware_control.py`)
-   - GPIO/PWM control of pump and lighting
-   - Supports both real GPIO (RPi) and simulation mode
-   - Tracks action history for auditing
+## Development notes (posture)
 
-5. **MediaPruner** (`portal_core/media_pruner.py`)
-   - Auto-cleanup of old media files
-   - Log compression (.gz)
-   - Disk usage monitoring
+Simulation flags, log levels, and broker hosts are configured in a local `.env` (see `.env.example`). Component-level recipes and portal module maps stay on the commercial / private track.
 
-6. **Configuration** (`portal_core/config.py`)
-   - Pydantic-based configuration validation
-   - Environment variable loading with defaults
-   - Type-safe configuration access
-
-## Data Flow
-
-```
-Sensors (MQTT)
-      ↓
-  [MQTT Client] → Queue
-      ↓
-  [AI Agent Analysis]
-      ↓
-   + Camera Frame → [Visual Feedback]
-   + Microphone  → [Audio Feedback]
-      ↓
-  [Generate Optimization Plan]
-      ↓
-  [Pydantic Validation]
-      ↓
-  [Hardware Control]
-  - Pump (PWM)
-  - Lighting (PWM)
-  - Alerts
-      ↓
-  [Media Pruner] ← Background task
-```
-
-## Development Workflow
-
-### Running in Simulation Mode
-
-For development without actual hardware:
-
-```bash
-# In .env, set:
-ENABLE_HARDWARE_CONTROL=false
-
-# Pump/lighting actions will be logged but not executed
-python main.py
-```
-
-### Testing Sensor Data
-
-Send mock MQTT data:
-
-```bash
-# Using mosquitto_pub
-mosquitto_pub -h localhost -t "site/sensors/soil" -m '{
-  "sensor_id": "soil_moisture_1",
-  "value": 65.5,
-  "unit": "percent"
-}'
-```
-
-### Debugging
-
-Enable debug logging:
-
-```bash
-# In .env, set:
-LOG_LEVEL=DEBUG
-
-# Or modify main.py:
-logging.basicConfig(level=logging.DEBUG)
-```
-
-Check logs:
-```bash
-# If LOG_FILE is set
-tail -f logs/portal.log
-
-# Or pipe stderr
-python main.py 2>&1 | tee debug.log
-```
-
-### Testing Individual Components
-
-```python
-# Test AI Agent
-from portal_core.ai_agent import AIAgent
-
-agent = AIAgent(ollama_host="http://localhost:11434", model="gemma4:e4b")
-analysis = asyncio.run(agent.analyze_sensor_state({
-    "soil_moisture": 65.5,
-    "light": 450
-}))
-print(analysis)
-
-# Test MQTT Client
-from portal_core.mqtt_client import MQTTClient
-
-mqtt = MQTTClient(broker_host="localhost")
-asyncio.run(mqtt.connect())
-
-# Test Hardware Control
-from portal_core.hardware_control import HardwareControl, PumpState
-
-hw = HardwareControl(simulation_mode=True)
-asyncio.run(hw.setup())
-asyncio.run(hw.set_pump(PumpState.MEDIUM))
-```
+For hardware class posture only, see [`HARDWARE_SETUP.md`](./HARDWARE_SETUP.md).
 
 ## Production Deployment
 
