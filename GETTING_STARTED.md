@@ -186,7 +186,7 @@ Send mock MQTT data:
 
 ```bash
 # Using mosquitto_pub
-mosquitto_pub -h localhost -t "horowhenua/sensors/soil" -m '{
+mosquitto_pub -h localhost -t "site/sensors/soil" -m '{
   "sensor_id": "soil_moisture_1",
   "value": 65.5,
   "unit": "percent"
@@ -333,7 +333,7 @@ curl http://localhost:11434/api/tags
 ### MQTT Connection Failed
 ```bash
 # Check if broker is running
-mosquitto_sub -h localhost -t "horowhenua/sensors/#" -v
+mosquitto_sub -h localhost -t "site/sensors/#" -v
 
 # If connection times out:
 # - Verify MQTT broker is running

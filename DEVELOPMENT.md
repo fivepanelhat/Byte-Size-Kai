@@ -201,7 +201,7 @@ def main():
             timestamp = datetime.now().isoformat()
             for sensor in sensors:
                 sensor["timestamp"] = timestamp
-                topic = f"horowhenua/sensors/{sensor['sensor_id']}"
+                topic = f"site/sensors/{sensor['sensor_id']}"
                 payload = json.dumps(sensor)
                 client.publish(topic, payload)
                 print(f"[{timestamp}] Published to {topic}: {sensor['value']} {sensor['unit']}")
@@ -341,7 +341,7 @@ async def test_full_portal_flow():
     
     # Mock MQTT message
     mock_sensor_msg = {
-        "topic": "horowhenua/sensors/soil_moisture_1",
+        "topic": "site/sensors/soil_moisture_1",
         "payload": {"value": 65.3, "unit": "V"},
         "timestamp": "2026-05-31T23:45:00Z",
     }
@@ -469,10 +469,10 @@ EOF
 
 ```bash
 # Subscribe to all sensor topics
-mosquitto_sub -h localhost -t "horowhenua/sensors/#" -v
+mosquitto_sub -h localhost -t "site/sensors/#" -v
 
 # In another terminal, publish a test message
-mosquitto_pub -h localhost -t "horowhenua/sensors/test" -m '{"test":"data"}'
+mosquitto_pub -h localhost -t "site/sensors/test" -m '{"test":"data"}'
 ```
 
 ---

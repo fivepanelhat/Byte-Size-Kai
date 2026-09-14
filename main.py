@@ -118,7 +118,7 @@ class ByteSizeKaiPortal:
             client_id="blue-moon-portal",
             username=config.mqtt.username,
             password=config.mqtt.password,
-            topic_prefix=getattr(config.mqtt, "topic_prefix", "horowhenua/sensors"),
+            topic_prefix=getattr(config.mqtt, "topic_prefix", "site/sensors"),
         )
         self.av_capture = AVCapture(
             camera_index=config.camera.device_index,

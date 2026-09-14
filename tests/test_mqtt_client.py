@@ -92,7 +92,7 @@ async def test_on_disconnect_callback(mqtt_client):
 async def test_on_message_callback(mqtt_client):
     """Test message reception and queuing."""
     mock_msg = MagicMock()
-    mock_msg.topic = "horowhenua/sensors/soil_moisture_1"
+    mock_msg.topic = "site/sensors/soil_moisture_1"
     payload_dict = {"sensor_id": "soil_moisture_1", "value": 65.3}
     mock_msg.payload = json.dumps(payload_dict).encode("utf-8")
 
@@ -104,7 +104,7 @@ async def test_on_message_callback(mqtt_client):
         queued_msg = await asyncio.wait_for(
             mqtt_client.read_message(), timeout=1.0
         )
-        assert queued_msg["topic"] == "horowhenua/sensors/soil_moisture_1"
+        assert queued_msg["topic"] == "site/sensors/soil_moisture_1"
         assert queued_msg["payload"] == payload_dict
         assert "timestamp" in queued_msg
     except asyncio.TimeoutError:
@@ -115,7 +115,7 @@ async def test_on_message_callback(mqtt_client):
 async def test_on_message_callback_malformed(mqtt_client):
     """Test malformed message does not get queued."""
     mock_msg = MagicMock()
-    mock_msg.topic = "horowhenua/sensors/soil_moisture_1"
+    mock_msg.topic = "site/sensors/soil_moisture_1"
     mock_msg.payload = b"not a json string"
 
     mqtt_client._on_message(None, None, mock_msg)
