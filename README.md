@@ -33,6 +33,8 @@ The diagram is posture-only. No bill of materials, no install path, no commissio
 
 **[Open the Byte Size Kai Digital Twin](https://kite-branch-marble-mist.grok.me)** — simulated on-site console. Sensors → edge → twin in the browser. Telemetry is simulated. Not a live fleet, not an on-site node.
 
+**[Explore Digital Twin Architecture](https://kite-branch-marble-mist.grok.me/architecture)** — five layers, posture only. A sample stops at HITL until a human decides. No BOM.
+
 ## Field context (claim hygiene)
 
 Horowhenua Mana Kai is **early tests / pilot context only**.
