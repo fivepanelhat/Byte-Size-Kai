@@ -29,9 +29,9 @@ Sovereign, local-first crop intelligence under hard Human-in-the-Loop: sensors o
 
 The diagram is posture-only. No bill of materials, no install path, no commissioning steps.
 
-## Try the Local Twin
+## Try the Digital Twin
 
-**[Open the simulated on-site console](https://kite-branch-marble-mist.grok.me)** — sensors → edge → twin in the browser. Telemetry is simulated. Not a live fleet, not an on-site node.
+**[Open the Byte Size Kai Digital Twin](https://kite-branch-marble-mist.grok.me)** — simulated on-site console. Sensors → edge → twin in the browser. Telemetry is simulated. Not a live fleet, not an on-site node.
 
 ## Field context (claim hygiene)
 
