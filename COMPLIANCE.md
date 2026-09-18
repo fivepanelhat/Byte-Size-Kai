@@ -1,7 +1,7 @@
 # COMPLIANCE.md — Byte Size Kai (public posture)
 
 **Coastal Alpine Tech Limited** | **Product:** Byte Size Kai  
-**Updated:** 14 September 2026  
+**Updated:** 18 September 2026  
 **Status:** Public posture only. Not a compliance certificate, audit report, or legal advice.
 
 ## Fleet mandatory posture
@@ -20,7 +20,18 @@
 
 Product-specific regulatory mapping, actuation safety methods, and hardware control details are **commercial-track / private**.
 
-See [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) · [`SECURITY.md`](./SECURITY.md) · [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+See [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) · [`SECURITY.md`](./SECURITY.md) · [`ARCHITECTURE.md`](./ARCHITECTURE.md) · [`COMPLIANCE_REGIONS.md`](./COMPLIANCE_REGIONS.md).
+
+## Related governance (company posture)
+
+Byte Size Kai sits under Coastal Alpine Tech governance. Company pages, not product certificates:
+
+- [Governance](https://github.com/fivepanelhat/fivepanelhat/blob/main/GOVERNANCE.md) — autonomy ceiling; agents draft, humans decide
+- [CAT Sovereign Governance Layer](https://github.com/fivepanelhat/fivepanelhat/blob/main/docs/public/cat-sovereign-governance-layer.md)
+- [Safe NZ AI](https://github.com/fivepanelhat/fivepanelhat/blob/main/SAFE_NZ_AI.md) — operating description, not a government badge
+- [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md)
+
+Simulated Digital Twin (not a live fleet): [console](https://kite-branch-marble-mist.grok.me) · [architecture](https://kite-branch-marble-mist.grok.me/architecture)
 
 ### Limitations
 
