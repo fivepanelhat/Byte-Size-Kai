@@ -32,7 +32,9 @@ The diagram is posture-only. No bill of materials, no install path, no commissio
 
 ## Try the Digital Twin
 
-**[Open the Byte Size Kai Digital Twin](https://kite-branch-marble-mist.grok.me)** — simulated on-site console. Sensors → edge → twin in the browser. Telemetry is simulated. Not a live fleet, not an on-site node.
+**SuperGrok Build — beta version, under tests.** Simulated browser console. Not a production on-site node.
+
+**[Open the Byte Size Kai Digital Twin](https://kite-branch-marble-mist.grok.me)** — sensors → edge → twin in the browser. Telemetry is simulated. Not a live fleet.
 
 **[Explore Digital Twin Architecture](https://kite-branch-marble-mist.grok.me/architecture)** — five layers, posture only. A sample stops at HITL until a human decides. No BOM.
 
