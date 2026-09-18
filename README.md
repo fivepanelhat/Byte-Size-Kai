@@ -5,6 +5,7 @@
 [![Te Mana Raraunga](https://img.shields.io/badge/Te%20Mana%20Raraunga-In%20accordance-0f766e)](./COMPLIANCE.md)
 [![HITL](https://img.shields.io/badge/HITL-Draft%2FPrepare%20only-dc2626)](./COMPLIANCE.md)
 [![Security](https://img.shields.io/badge/Security-No%20silent%20exfil%20%2B%20SecOps-dc2626)](./SECURITY.md)
+[![Governance](https://img.shields.io/badge/Governance-HITL%20autonomy%20ceiling-0f766e)](https://github.com/fivepanelhat/fivepanelhat/blob/main/GOVERNANCE.md)
 
 ![Byte Size Kai](./assets/social_preview.png)
 
@@ -56,6 +57,11 @@ For partnership or pilot enquiries: **[fivepanelhat@gmail.com](mailto:fivepanelh
 | [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) | Claim hygiene |
 | [`COMPLIANCE.md`](./COMPLIANCE.md) | Privacy / Te Mana Raraunga / HITL |
 | [`SECURITY.md`](./SECURITY.md) | Security posture |
+| [`COMPLIANCE_REGIONS.md`](./COMPLIANCE_REGIONS.md) | Regional packs pointer (detail private) |
+| [Governance](https://github.com/fivepanelhat/fivepanelhat/blob/main/GOVERNANCE.md) | Company HITL autonomy ceiling |
+| [CAT Sovereign Governance Layer](https://github.com/fivepanelhat/fivepanelhat/blob/main/docs/public/cat-sovereign-governance-layer.md) | Mutual protection / due-diligence posture |
+| [Safe NZ AI](https://github.com/fivepanelhat/fivepanelhat/blob/main/SAFE_NZ_AI.md) | Operating description — not a government badge |
+| [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md) | Public trust posture |
 
 **No public getting-started or installation guides.** Install, bootstrap, hardware commissioning, and runtime packs are commercial-track / private.
 
@@ -66,7 +72,7 @@ For partnership or pilot enquiries: **[fivepanelhat@gmail.com](mailto:fivepanelh
 | **No data sales** | We do not sell personal or customer operational data to third parties for ads or brokerage. |
 | **NZ Privacy Act 2020** | Designed in accordance with the Privacy Act 2020. |
 | **Te Mana Raraunga** | Designed in accordance with Te Mana Raraunga principles where Māori data interests arise. |
-| **HITL** | Agents draft/prepare; humans approve high-stakes outcomes. |
+| **HITL** | Agents draft/prepare; humans approve high-stakes outcomes. See [Governance](https://github.com/fivepanelhat/fivepanelhat/blob/main/GOVERNANCE.md). |
 
 ## License
 
