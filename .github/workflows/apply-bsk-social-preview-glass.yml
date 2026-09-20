@@ -23,16 +23,23 @@ jobs:
             echo "No parts; skip"
             exit 0
           fi
-          for i in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21; do
+          for i in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43; do
             if [ ! -f "assets/.bsk-glass-parts/part_$i" ]; then
               echo "Incomplete parts (missing part_$i); skip"
               exit 0
             fi
           done
+          # ignore .keep
           cat assets/.bsk-glass-parts/part_* > /tmp/social_preview.png.b64
           base64 -d /tmp/social_preview.png.b64 > assets/social_preview.png
           echo "decoded size=$(wc -c < assets/social_preview.png)"
           sha256sum assets/social_preview.png
+          EXPECTED=1a8c7dff2531292b4015a45c2e873193232572c19f3ac3c51987aa20f1c0112b
+          ACTUAL=$(sha256sum assets/social_preview.png | awk '{print $1}')
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "Checksum mismatch: $ACTUAL"
+            exit 1
+          fi
           rm -rf assets/.bsk-glass-parts
           rm -f .canvas-compose-write-probe.txt
           rm -f .github/workflows/apply-bsk-social-preview-glass.yml
