@@ -1,0 +1,44 @@
+name: apply-bsk-social-preview-glass
+on:
+  push:
+    branches: [assets/bsk-social-preview-glass]
+    paths:
+      - 'assets/.bsk-glass-parts/**'
+      - '.github/workflows/apply-bsk-social-preview-glass.yml'
+  workflow_dispatch:
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: assets/bsk-social-preview-glass
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Decode Founder-pick PNG and commit
+        run: |
+          set -euo pipefail
+          if [ ! -d assets/.bsk-glass-parts ]; then
+            echo "No parts; skip"
+            exit 0
+          fi
+          cat assets/.bsk-glass-parts/part_* > /tmp/social_preview.png.b64
+          base64 -d /tmp/social_preview.png.b64 > assets/social_preview.png
+          rm -rf assets/.bsk-glass-parts
+          # remove probe if present
+          rm -f .canvas-compose-write-probe.txt
+          # remove this one-shot workflow after apply
+          rm -f .github/workflows/apply-bsk-social-preview-glass.yml
+          git config user.name "fivepanelhat"
+          git config user.email "fivepanelhat@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "assets: replace social_preview.png with Byte Size Kai glass Founder pick
+
+HITL unlock 20 Sep 2026. Title Byte Size Kai / Microgreens AgriTech.
+Removes one-shot apply workflow and staging parts."
+          git push origin HEAD:assets/bsk-social-preview-glass
