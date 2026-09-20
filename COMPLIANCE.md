@@ -1,7 +1,7 @@
 # COMPLIANCE.md — Byte Size Kai (public posture)
 
 **Coastal Alpine Tech Limited** | **Product:** Byte Size Kai  
-**Updated:** 18 September 2026  
+**Updated:** 20 September 2026  
 **Status:** Public posture only. Not a compliance certificate, audit report, or legal advice.
 
 ## Fleet mandatory posture
@@ -31,7 +31,7 @@ Byte Size Kai sits under Coastal Alpine Tech governance. Company pages, not prod
 - [Safe NZ AI](https://github.com/fivepanelhat/fivepanelhat/blob/main/SAFE_NZ_AI.md) — operating description, not a government badge
 - [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md)
 
-Simulated Digital Twin (not a live fleet): [console](https://kite-branch-marble-mist.grok.me) · [architecture](https://kite-branch-marble-mist.grok.me/architecture)
+Simulated Digital Twin (not a live fleet): [console](https://field-brave-palm-lagoon.grok.me/kai) · [architecture](https://field-brave-palm-lagoon.grok.me/architecture)
 
 ### Limitations
 

@@ -38,11 +38,11 @@ jobs:
         uses: actions/checkout@v6
       - name: Confirm README still names the simulated demo
         run: |
-          grep -F "https://kite-branch-marble-mist.grok.me" README.md
+          grep -F "https://field-brave-palm-lagoon.grok.me/kai" README.md
       - name: HEAD the simulated demo (non-blocking watch)
         continue-on-error: true
         run: |
-          code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 20 "https://kite-branch-marble-mist.grok.me" || true)
+          code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 20 "https://field-brave-palm-lagoon.grok.me/kai" || true)
           echo "demo_http_status=$code"
           if [ "$code" != "200" ] && [ "$code" != "301" ] && [ "$code" != "302" ]; then
             echo "::warning::Simulated demo URL returned $code — treat as a posture incident if this persists."

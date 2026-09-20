@@ -32,9 +32,9 @@ The diagram is posture-only. No bill of materials, no install path, no commissio
 
 ## Try the Digital Twin
 
-Simulated console — not a live node.
+Simulated console — not a live node. Same forest-glass commercial-entry UI as SprintIT · MintIT.
 
-**[Open console](https://kite-branch-marble-mist.grok.me)**
+**[Open console](https://field-brave-palm-lagoon.grok.me/kai)** · **[Architecture](https://field-brave-palm-lagoon.grok.me/architecture)**
 
 ## Field context (claim hygiene)
 
