@@ -23,6 +23,12 @@ jobs:
             echo "No parts; skip"
             exit 0
           fi
+          for i in 00 01 02 03 04; do
+            if [ ! -f "assets/.bsk-glass-parts/part_$i" ]; then
+              echo "Incomplete parts (missing part_$i); skip"
+              exit 0
+            fi
+          done
           cat assets/.bsk-glass-parts/part_* > /tmp/social_preview.png.b64
           base64 -d /tmp/social_preview.png.b64 > assets/social_preview.png
           rm -rf assets/.bsk-glass-parts
