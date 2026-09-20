@@ -1,54 +1,35 @@
-# Security Policy for Byte-Size-Kai
+# Security Policy — Byte Size Kai
 
-## Supported Versions
-Only the `main` branch is actively supported with security updates.
+**Updated:** 20 September 2026  
+**Status:** Public posture only. Not a penetration-test report or certification.
 
-## Reporting a Vulnerability
-Coastal Alpine Tech Limited takes the security of our Sovereign Edge networks seriously. 
-If you discover a vulnerability in the Byte-Size-Kai, please DO NOT open a public issue. 
-Instead, report it directly to the Chief Architect. All critical hardware-layer and edge-network 
-vulnerabilities will be addressed within 48 hours.
+## Supported versions
 
-## Security Notifications
+Only the `main` branch of this public repository is supported for security *notices*. Runtime, Core pins, and actuator guards live on the commercial-track / private stack.
 
-| Channel | Response |
-| ------- | -------- |
-| Dependabot | Weekly dependency PRs — prioritise `security` / high CVEs |
-| Code scanning / SecOps / Red team | Fix-forward on `main`; never weaken actuator guards |
-| Coastal-Alpine-Core advisories | Bump core pin; re-run portal tests |
-| Org threat register | See coastal-alpine-stack `SECURITY.md` / `SECURITY_POSTURE_REPORT.md` |
+## How to report a vulnerability
 
-## Active threat patches (2026-07)
+**Do not open a public issue** for security findings.
 
-| ID / finding | Mitigation |
-| ------------ | ---------- |
-| GHSA-f4xh-w4cj-qxq8 langsmith | Floor `>=0.8.18` via stack/Weaver pins |
-| GHSA-4xgf-cpjx-pc3j pydantic-settings | Floor `>=2.14.2` |
-| GHSA-f4j7-r4q5-qw2c chromadb | Local-only vector DB; no public bind |
-| Prompt injection | Core `SecurityGuard` on all LLM prompts |
-| GITHUB_TOKEN | CI workflows use `permissions: contents: read` |
+1. Prefer [GitHub private vulnerability reporting](https://github.com/fivepanelhat/Byte-Size-Kai/security/advisories/new) on this repository (enable if the button is missing — founder HITL).
+2. Or email **fivepanelhat@gmail.com** with subject `SECURITY: Byte-Size-Kai`.
 
-## Quality gates
+Include: affected surface (public docs vs suspected runtime), steps to reproduce if safe, and whether the finding is already public.
 
-- Portal CI + SecOps (Bandit/Gitleaks) + red-team schedules.
-- Actuator / irrigation / crop actions must remain fail-closed on guard failure.
+We will acknowledge receipt when we see the report. Fix timing depends on severity and whether the finding is in this public stub or the private runtime. Do not expect a fixed SLA on a pre-seed public posture repo.
 
-## Fleet security principles
+## Fleet principles (public)
 
-- **No silent exfiltration** of personal or tenant operational data
-- Prefer **local-first** processing; third-party AI only with explicit operator configuration and UI/docs disclosure
-- Report vulnerabilities via GitHub Security Advisories or the maintainer contact on the org profile
-- High-stakes production changes require human approval (HITL)
+- **No silent exfiltration** of personal or tenant operational data.
+- **Local-first** default; third-party AI only with explicit operator configuration and disclosure.
+- **HITL** on high-stakes production changes and any actuation path.
+- **No data sales** of personal information or customer operational data to third parties.
+- Designed in accordance with the **Privacy Act 2020** and **Te Mana Raraunga** principles where Māori data interests arise.
 
-## Data sales and third parties
+## What this public file does not contain
 
-- **We do not sell personal information or customer operational data to third parties.**
-- Optional AI or cloud services run only when configured by the operator; processing must be disclosed (in-product and/or docs).
-- Prefer local-first paths so third-party transfer is unnecessary by default.
+Dependency CVE floors, Core pin versions, actuator fail-closed methods, and org threat-register tables are **commercial-track / private**. They must not be republished here.
 
-## NZ Privacy Act and Te Mana Raraunga
+CI on this repository uses least-privilege `permissions: contents: read`.
 
-- Design in accordance with the **Privacy Act 2020**.
-- Operate in accordance with **Te Mana Raraunga** principles for Māori data sovereignty interests.
-- Align AI features with **NZ AI safety** / responsible AI expectations (HITL, transparency, no silent training on private content).
-
+See [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) · [`COMPLIANCE.md`](./COMPLIANCE.md) · org [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md).
