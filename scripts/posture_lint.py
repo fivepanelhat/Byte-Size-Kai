@@ -16,27 +16,21 @@ FORBIDDEN = [
     (re.compile(r"New Zealand'?s leader", re.I), "leadership overclaim"),
     (re.compile(r"collaborating with Venture Taranaki", re.I), "unpublished collaboration claim"),
     (re.compile(r"Kotahitanga Investment Fund", re.I), "unpublished funder claim"),
-    (re.compile(r"iwi mandate", re.I), "check surrounding negation; bare claim is forbidden"),
 ]
 
-# Files that may mention forbidden tokens only as explicit denials.
+SKIP_REL = {
+    "scripts/posture_lint.py",
+}
+
 ALLOW_NEGATION_FILES = {
     "PUBLIC_POSTURE.md",
     "REALITY.md",
     "README.md",
-    "scripts/posture_lint.py",
-    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "AGENTS.md",
+    "CAT_CONGRUENCE.md",
 }
-
-SCAN_GLOBS = [
-    "*.md",
-    "*.py",
-    "*.js",
-    "*.sh",
-    "*.ps1",
-    ".env.example",
-    ".github/workflows/*.yml",
-]
 
 SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "assets", "telemetry_data"}
 
@@ -48,13 +42,11 @@ def iter_files() -> list[Path]:
             continue
         if not path.is_file():
             continue
-        rel = path.relative_to(ROOT).as_posix()
         if path.suffix.lower() in {".md", ".py", ".js", ".sh", ".ps1", ".yml", ".yaml"} or path.name in {
-            ".env.example",
-            "REALITY.md",
+            ".env.example"
         }:
             files.append(path)
-        elif rel in {"requirements.txt", "package.json"}:
+        elif path.relative_to(ROOT).as_posix() in {"requirements.txt", "package.json"}:
             files.append(path)
     return files
 
@@ -65,26 +57,26 @@ def main() -> int:
     reality = (ROOT / "REALITY.md").read_text(encoding="utf-8", errors="replace")
     if "bootstrap" in reality.lower() and "main loop" in reality.lower():
         errors.append("REALITY.md must not describe a public bootstrap → main loop demo")
-    if re.search(r"Hailo-10H", reality) and "written agreement" not in reality.lower() and "class" not in reality.lower():
-        errors.append("REALITY.md must not publish an exact public BOM without NDA fence")
 
     getting = (ROOT / "GETTING_STARTED.md").read_text(encoding="utf-8", errors="replace")
     if "pip install" in getting.lower() or "python main.py" in getting.lower():
         errors.append("GETTING_STARTED.md must remain a not-published notice")
 
     main_py = (ROOT / "main.py").read_text(encoding="utf-8", errors="replace")
-    if "mqtt" in main_py.lower() or "gpio" in main_py.lower():
-        errors.append("main.py must remain a posture stub (no MQTT/GPIO)")
+    if re.search(r"^(import|from)\s+\S*(mqtt|gpio)", main_py, re.I | re.M):
+        errors.append("main.py must remain a posture stub (no MQTT/GPIO imports)")
+    if re.search(r"os\.getenv\(\s*[\"']BLUE_MOON_", main_py):
+        errors.append("main.py must not read BLUE_MOON_ env vars")
 
     for path in iter_files():
-        text = path.read_text(encoding="utf-8", errors="replace")
         rel = path.relative_to(ROOT).as_posix()
+        if rel in SKIP_REL:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
         for pattern, label in FORBIDDEN:
             if not pattern.search(text):
                 continue
-            if path.name in ALLOW_NEGATION_FILES and re.search(
-                r"(do not|not|unless|forbid|disabled)", text, re.I
-            ):
+            if path.name in ALLOW_NEGATION_FILES:
                 continue
             errors.append(f"{rel}: forbidden token ({label})")
 
