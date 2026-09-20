@@ -1,0 +1,53 @@
+name: apply-bsk-social-preview-glass
+on:
+  push:
+    branches: [assets/bsk-social-preview-glass]
+    paths:
+      - 'assets/.bsk-glass-parts/**'
+      - '.github/workflows/apply-bsk-social-preview-glass.yml'
+  workflow_dispatch:
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: assets/bsk-social-preview-glass
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Decode Founder-pick PNG and commit
+        run: |
+          set -euo pipefail
+          if [ ! -d assets/.bsk-glass-parts ]; then
+            echo "No parts; skip"
+            exit 0
+          fi
+          for i in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21; do
+            if [ ! -f "assets/.bsk-glass-parts/part_$i" ]; then
+              echo "Incomplete parts (missing part_$i); skip"
+              exit 0
+            fi
+          done
+          cat assets/.bsk-glass-parts/part_* > /tmp/social_preview.png.b64
+          base64 -d /tmp/social_preview.png.b64 > assets/social_preview.png
+          echo "decoded size=$(wc -c < assets/social_preview.png)"
+          sha256sum assets/social_preview.png
+          rm -rf assets/.bsk-glass-parts
+          rm -f .canvas-compose-write-probe.txt
+          rm -f .github/workflows/apply-bsk-social-preview-glass.yml
+          git config user.name "fivepanelhat"
+          git config user.email "fivepanelhat@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "$(cat <<'EOF'
+assets: replace social_preview.png with Byte Size Kai glass Founder pick
+
+HITL unlock 20 Sep 2026. Title Byte Size Kai / Microgreens AgriTech.
+Removes one-shot apply workflow and staging parts.
+EOF
+)"
+          git push origin HEAD:assets/bsk-social-preview-glass
