@@ -6,6 +6,7 @@
 [![HITL](https://img.shields.io/badge/HITL-Draft%2FPrepare%20only-dc2626)](./COMPLIANCE.md)
 [![Security](https://img.shields.io/badge/Security-No%20silent%20exfil%20%2B%20SecOps-dc2626)](./SECURITY.md)
 [![Governance](https://img.shields.io/badge/Governance-HITL%20autonomy%20ceiling-0f766e)](https://github.com/fivepanelhat/fivepanelhat/blob/main/GOVERNANCE.md)
+[![Licence](https://img.shields.io/badge/Licence-Proprietary-111827)](./LICENSE)
 
 ![Byte Size Kai](./assets/social_preview.png)
 
@@ -30,6 +31,20 @@ Sovereign, local-first crop intelligence under hard Human-in-the-Loop: sensors o
 
 The diagram is posture-only. No bill of materials, no install path, no commissioning steps.
 
+A clone of this repository is **not** a controller. See [`NOTICE.md`](./NOTICE.md).
+
+## How to evaluate
+
+This public tree is posture only. Evaluation is not `git clone` + install.
+
+1. Read [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) and [`NOTICE.md`](./NOTICE.md).
+2. Open the **simulated console** (not a live node): [field-brave-palm-lagoon.grok.me/kai](https://field-brave-palm-lagoon.grok.me/kai).
+3. Architecture map (posture): [field-brave-palm-lagoon.grok.me/architecture](https://field-brave-palm-lagoon.grok.me/architecture).
+4. Runtime, firmware, hardware packs, and pilot evaluation materials are available under **written agreement only** — email **fivepanelhat@gmail.com** (no prices or methods on public GitHub).
+5. Security findings: use [private vulnerability reporting](https://github.com/fivepanelhat/Byte-Size-Kai/security/advisories/new), not a public issue. See [`SECURITY.md`](./SECURITY.md).
+
+Cite this public door with [`CITATION.cff`](./CITATION.cff). Licence: proprietary — [`LICENSE`](./LICENSE) (`LicenseRef-CoastalAlpineTech-Proprietary`).
+
 ## Try the Digital Twin
 
 Simulated console — not a live node. Same forest-glass commercial-entry UI as SprintIT · MintIT.
@@ -53,6 +68,7 @@ For partnership or pilot enquiries: **[fivepanelhat@gmail.com](mailto:fivepanelh
 
 | Doc | Purpose |
 | :--- | :--- |
+| [`NOTICE.md`](./NOTICE.md) | What a clone is / is not |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Architecture posture (no install/bring-up) |
 | [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) | Claim hygiene |
 | [`COMPLIANCE.md`](./COMPLIANCE.md) | Privacy / Te Mana Raraunga / HITL |
@@ -63,7 +79,7 @@ For partnership or pilot enquiries: **[fivepanelhat@gmail.com](mailto:fivepanelh
 | [Safe NZ AI](https://github.com/fivepanelhat/fivepanelhat/blob/main/SAFE_NZ_AI.md) | Operating description — not a government badge |
 | [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md) | Public trust posture |
 
-**No public getting-started or installation guides.** Install, bootstrap, hardware commissioning, and runtime packs are commercial-track / private.
+**No public getting-started or installation guides.** Install, bootstrap, hardware commissioning, runtime packs, skill bodies, and R&D artefact indexes are commercial-track / private.
 
 ## Privacy / security / governance
 
@@ -76,10 +92,10 @@ For partnership or pilot enquiries: **[fivepanelhat@gmail.com](mailto:fivepanelh
 
 ## License
 
-Proprietary — Coastal Alpine Tech Limited. See `LICENSE`.
+Proprietary — Coastal Alpine Tech Limited. SPDX: `LicenseRef-CoastalAlpineTech-Proprietary`. See `LICENSE`.
 
 ## Attribution
 
-**Built by:** Wayne Roberts, Coastal Alpine Tech Limited  
+**Built by:** Coastal Alpine Tech Limited  
 **Field context:** Horowhenua Mana Kai — early **tests only** (successfully took IoT telemetry; not a claimed on-site deployment)  
 **Location:** Taranaki, Aotearoa New Zealand

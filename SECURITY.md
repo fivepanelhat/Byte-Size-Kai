@@ -1,6 +1,6 @@
 # Security Policy — Byte Size Kai
 
-**Updated:** 20 September 2026  
+**Updated:** 22 September 2026  
 **Status:** Public posture only. Not a penetration-test report or certification.
 
 ## Supported versions
@@ -11,7 +11,8 @@ Only the `main` branch of this public repository is supported for security *noti
 
 **Do not open a public issue** for security findings.
 
-1. Prefer [GitHub private vulnerability reporting](https://github.com/fivepanelhat/Byte-Size-Kai/security/advisories/new) on this repository (enable if the button is missing — founder HITL).
+1. **Preferred:** [GitHub private vulnerability reporting](https://github.com/fivepanelhat/Byte-Size-Kai/security/advisories/new) on this repository.  
+   If that page is missing the report button, enable *Private vulnerability reporting* under repository Settings → Code security (founder HITL).
 2. Or email **fivepanelhat@gmail.com** with subject `SECURITY: Byte-Size-Kai`.
 
 Include: affected surface (public docs vs suspected runtime), steps to reproduce if safe, and whether the finding is already public.
@@ -32,4 +33,4 @@ Dependency CVE floors, Core pin versions, actuator fail-closed methods, and org 
 
 CI on this repository uses least-privilege `permissions: contents: read`.
 
-See [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) · [`COMPLIANCE.md`](./COMPLIANCE.md) · org [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md).
+See [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) · [`NOTICE.md`](./NOTICE.md) · [`COMPLIANCE.md`](./COMPLIANCE.md) · org [Trust Center](https://github.com/fivepanelhat/fivepanelhat/blob/main/TRUST_CENTER.md).
