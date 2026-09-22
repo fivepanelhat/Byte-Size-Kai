@@ -4,6 +4,7 @@
 
 ## Public posture (this tree)
 
+- 2026-09-22 (evening) — Removed method-shaped public filenames (`tests/test_mqtt_client.py` and related, `HARDWARE_SETUP.md`, `installation.md`, `setup.md`, `install.sh`, `install.ps1`, `.github/agent-fleet/`). `GETTING_STARTED.md` remains as a not-published notice for CI.
 - 2026-09-22 — Removed public R&D artefact indexes and Drive folder links from this tree. Collapsed method-shaped stub paths into [`NOTICE.md`](./NOTICE.md). Added closed evaluation path, [`CITATION.cff`](./CITATION.cff), and SPDX proprietary identifier.
 - 2026-09-20 — Reality checklist aligned with PUBLIC_POSTURE (no public install path or BOM). Security contact set to fivepanelhat@gmail.com + GitHub advisories. Posture lint + demo URL watch added to CI.
 

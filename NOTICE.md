@@ -25,7 +25,7 @@ The following stay **commercial-track / private** and must not be reconstructed 
 - Field logs, media, or operational telemetry
 - Strategy dossiers, architecture method packs, and internal R&D artefact indexes
 
-Public filenames that previously hinted at those surfaces (`esp32/`, `edgeAuth.js`, `session_bridge.py`, `portal_schemas/`, `telemetry_data/`, `skills/`, `docs/artefacts/`) have been removed from this tree. Prior blobs may remain in git history until a separate, founder-approved history scrub.
+Public filenames that previously hinted at those surfaces (`esp32/`, `edgeAuth.js`, `session_bridge.py`, `portal_schemas/`, `telemetry_data/`, `skills/`, `docs/artefacts/`, `tests/test_mqtt_client.py`, `HARDWARE_SETUP.md`, `install.sh`, `.github/agent-fleet/`) have been removed from this tree. Prior blobs may remain in git history until a separate, founder-approved history scrub.
 
 ## How to evaluate
 
