@@ -27,7 +27,7 @@ Sovereign, local-first crop intelligence under hard Human-in-the-Loop: sensors o
   (telemetry only)      (draft / prepare)          (human decides)
 ```
 
-![Architecture overview — sensor to edge to digital twin (posture only; no BOM or install path)](./assets/architecture_overview.png)
+![Architecture overview — sensor to edge to digital twin (posture only; no BOM or install path)](./assets/architecture_overview.svg)
 
 The diagram is posture-only. No bill of materials, no install path, no commissioning steps.
 
