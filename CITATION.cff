@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "Cite this public posture repository as below. It is not a runtime or firmware release."
+type: software
+title: "Byte Size Kai (public posture)"
+abstract: "Public posture door for Byte Size Kai — a local-first crop digital twin intent under hard Human-in-the-Loop. This repository does not publish runtime, firmware, install packs, or field telemetry."
+authors:
+  - name: "Coastal Alpine Tech Limited"
+    website: "https://github.com/fivepanelhat"
+repository-code: "https://github.com/fivepanelhat/Byte-Size-Kai"
+url: "https://github.com/fivepanelhat/Byte-Size-Kai"
+license: "LicenseRef-CoastalAlpineTech-Proprietary"
+keywords:
+  - agritech
+  - edge-ai
+  - data-sovereignty
+  - human-in-the-loop
+  - aotearoa-new-zealand
+preferred-citation:
+  type: software
+  title: "Byte Size Kai — public posture"
+  authors:
+    - name: "Coastal Alpine Tech Limited"
+  year: 2026
+  url: "https://github.com/fivepanelhat/Byte-Size-Kai"
