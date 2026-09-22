@@ -39,7 +39,7 @@ This public tree is posture only. Evaluation is not `git clone` + install.
 
 1. Read [`PUBLIC_POSTURE.md`](./PUBLIC_POSTURE.md) and [`NOTICE.md`](./NOTICE.md).
 2. Open the **simulated console** (not a live node): [field-brave-palm-lagoon.grok.me/kai](https://field-brave-palm-lagoon.grok.me/kai).
-3. Architecture map (posture): [field-brave-palm-lagoon.grok.me/architecture](https://field-brave-palm-lagoon.grok.me/architecture).
+3. Architecture UI (same console, twin layer): [field-brave-palm-lagoon.grok.me/architecture?layer=twin](https://field-brave-palm-lagoon.grok.me/architecture?layer=twin).
 4. Runtime, firmware, hardware packs, and pilot evaluation materials are available under **written agreement only** — email **fivepanelhat@gmail.com** (no prices or methods on public GitHub).
 5. Security findings: use [private vulnerability reporting](https://github.com/fivepanelhat/Byte-Size-Kai/security/advisories/new), not a public issue. See [`SECURITY.md`](./SECURITY.md).
 
@@ -49,7 +49,7 @@ Cite this public door with [`CITATION.cff`](./CITATION.cff). Licence: proprietar
 
 Simulated console — not a live node. Same forest-glass commercial-entry UI as SprintIT · MintIT.
 
-**[Open console](https://field-brave-palm-lagoon.grok.me/kai)** · **[Architecture](https://field-brave-palm-lagoon.grok.me/architecture)**
+**[Open console](https://field-brave-palm-lagoon.grok.me/kai)** · **[Architecture UI](https://field-brave-palm-lagoon.grok.me/architecture?layer=twin)**
 
 ## Field context (claim hygiene)
 
