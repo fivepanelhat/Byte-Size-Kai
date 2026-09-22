@@ -1,7 +1,7 @@
 # Tests — public notice
 
-**Updated:** 14 September 2026
+**Updated:** 22 September 2026
 
-MQTT, GPIO, hardware, AI, AV, and integration test packs are **commercial-track / private**.
+Public test packs are **not published** on this tree. Method-shaped filenames have been removed.
 
-Public tip is posture-only. See [`README.md`](../README.md) · [`PUBLIC_POSTURE.md`](../PUBLIC_POSTURE.md).
+See [`README.md`](../README.md) · [`NOTICE.md`](../NOTICE.md) · [`PUBLIC_POSTURE.md`](../PUBLIC_POSTURE.md).
